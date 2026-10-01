@@ -54,6 +54,17 @@ Deux options :
 
 Les LED NeoPixel de l'écran se règlent ensuite via `NEOPIXEL_LED` (non activé ici).
 
+## 3c. Sonde inductive
+
+Config : `FIX_MOUNTED_PROBE` sur le connecteur **PROBE** (PC14), calibration delta `G33` et menu de calibration activés.
+Le Z est toujours référencé sur la butée de la tour Z (pas sur la sonde).
+
+- **Alimentation :** la plupart des capteurs inductifs (LJ12A3, etc.) demandent 6-36 V, et leur sortie est au niveau de leur alimentation, donc **12 V**. Les entrées de la carte sont en 3,3 V. **Ne relie jamais la sortie directement à PC14** : utilise un pont diviseur, un optocoupleur ou un module de conversion de niveau. Choisis plutôt un capteur 5 V ou conçu pour carte 3D (type PINDA ou LJ18A3 avec module).
+- **Type de sortie :** NPN-NO déclenche à LOW (valeur actuelle), PNP ou NC à HIGH (`Z_MIN_PROBE_ENDSTOP_HIT_STATE`). Vérifie avec `M119` : `z_probe: TRIGGERED` doit apparaître seulement quand un métal passe devant.
+- **Plateau :** un inductif ne détecte que le métal. Si ton plateau est en verre, il faut une plaque métallique dessous.
+- **Offsets :** mesure la distance buse -> sonde en X, Y (`NOZZLE_TO_PROBE_OFFSET`) et règle Z avec `M851` / l'écran. Les valeurs actuelles sont des estimations.
+- **Rayon de sonde :** avec le décalage en Y, vérifie que la zone sondée ne sort pas du plateau.
+
 ## 4. Compiler et flasher
 
 ```bash

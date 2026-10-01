@@ -1037,10 +1037,10 @@
   // Delta calibration menu
   // Add three-point calibration to the MarlinUI menu.
   // See http://minow.blogspot.com/index.html#4918805519571907051
-  //#define DELTA_CALIBRATION_MENU
+  #define DELTA_CALIBRATION_MENU
 
   // G33 Delta Auto-Calibration. Enable EEPROM_SETTINGS to store results.
-  //#define DELTA_AUTO_CALIBRATION
+  #define DELTA_AUTO_CALIBRATION   // G33 (necessite la sonde)
 
   #if ENABLED(DELTA_AUTO_CALIBRATION)
     // Default number of probe points : n*n (1 -> 7)
@@ -1307,7 +1307,7 @@
 #define V_MAX_ENDSTOP_HIT_STATE HIGH
 #define W_MIN_ENDSTOP_HIT_STATE HIGH
 #define W_MAX_ENDSTOP_HIT_STATE HIGH
-#define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW
+#define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW   // NEVA: LOW pour NPN-NO ; HIGH pour PNP ou NPN-NC (verifier avec M119)
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
@@ -1477,7 +1477,8 @@
  * The probe replaces the Z-MIN endstop and is used for Z homing.
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+// Delta : le Z reste sur la butee haute de la tour Z, la sonde a son propre connecteur (PROBE, PC14)
+//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 // Force the use of the probe for Z-axis homing
 //#define USE_PROBE_FOR_Z_HOMING
@@ -1522,7 +1523,7 @@
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-//#define FIX_MOUNTED_PROBE
+#define FIX_MOUNTED_PROBE   // Sonde inductive fixee sur la tete
 
 /**
  * Use the nozzle as the probe, as with a conductive
@@ -1733,7 +1734,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, -10, -3.5 } // (mm) X, Y, Z distance from Nozzle tip to Probe trigger-point
+#define NOZZLE_TO_PROBE_OFFSET { 0, -25, -2.0 } // NEVA: A MESURER (X, Y, Z buse -> sonde, Z negatif = sonde plus haute que la buse)
 
 // Enable and set to use a specific tool for probing. Disable to allow any tool.
 #define PROBING_TOOL 0
