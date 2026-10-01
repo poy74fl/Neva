@@ -70,7 +70,7 @@
 
 // Choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_BTT_SKR_MINI_E3_V3_0
+  #define MOTHERBOARD BOARD_BTT_SKR_V1_4
 #endif
 
 // @section serial
@@ -83,7 +83,7 @@
  *
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
  */
-#define SERIAL_PORT -1   // USB natif de la SKR Mini E3 V3
+#define SERIAL_PORT -1   // USB de la SKR 1.4 (LPC1768)
 
 /**
  * Serial Port Baud Rate
@@ -2777,7 +2777,7 @@
  * SD Card support is disabled by default. If your controller has an SD slot,
  * you must uncomment the following option or it won't work.
  */
-#define SDSUPPORT   // SD de la carte mere (le lecteur SD de l'ecran n'est pas gere sur SKR Mini E3 V3)
+#define SDSUPPORT   // Avec un ecran, la SKR 1.4 utilise par defaut la SD de l'ecran (SDCARD_CONNECTION LCD)
 
 /**
  * SD CARD: ENABLE CRC
@@ -3198,8 +3198,7 @@
 // MKS MINI12864 V3 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
 //
 #define MKS_MINI_12864_V3
-// Cable custom OU adaptateur Voron "SKR Mini Screen Adaptor" : dans ce 2e cas, ajouter
-//   #define SKR_MINI_SCREEN_ADAPTER  (voir README)
+// Branche sur EXP1 + EXP2 de la SKR 1.4 avec les 2 nappes fournies (voir README)
 
 //
 // MKS LCD12864A/B with graphic controller and SD support. Follows MKS_MINI_12864 pinout.
