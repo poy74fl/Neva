@@ -38,7 +38,9 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 ## 3. Câblage SKR Mini E3 V3 pour un delta
 
 - Fins de course de tour : connecteurs X-STOP, Y-STOP, Z-STOP (Marlin les utilise comme fins de course **max** en delta).
-- Thermistance hotend sur `TH0`, chauffe sur `HE`, ventilateur de buse sur `FAN0`/`FAN1`.
+- Thermistance hotend sur `TH0`, chauffe sur `HE`.
+- Ventilateurs : **FAN0** = ventilateur de pièce (commandé par `M106`/`M107`, réglé par le slicer) ; **FAN1** = ventilateur de la hotend, automatique (`E0_AUTO_FAN_PIN`) : il démarre au-dessus de 50 °C et s'arrête quand la buse refroidit. FAN2 reste libre.
+  Vérifie que ces ventilateurs sont en 12 V (ou 24 V) comme ton alimentation.
 - Alimentation : vérifie 12 V vs 24 V avant de brancher (la carte accepte 12–24 V).
 - Les drivers étant des TMC2209 : mets les jumpers DIAG comme sur la doc BTT, ou retire-les si tu n'utilises pas le sensorless.
 
