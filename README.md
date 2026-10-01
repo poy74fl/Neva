@@ -6,6 +6,7 @@ Basée sur l'exemple `delta/generic` de Marlin 2.1.2.5, avec :
 - `MOTHERBOARD BOARD_BTT_SKR_MINI_E3_V3_0`, USB natif (`SERIAL_PORT -1`, 115200 bauds)
 - Drivers `TMC2209` (UART) sur X, Y, Z, E0, 800 mA, 16 micropas
 - `EEPROM_SETTINGS` activé (nécessaire pour garder la géométrie delta avec `M500`)
+- Écran `MKS_MINI_12864_V3` + `SDSUPPORT` (lecteur SD de la carte, l'écran n'en a pas)
 - Vitesses, accélérations et homing volontairement prudents
 
 > **État : non compilée.** Le réseau de la session bloquait le téléchargement de PlatformIO.
@@ -40,6 +41,16 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 - Thermistance hotend sur `TH0`, chauffe sur `HE`, ventilateur de buse sur `FAN0`/`FAN1`.
 - Alimentation : vérifie 12 V vs 24 V avant de brancher (la carte accepte 12–24 V).
 - Les drivers étant des TMC2209 : mets les jumpers DIAG comme sur la doc BTT, ou retire-les si tu n'utilises pas le sensorless.
+
+## 3b. Écran MKS Mini 12864 V3
+
+L'écran ne se branche **pas** directement : les brochages des connecteurs EXP1 de la SKR et de l'écran sont différents.
+Deux options :
+1. **Câble custom** (cas par défaut de cette config) : suivre le schéma dans
+   `Marlin/src/pins/stm32g0/pins_BTT_SKR_MINI_E3_V3_0.h` (bloc `FYSETC_MINI_12864_2_1`). Vérifie l'ergot et le sens de chaque connecteur : une erreur peut griller l'écran.
+2. **Adaptateur Voron "SKR Mini Screen Adaptor"** (PCB à imprimer/commander) : ajouter `#define SKR_MINI_SCREEN_ADAPTER` dans `Configuration.h`.
+
+Les LED NeoPixel de l'écran se règlent ensuite via `NEOPIXEL_LED` (non activé ici).
 
 ## 4. Compiler et flasher
 

@@ -2776,7 +2776,7 @@
  * SD Card support is disabled by default. If your controller has an SD slot,
  * you must uncomment the following option or it won't work.
  */
-//#define SDSUPPORT
+#define SDSUPPORT   // SD de la carte (le mini12864 n'a pas de lecteur)
 
 /**
  * SD CARD: ENABLE CRC
@@ -3196,7 +3196,9 @@
 //
 // MKS MINI12864 V3 is an alias for FYSETC_MINI_12864_2_1. Type A/B. NeoPixel RGB Backlight.
 //
-//#define MKS_MINI_12864_V3
+#define MKS_MINI_12864_V3
+// Cable custom OU adaptateur Voron "SKR Mini Screen Adaptor" : dans ce 2e cas, ajouter
+//   #define SKR_MINI_SCREEN_ADAPTER  (voir README)
 
 //
 // MKS LCD12864A/B with graphic controller and SD support. Follows MKS_MINI_12864 pinout.
