@@ -65,6 +65,14 @@ Le Z est toujours référencé sur la butée de la tour Z (pas sur la sonde).
 - **Offsets :** mesure la distance buse -> sonde en X, Y (`NOZZLE_TO_PROBE_OFFSET`) et règle Z avec `M851` / l'écran. Les valeurs actuelles sont des estimations.
 - **Rayon de sonde :** avec le décalage en Y, vérifie que la zone sondée ne sort pas du plateau.
 
+### PINDA : points d'attention
+
+- **Tension :** les PINDA Prusa fonctionnent en 5 V (il y a un fil 5 V sur le connecteur PROBE de la carte). Contrôle la fiche de ta version : les versions V1 (3 fils) et V2 (4 fils, avec thermistance de compensation) se câblent différemment. Ne l'alimente pas en 12 V si ta fiche indique 5 V.
+- **Niveau du signal :** une sortie 5 V sur une entrée 3,3 V est risquée. Mesure d'abord au multimètre la tension de la broche signal (déclenchée / non déclenchée) avant de la relier à PC14. Si elle dépasse 3,3 V, ajoute un diviseur (par exemple 2 k + 3,3 k) ou un convertisseur de niveau.
+- **Sens :** le PINDA est souvent NC (sortie active au repos). Si `M119` donne `z_probe: TRIGGERED` sans métal, passe `Z_MIN_PROBE_ENDSTOP_HIT_STATE` à `HIGH`.
+- **Portée :** environ 1 à 2 mm sur de l'acier, moins sur de l'aluminium. Le Z de `NOZZLE_TO_PROBE_OFFSET` est proche de la hauteur de la sonde au-dessus de la buse : à régler avec `M851` / test papier.
+- **Dérive thermique :** le PINDA dérive quand le plateau chauffe. Marlin n'utilise pas la thermistance de la V2 : fais ta calibration `G33` plateau et hotend à température d'impression.
+
 ## 4. Compiler et flasher
 
 ```bash
