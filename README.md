@@ -6,7 +6,7 @@ Basée sur l'exemple `delta/generic` de Marlin 2.1.2.5, avec :
 - `MOTHERBOARD BOARD_BTT_SKR_MINI_E3_V3_0`, USB natif (`SERIAL_PORT -1`, 115200 bauds)
 - Drivers `TMC2209` (UART) sur X, Y, Z, E0, 800 mA, 16 micropas
 - `EEPROM_SETTINGS` activé (nécessaire pour garder la géométrie delta avec `M500`)
-- Écran `MKS_MINI_12864_V3` + `SDSUPPORT` (lecteur SD de la carte, l'écran n'en a pas)
+- Écran `MKS_MINI_12864_V3` + `SDSUPPORT` (lecteur SD de la carte mère ; celui de l'écran n'est pas utilisable avec la SKR Mini E3 V3, Marlin ne le gère pas)
 - Vitesses, accélérations et homing volontairement prudents
 
 > **État : non compilée.** Le réseau de la session bloquait le téléchargement de PlatformIO.

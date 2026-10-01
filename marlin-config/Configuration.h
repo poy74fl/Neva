@@ -2776,7 +2776,7 @@
  * SD Card support is disabled by default. If your controller has an SD slot,
  * you must uncomment the following option or it won't work.
  */
-#define SDSUPPORT   // SD de la carte (le mini12864 n'a pas de lecteur)
+#define SDSUPPORT   // SD de la carte mere (le lecteur SD de l'ecran n'est pas gere sur SKR Mini E3 V3)
 
 /**
  * SD CARD: ENABLE CRC
