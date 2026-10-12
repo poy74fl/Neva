@@ -1,12 +1,12 @@
 # Dagoma Neva : Marlin 2.1.2.5 pour BTT SKR 1.4 (LPC1768)
 
 Configuration de départ pour une Neva d'origine (delta, 12 V) avec une carte **BTT SKR 1.4** (non Turbo),
-des drivers **TMC2209 V1.3**, un écran **MKS Mini 12864 V3**, deux ventilateurs et une sonde **PINDA**.
+des drivers **TMC2209 V1.3**, un écran **BTT Mini 12864 V2**, deux ventilateurs et une sonde **PINDA**.
 Basée sur l'exemple `delta/generic` de Marlin 2.1.2.5, avec :
 
 - `MOTHERBOARD BOARD_BTT_SKR_V1_4`, USB (`SERIAL_PORT -1`)
 - Drivers `TMC2209` (UART) sur X, Y, Z, E0, 800 mA, 16 micropas
-- Écran `MKS_MINI_12864_V3` sur EXP1 + EXP2 (nappes standard) et `SDSUPPORT` : avec un écran, la SKR 1.4 utilise par défaut la **SD de l'écran**
+- Écran `BTT_MINI_12864` sur EXP1 + EXP2 (nappes standard) et `SDSUPPORT` : avec un écran, la SKR 1.4 utilise par défaut la **SD de l'écran**
 - `EEPROM_SETTINGS` activé (nécessaire pour garder la géométrie delta avec `M500`)
 - Ventilateurs : pièce sur FAN0, hotend automatique sur FAN1 (`E0_AUTO_FAN_PIN`)
 - Sonde `FIX_MOUNTED_PROBE` + calibration `G33`
@@ -46,9 +46,9 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 - Alimentation : vérifie 12 V vs 24 V avant de brancher.
 - **Drivers TMC2209 V1.3 en UART :** consulte la doc BTT pour les jumpers à retirer sous les drivers et la configuration du mode UART sur la SKR 1.4. Après flash, `M122` doit afficher les drivers sans erreur de communication. Si l'UART ne marche pas, remplace `TMC2209` par `TMC2209_STANDALONE` dans `Configuration.h` : le courant se règle alors avec le potentiomètre (Vref) et les micropas avec les jumpers.
 
-## 3b. Écran MKS Mini 12864 V3
+## 3b. Écran BTT Mini 12864 V2
 
-Brancher les deux nappes de l'écran sur **EXP1** et **EXP2** de la SKR 1.4. Le MKS Mini 12864 V3 se comporte comme un FYSETC Mini 12864 2.1 pour Marlin. Respecte l'ergot et le sens, en particulier que la nappe EXP1 de l'écran aille sur EXP1 et l'EXP2 sur EXP2. Vérifie sur la doc MKS : certains écrans demandent d'inverser les nappes.
+Brancher les deux nappes de l'écran sur **EXP1** et **EXP2** de la SKR 1.4. Le BTT Mini 12864 V2 se comporte comme un FYSETC Mini 12864 2.1 pour Marlin. Respecte l'ergot et le sens, en particulier que la nappe EXP1 de l'écran aille sur EXP1 et l'EXP2 sur EXP2. Vérifie sur la doc BTT : certains écrans demandent d'inverser les nappes.
 Le lecteur SD de l'écran est utilisé pour imprimer. Pour flasher le firmware, c'est le lecteur de la carte mère (voir ci-dessous).
 
 ## 3c. Sonde inductive
