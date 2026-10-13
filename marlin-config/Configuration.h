@@ -860,7 +860,7 @@
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
 #define PREVENT_LENGTHY_EXTRUDE
-#define EXTRUDE_MAXLENGTH 600   // NEVA: doit etre >= FILAMENT_CHANGE_UNLOAD_LENGTH / FAST_LOAD_LENGTH (tube Bowden)
+#define EXTRUDE_MAXLENGTH 1300   // Bowden de 1100 mm : doit etre >= longueurs de chargement/dechargement
 
 //===========================================================================
 //======================== Thermal Runaway Protection =======================
