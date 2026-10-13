@@ -49,7 +49,7 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 
 ### Sensorless : réglage
 
-Config : `SENSORLESS_HOMING`, `X/Y/Z_STALL_SENSITIVITY 75` (réglé sur la machine, tête montée), `HOMING_BUMP_MM { 0, 0, 0 }`,
+Config : `SENSORLESS_HOMING`, `X/Y/Z_STALL_SENSITIVITY 75` (réglé sur la machine, tête montée), `HOMING_BUMP_MM { 3, 3, 3 }` + `HOMING_BUMP_DIVISOR { 2, 2, 2 }` (double contact comme sur l'ancienne Neva),
 `IMPROVE_HOMING_RELIABILITY`. Courants de homing identiques sur les 3 tours, et les moteurs ne sont pas coupés à l'arrêt (pas de `DISABLE_X/Y/Z`).
 
 1. Place les chariots au milieu des tours à la main, bras libres, plateau dégagé.
