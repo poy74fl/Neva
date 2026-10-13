@@ -49,7 +49,7 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 
 ### Sensorless : réglage
 
-Config : `SENSORLESS_HOMING`, `X/Y/Z_STALL_SENSITIVITY 92` (réglé sur la machine), `HOMING_BUMP_MM { 0, 0, 0 }`,
+Config : `SENSORLESS_HOMING`, `X/Y/Z_STALL_SENSITIVITY 85/90/85` (réglés sur la machine), `HOMING_BUMP_MM { 0, 0, 0 }`,
 `IMPROVE_HOMING_RELIABILITY`. Courants de homing identiques sur les 3 tours, et les moteurs ne sont pas coupés à l'arrêt (pas de `DISABLE_X/Y/Z`).
 
 1. Place les chariots au milieu des tours à la main, bras libres, plateau dégagé.
