@@ -1522,7 +1522,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, -25, -2.0 } // NEVA: A MESURER (X, Y, Z buse -> sonde)
+#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -2.0 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). NEVA: Z a regler (test du papier)
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
