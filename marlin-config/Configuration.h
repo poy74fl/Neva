@@ -955,7 +955,7 @@
   #define DELTA_MAX_RADIUS        80.0    // NEVA: a verifier (valeur prudente)
 
   // Center-to-center distance of the holes in the diagonal push rods.
-  #define DELTA_DIAGONAL_ROD     210.0    // (mm) mesure : entraxe des rotules
+  #define DELTA_DIAGONAL_ROD     210.6    // (mm) entraxe des rotules : tube 210 + 2 x 0.3 (rotule O10, enfoncee de 4.7 mm)
 
   // Distance between bed and nozzle Z home position
   #define DELTA_HEIGHT           250.00   // NEVA: A REMPLACER (M665 H)
