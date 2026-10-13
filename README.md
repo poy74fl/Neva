@@ -92,7 +92,8 @@ Config : `FILAMENT_RUNOUT_SENSOR` sur le port **E0-DET** de la SKR 1.4 (broche P
 - **Conflit possible avec le sensorless :** avec le homing sensorless en haut, Marlin réutilise aussi P1.26 comme « fin de course min » de X. Le capteur ne gêne pas les impressions, mais teste `G28` après installation : si une tour s'arrête bizarrement en redescendant, c'est que le capteur est lu comme un X-MIN. La solution serait de changer la broche dans le fichier de pins de Marlin.
 - **Sens du signal :** `M119` doit afficher `filament: ` (ou `E0 ...`) avec un état différent selon que le filament est présent ou non. Si c'est inversé, change `FIL_RUNOUT_STATE` (`LOW`/`HIGH`).
 - **Bowden :** règle `FILAMENT_CHANGE_UNLOAD_LENGTH` et `FILAMENT_CHANGE_FAST_LOAD_LENGTH` (valeurs d'exemple 500/450 mm) sur la longueur réelle de ton tube.
-- **Alimentation du capteur :** vérifie la tension (5 V ou 3,3 V) et le niveau du signal avant de brancher, comme pour la PINDA.
+- **Capteur KW12 (microswitch mécanique) :** pas d'alimentation à brancher. Relie deux fils seulement : **COM** à GND et **NO** au signal du port E0-DET (pas au 5 V), avec le levier enfoncé par le filament. Config : `FIL_RUNOUT_STATE HIGH` + pull-up interne.
+  Le montage COM+NO est « sécurisé » : un fil coupé est lu comme « plus de filament » et arrête l'impression, au lieu de passer inaperçu. Ne câble pas la borne NC.
 
 ## 4. Compiler et flasher
 
