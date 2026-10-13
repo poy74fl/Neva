@@ -1,0 +1,243 @@
+--- orig_menu_main.cpp	2026-10-13 22:42:51.969822928 +0000
++++ patch/Marlin/src/lcd/menu/menu_main.cpp	2026-10-13 22:42:52.024036884 +0000
+@@ -240,11 +240,7 @@
+   #endif
+ 
+   START_MENU();
+-  BACK_ITEM(MSG_INFO_SCREEN);
+-
+-  #if HAS_MEDIA && !defined(MEDIA_MENU_AT_TOP) && !HAS_ENCODER_WHEEL
+-    #define MEDIA_MENU_AT_TOP
+-  #endif
++  BACK_ITEM(MSG_INFO_SCREEN);                         // 1. Surveiller
+ 
+   if (busy) {
+     #if MACHINE_CAN_PAUSE
+@@ -270,165 +266,49 @@
+     #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
+       SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
+     #endif
+-  }
+-  else {
+-    #if ALL(HAS_MEDIA, MEDIA_MENU_AT_TOP)
+-      // BEGIN MEDIA MENU
+-      if (card_detected) {
+-        if (!card_open) {
+-          #if ENABLED(MENU_ADDAUTOSTART)
+-            ACTION_ITEM(MSG_RUN_AUTO_FILES, card.autofile_begin); // Run Auto Files
+-          #endif
+-
+-          #if HAS_SD_DETECT
+-            GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21" TERN_(MULTI_VOLUME, "S"))); // M21 Change Media
+-            #if ENABLED(MULTI_VOLUME)
+-              GCODES_ITEM(MSG_ATTACH_USB_MEDIA, F("M21U")); // M21 Attach USB Media
+-            #endif
+-          #else                                             // - or -
+-            ACTION_ITEM(MSG_RELEASE_MEDIA, []{              // M22 Release Media
+-              queue.inject(F("M22"));
+-              #if ENABLED(TFT_COLOR_UI)
+-                // Menu display issue on item removal with multi language selection menu
+-                if (encoderTopLine > 0) encoderTopLine--;
+-                ui.refresh(LCDVIEW_CLEAR_CALL_REDRAW);
+-              #endif
+-            });
+-          #endif
+-          SUBMENU(MSG_MEDIA_MENU, MEDIA_MENU_GATEWAY);      // Media Menu (or Password First)
+-        }
+-      }
+-      else {
+-        #if HAS_SD_DETECT
+-          ACTION_ITEM(MSG_NO_MEDIA, nullptr);               // "No Media"
+-        #else
+-          #if ENABLED(MULTI_VOLUME)
+-            GCODES_ITEM(MSG_ATTACH_SD_MEDIA, F("M21S"));    // M21S Attach SD Card
+-            GCODES_ITEM(MSG_ATTACH_USB_MEDIA, F("M21U"));   // M21U Attach USB Media
+-          #else
+-            GCODES_ITEM(MSG_ATTACH_MEDIA, F("M21"));        // M21 Attach Media
+-          #endif
+-        #endif
+-      }
+-      // END MEDIA MENU
++
++    #if HAS_TEMPERATURE
++      SUBMENU(MSG_TEMPERATURE, menu_temperature);
+     #endif
+ 
++    SUBMENU(MSG_CONFIGURATION, menu_configuration);
++  }
++  else {
+     if (TERN0(MACHINE_CAN_PAUSE, printingIsPaused()))
+       ACTION_ITEM(MSG_RESUME_PRINT, ui.resume_print);
+ 
+-    #if ENABLED(HOST_START_MENU_ITEM) && defined(ACTION_ON_START)
+-      ACTION_ITEM(MSG_HOST_START_PRINT, hostui.start);
++    // 2. Prechauffage (menu Temperature renomme dans language_fr.h)
++    #if HAS_TEMPERATURE
++      SUBMENU(MSG_TEMPERATURE, menu_temperature);
+     #endif
+ 
+-    #if ENABLED(PREHEAT_SHORTCUT_MENU_ITEM)
+-      SUBMENU(MSG_PREHEAT_CUSTOM, menu_preheat_only);
++    // 3. Imprimer SD  /  4. Actualiser media
++    #if HAS_MEDIA
++      if (card_detected) {
++        if (!card_open)
++          SUBMENU(MSG_MEDIA_MENU, MEDIA_MENU_GATEWAY);      // Media Menu (or Password First)
++      }
++      else
++        ACTION_ITEM(MSG_NO_MEDIA, nullptr);                 // "Pas de media"
++      GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21"));              // M21 : actualiser / remonter la SD
+     #endif
+ 
+-    SUBMENU(MSG_MOTION, menu_motion);
+-  }
+-
+-  #if ENABLED(ADVANCED_PAUSE_FEATURE) && (!HAS_ENCODER_WHEEL || ENABLED(DISABLE_ENCODER))
+-    FILAMENT_CHANGE_ITEM();
+-  #endif
+-
+-  #if HAS_CUTTER
+-    SUBMENU(MSG_CUTTER(MENU), STICKY_SCREEN(menu_spindle_laser));
+-  #endif
+-
+-  #if HAS_TEMPERATURE
+-    SUBMENU(MSG_TEMPERATURE, menu_temperature);
+-  #endif
+-
+-  #if HAS_POWER_MONITOR
+-    SUBMENU(MSG_POWER_MONITOR, menu_power_monitor);
+-  #endif
+-
+-  #if ENABLED(MIXING_EXTRUDER)
+-    SUBMENU(MSG_MIXER, menu_mixer);
+-  #endif
+-
+-  #if ENABLED(MMU2_MENUS)
+-    if (!busy) SUBMENU(MSG_MMU2_MENU, menu_mmu2);
+-  #endif
+-
+-  SUBMENU(MSG_CONFIGURATION, menu_configuration);
+-
+-  #if ENABLED(CUSTOM_MENU_MAIN)
+-    if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
+-      #ifdef CUSTOM_MENU_MAIN_TITLE
+-        SUBMENU_F(F(CUSTOM_MENU_MAIN_TITLE), custom_menus_main);
+-      #else
+-        SUBMENU(MSG_CUSTOM_COMMANDS, custom_menus_main);
+-      #endif
+-    }
+-  #endif
+-
+-  #if ENABLED(LCD_INFO_MENU)
+-    SUBMENU(MSG_INFO_MENU, menu_info);
+-  #endif
++    // 5. Changer filament
++    #if ENABLED(ADVANCED_PAUSE_FEATURE)
++      FILAMENT_CHANGE_ITEM();
++    #endif
+ 
+-  #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
+-    SUBMENU(MSG_LEDS, menu_led);
+-  #endif
++    // 6. Configuration
++    SUBMENU(MSG_CONFIGURATION, menu_configuration);
+ 
+-  //
+-  // Switch power on/off
+-  //
+-  #if ENABLED(PSU_CONTROL)
+-    if (powerManager.psu_on)
+-      #if ENABLED(PS_OFF_CONFIRM)
+-        CONFIRM_ITEM(MSG_SWITCH_PS_OFF,
+-          MSG_YES, MSG_NO,
+-          ui.poweroff, nullptr,
+-          GET_TEXT_F(MSG_SWITCH_PS_OFF), (const char *)nullptr, F("?")
+-        );
+-      #else
+-        ACTION_ITEM(MSG_SWITCH_PS_OFF, ui.poweroff);
+-      #endif
+-    else
+-      GCODES_ITEM(MSG_SWITCH_PS_ON, F("M80"));
+-  #endif
+-
+-  #if HAS_MEDIA && DISABLED(MEDIA_MENU_AT_TOP)
+-    // BEGIN MEDIA MENU
+-    if (card_detected) {
+-      if (!card_open) {
+-        #if ENABLED(MENU_ADDAUTOSTART)
+-          ACTION_ITEM(MSG_RUN_AUTO_FILES, card.autofile_begin); // Run Auto Files
+-        #endif
++    // 7. Mouvement
++    SUBMENU(MSG_MOTION, menu_motion);
+ 
+-        #if HAS_SD_DETECT
+-          GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21" TERN_(MULTI_VOLUME, "S"))); // M21 Change Media
+-          #if ENABLED(MULTI_VOLUME)
+-            GCODES_ITEM(MSG_ATTACH_USB_MEDIA, F("M21U")); // M21 Attach USB Media
+-          #endif
+-        #else                                             // - or -
+-          ACTION_ITEM(MSG_RELEASE_MEDIA, []{              // M22 Release Media
+-            queue.inject(F("M22"));
+-            #if ENABLED(TFT_COLOR_UI)
+-              // Menu display issue on item removal with multi language selection menu
+-              if (encoderTopLine > 0) encoderTopLine--;
+-              ui.refresh(LCDVIEW_CLEAR_CALL_REDRAW);
+-            #endif
+-          });
+-        #endif
+-        SUBMENU(MSG_MEDIA_MENU, MEDIA_MENU_GATEWAY);      // Media Menu (or Password First)
+-      }
+-    }
+-    else {
+-      #if HAS_SD_DETECT
+-        ACTION_ITEM(MSG_NO_MEDIA, nullptr);               // "No Media"
+-      #else
+-          #if ENABLED(MULTI_VOLUME)
+-            GCODES_ITEM(MSG_ATTACH_SD_MEDIA, F("M21S"));    // M21S Attach SD Card
+-            GCODES_ITEM(MSG_ATTACH_USB_MEDIA, F("M21U"));   // M21U Attach USB Media
+-          #else
+-            GCODES_ITEM(MSG_ATTACH_MEDIA, F("M21"));        // M21 Attach Media
+-          #endif
+-      #endif
+-    }
+-    // END MEDIA MENU
+-  #endif
++    // 8. Lumiere
++    #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
++      SUBMENU(MSG_LEDS, menu_led);
++    #endif
++  }
+ 
+   #if HAS_SERVICE_INTERVALS
+     static auto _service_reset = [](const int index) {
+@@ -498,10 +378,6 @@
+     });
+   #endif
+ 
+-  #if ENABLED(ADVANCED_PAUSE_FEATURE) && HAS_ENCODER_WHEEL && DISABLED(DISABLE_ENCODER)
+-    FILAMENT_CHANGE_ITEM();
+-  #endif
+-
+   END_MENU();
+ }
+ 
+--- orig_language_fr.h	2026-10-13 22:42:51.971989259 +0000
++++ patch/Marlin/src/lcd/language/language_fr.h	2026-10-13 22:42:52.024146955 +0000
+@@ -308,7 +308,7 @@
+   LSTR MSG_N_STEPS                        = _UxGT("@ pas/mm");
+   LSTR MSG_E_STEPS                        = _UxGT("E pas/mm");
+   LSTR MSG_EN_STEPS                       = _UxGT("* pas/mm");
+-  LSTR MSG_TEMPERATURE                    = _UxGT("Température");
++  LSTR MSG_TEMPERATURE                    = _UxGT("Préchauffage");
+   LSTR MSG_MOTION                         = _UxGT("Mouvement");
+   LSTR MSG_FILAMENT                       = _UxGT("Filament");
+   LSTR MSG_VOLUMETRIC_ENABLED             = _UxGT("E en mm") SUPERSCRIPT_THREE;
+@@ -355,7 +355,7 @@
+   LSTR MSG_CANCEL_OBJECT                  = _UxGT("Annuler objet");
+   LSTR MSG_CANCEL_OBJECT_N                = _UxGT("Annuler objet {");
+   LSTR MSG_OUTAGE_RECOVERY                = _UxGT("Récup. coup.");
+-  LSTR MSG_MEDIA_MENU                     = _UxGT("Impression SD");
++  LSTR MSG_MEDIA_MENU                     = _UxGT("Imprimer SD");
+   LSTR MSG_NO_MEDIA                       = _UxGT("Pas de média");
+   LSTR MSG_DWELL                          = _UxGT("Repos...");
+   LSTR MSG_USERWAIT                       = _UxGT("Attente utilis.");

@@ -407,7 +407,7 @@
  * Enable and connect the power supply to the PS_ON_PIN.
  * Specify whether the power supply is active HIGH or active LOW.
  */
-#define PSU_CONTROL
+//#define PSU_CONTROL   // desactive : pas d'alimentation commandable (retire "Allumer/Eteindre alim." du menu)
 //#define PSU_NAME "Power Supply"
 
 #if ENABLED(PSU_CONTROL)

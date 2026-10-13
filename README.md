@@ -108,6 +108,18 @@ mets-la dans le lecteur **de la carte mère** (le bootloader ne lit pas la SD de
 et redémarre : le fichier devient `FIRMWARE.CUR`. Utilise un nouveau nom de fichier à chaque flash.
 Tu peux aussi utiliser VS Code + l'extension Auto Build Marlin.
 
+## 4b. Menu principal réorganisé (patch du code de Marlin)
+
+L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossier `marlin-patches/` contient deux fichiers modifiés à copier **par-dessus** ceux de Marlin 2.1.2.5 :
+
+| Fichier du dépôt | À copier dans Marlin-2.1.2.5/ |
+|---|---|
+| `marlin-patches/Marlin/src/lcd/menu/menu_main.cpp` | `Marlin/src/lcd/menu/menu_main.cpp` |
+| `marlin-patches/Marlin/src/lcd/language/language_fr.h` | `Marlin/src/lcd/language/language_fr.h` |
+
+Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température), 3 Imprimer SD, 4 Actualiser média, 5 Changer filament, 6 Configuration, 7 Mouvement, 8 Lumière.
+Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » n'est pas affiché (`LCD_INFO_MENU` désactivé). Le diff est dans `marlin-patches/menu-neva.diff`.
+
 ## 5. Premier démarrage (sécurité d'abord)
 
 1. Moteurs débranchés de la tête : vérifie les températures (`M105`) et que la thermistance réagit.
