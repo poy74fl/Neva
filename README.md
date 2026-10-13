@@ -84,6 +84,16 @@ Le Z est toujours référencé sur la butée de la tour Z (pas sur la sonde).
 - **Dérive thermique :** le PINDA dérive quand le plateau chauffe. Marlin n'utilise pas la thermistance de la V2 : fais ta calibration `G33` plateau et hotend à température d'impression.
 
 
+## 3d. Capteur de fin de filament
+
+Config : `FILAMENT_RUNOUT_SENSOR` sur le port **E0-DET** de la SKR 1.4 (broche P1.26, imposée par le fichier de pins de Marlin), script `M600` (changement de filament), buse parquée pendant la pause.
+
+- **Retire le jumper DIAG de l'E0 :** il est sur la même broche et enverrait le signal du driver dans le capteur.
+- **Conflit possible avec le sensorless :** avec le homing sensorless en haut, Marlin réutilise aussi P1.26 comme « fin de course min » de X. Le capteur ne gêne pas les impressions, mais teste `G28` après installation : si une tour s'arrête bizarrement en redescendant, c'est que le capteur est lu comme un X-MIN. La solution serait de changer la broche dans le fichier de pins de Marlin.
+- **Sens du signal :** `M119` doit afficher `filament: ` (ou `E0 ...`) avec un état différent selon que le filament est présent ou non. Si c'est inversé, change `FIL_RUNOUT_STATE` (`LOW`/`HIGH`).
+- **Bowden :** règle `FILAMENT_CHANGE_UNLOAD_LENGTH` et `FILAMENT_CHANGE_FAST_LOAD_LENGTH` (valeurs d'exemple 500/450 mm) sur la longueur réelle de ton tube.
+- **Alimentation du capteur :** vérifie la tension (5 V ou 3,3 V) et le niveau du signal avant de brancher, comme pour la PINDA.
+
 ## 4. Compiler et flasher
 
 ```bash
