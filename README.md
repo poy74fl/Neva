@@ -2,7 +2,7 @@
 
 Configuration de départ pour une Neva d'origine (delta, 12 V) avec une carte **BTT SKR 1.4** (non Turbo),
 des drivers **TMC2209 V1.3**, un écran **BTT Mini 12864 V2**, deux ventilateurs et une sonde **PINDA**.
-Basée sur l'exemple `delta/generic` de Marlin 2.1.2.5, avec :
+Basée sur l'exemple `delta/generic` de **Marlin 2.1.2.5** (tag officiel : ces fichiers ne fonctionnent pas avec une autre version), avec :
 
 - `MOTHERBOARD BOARD_BTT_SKR_V1_4`, USB (`SERIAL_PORT -1`)
 - Drivers `TMC2209` (UART) sur X, Y, Z, E0, 800 mA, 16 micropas
@@ -35,13 +35,13 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 
 1. Valeurs `NEVA:` de `Configuration.h` (géométrie delta, rayon imprimable, dents des poulies).
 2. `TEMP_SENSOR_0` (1 = thermistance 100k standard) et `TEMP_SENSOR_BED` si plateau chauffant.
-3. **Sonde PINDA** : `NOZZLE_TO_PROBE_OFFSET` à mesurer, sens du signal (`Z_MIN_PROBE_ENDSTOP_HIT_STATE`) à vérifier avec `M119`.
-4. Sens des moteurs (`INVERT_X/Y/Z_DIR`, `INVERT_E0_DIR`) et type des fins de course (`*_ENDSTOP_HIT_STATE`).
+3. **Sonde PINDA** : `NOZZLE_TO_PROBE_OFFSET` à mesurer, sens du signal (`Z_MIN_PROBE_ENDSTOP_INVERTING`) à vérifier avec `M119`.
+4. Sens des moteurs (`INVERT_X/Y/Z_DIR`, `INVERT_E0_DIR`) et type des fins de course (`*_ENDSTOP_INVERTING`).
 
 
 ## 3. Câblage SKR 1.4 pour un delta
 
-- **Homing sensorless en haut** (X, Y, Z) : pas de fins de course mécaniques. Garde les jumpers **DIAG** posés sur X, Y et Z : le DIAG du driver arrive sur X-STOP, Y-STOP, Z-STOP, que Marlin utilise comme ports **MAX** (`*_MAX_ENDSTOP_HIT_STATE HIGH` pour les TMC2209). Ne branche rien d'autre sur ces ports.
+- **Homing sensorless en haut** (X, Y, Z) : pas de fins de course mécaniques. Garde les jumpers **DIAG** posés sur X, Y et Z : le DIAG du driver arrive sur X-STOP, Y-STOP, Z-STOP, que Marlin utilise comme ports **MAX** (`*_MAX_ENDSTOP_INVERTING false` pour les TMC2209 : DIAG passe à HIGH au décrochage). Ne branche rien d'autre sur ces ports.
 - Thermistance hotend sur `T1`/`TH0`, chauffe sur `HE0`, plateau chauffant éventuel sur `T0`/`HB`. Vérifie sur la sérigraphie de ta carte.
 - Ventilateurs : **FAN0** = ventilateur de pièce (`M106`/`M107`) ; **FAN1** = ventilateur de la hotend, automatique : il démarre au-dessus de 50 °C et s'arrête quand la buse refroidit. Vérifie leur tension (12 V ou 24 V comme l'alimentation).
 - Alimentation : vérifie 12 V vs 24 V avant de brancher.
@@ -57,7 +57,7 @@ Config : `SENSORLESS_HOMING`, `X/Y/Z_STALL_SENSITIVITY 8` (valeur de départ), `
 3. Les trois tours doivent s'arrêter au même niveau : sinon ajuste chaque valeur séparément.
 4. Quand c'est bon, reporte les valeurs dans `Configuration_adv.h` ou fais `M500`.
 
-Attention : en 12 V le couple est limité, ce qui rend le sensorless moins fiable qu'en 24 V. Si le homing n'est pas fiable, la solution la plus sûre est des fins de course mécaniques (inverser `*_MAX_ENDSTOP_HIT_STATE` selon leur type).
+Attention : en 12 V le couple est limité, ce qui rend le sensorless moins fiable qu'en 24 V. Si le homing n'est pas fiable, la solution la plus sûre est des fins de course mécaniques (adapter `*_MAX_ENDSTOP_INVERTING` selon leur type).
 
 ## 3b. Écran BTT Mini 12864 V2
 
@@ -70,7 +70,7 @@ Config : `FIX_MOUNTED_PROBE` sur le connecteur **PROBE** (P0.10), calibration de
 Le Z est toujours référencé sur la butée de la tour Z (pas sur la sonde).
 
 - **Alimentation :** la plupart des capteurs inductifs (LJ12A3, etc.) demandent 6-36 V, et leur sortie est au niveau de leur alimentation, donc **12 V**. Les entrées de la carte sont en 3,3 V. **Ne relie jamais la sortie directement à P0.10** : utilise un pont diviseur, un optocoupleur ou un module de conversion de niveau. Choisis plutôt un capteur 5 V ou conçu pour carte 3D (type PINDA ou LJ18A3 avec module).
-- **Type de sortie :** NPN-NO déclenche à LOW (valeur actuelle), PNP ou NC à HIGH (`Z_MIN_PROBE_ENDSTOP_HIT_STATE`). Vérifie avec `M119` : `z_probe: TRIGGERED` doit apparaître seulement quand un métal passe devant.
+- **Type de sortie :** NPN-NO : `Z_MIN_PROBE_ENDSTOP_INVERTING true` (valeur actuelle) ; PNP ou NC : `false`. Vérifie avec `M119` : `z_probe: TRIGGERED` doit apparaître seulement quand un métal passe devant.
 - **Plateau :** un inductif ne détecte que le métal. Si ton plateau est en verre, il faut une plaque métallique dessous.
 - **Offsets :** mesure la distance buse -> sonde en X, Y (`NOZZLE_TO_PROBE_OFFSET`) et règle Z avec `M851` / l'écran. Les valeurs actuelles sont des estimations.
 - **Rayon de sonde :** avec le décalage en Y, vérifie que la zone sondée ne sort pas du plateau.
@@ -79,7 +79,7 @@ Le Z est toujours référencé sur la butée de la tour Z (pas sur la sonde).
 
 - **Tension :** les PINDA Prusa fonctionnent en 5 V (il y a un fil 5 V sur le connecteur PROBE de la carte). Contrôle la fiche de ta version : les versions V1 (3 fils) et V2 (4 fils, avec thermistance de compensation) se câblent différemment. Ne l'alimente pas en 12 V si ta fiche indique 5 V.
 - **Niveau du signal :** une sortie 5 V sur une entrée 3,3 V est risquée. Mesure d'abord au multimètre la tension de la broche signal (déclenchée / non déclenchée) avant de la relier à P0.10. Si elle dépasse 3,3 V, ajoute un diviseur (par exemple 2 k + 3,3 k) ou un convertisseur de niveau.
-- **Sens :** le PINDA est souvent NC (sortie active au repos). Si `M119` donne `z_probe: TRIGGERED` sans métal, passe `Z_MIN_PROBE_ENDSTOP_HIT_STATE` à `HIGH`.
+- **Sens :** le PINDA est souvent NC (sortie active au repos). Si `M119` donne `z_probe: TRIGGERED` sans métal, passe `Z_MIN_PROBE_ENDSTOP_INVERTING` à `false`.
 - **Portée :** environ 1 à 2 mm sur de l'acier, moins sur de l'aluminium. Le Z de `NOZZLE_TO_PROBE_OFFSET` est proche de la hauteur de la sonde au-dessus de la buse : à régler avec `M851` / test papier.
 - **Dérive thermique :** le PINDA dérive quand le plateau chauffe. Marlin n'utilise pas la thermistance de la V2 : fais ta calibration `G33` plateau et hotend à température d'impression.
 
