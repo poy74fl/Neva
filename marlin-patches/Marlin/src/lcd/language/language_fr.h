@@ -355,7 +355,7 @@ namespace Language_fr {
   LSTR MSG_CANCEL_OBJECT                  = _UxGT("Annuler objet");
   LSTR MSG_CANCEL_OBJECT_N                = _UxGT("Annuler objet {");
   LSTR MSG_OUTAGE_RECOVERY                = _UxGT("Récup. coup.");
-  LSTR MSG_MEDIA_MENU                     = _UxGT("Imprimer SD");
+  LSTR MSG_MEDIA_MENU                     = _UxGT("Impr. depuis la SD");
   LSTR MSG_NO_MEDIA                       = _UxGT("Pas de média");
   LSTR MSG_DWELL                          = _UxGT("Repos...");
   LSTR MSG_USERWAIT                       = _UxGT("Attente utilis.");

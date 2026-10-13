@@ -222,7 +222,7 @@
  }
  
 --- orig_language_fr.h	2026-10-13 22:42:51.971989259 +0000
-+++ patch/Marlin/src/lcd/language/language_fr.h	2026-10-13 22:42:52.024146955 +0000
++++ patch/Marlin/src/lcd/language/language_fr.h	2026-10-13 22:46:58.673983671 +0000
 @@ -308,7 +308,7 @@
    LSTR MSG_N_STEPS                        = _UxGT("@ pas/mm");
    LSTR MSG_E_STEPS                        = _UxGT("E pas/mm");
@@ -237,7 +237,7 @@
    LSTR MSG_CANCEL_OBJECT_N                = _UxGT("Annuler objet {");
    LSTR MSG_OUTAGE_RECOVERY                = _UxGT("Récup. coup.");
 -  LSTR MSG_MEDIA_MENU                     = _UxGT("Impression SD");
-+  LSTR MSG_MEDIA_MENU                     = _UxGT("Imprimer SD");
++  LSTR MSG_MEDIA_MENU                     = _UxGT("Impr. depuis la SD");
    LSTR MSG_NO_MEDIA                       = _UxGT("Pas de média");
    LSTR MSG_DWELL                          = _UxGT("Repos...");
    LSTR MSG_USERWAIT                       = _UxGT("Attente utilis.");
