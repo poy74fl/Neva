@@ -2875,7 +2875,7 @@
   #endif
 
   #if AXIS_IS_TMC_CONFIG(E0)
-    #define E0_CURRENT      800
+    #define E0_CURRENT     1000  // (mA) RMS : moteur Casun 42SH0217-24B, 1.5 A nominal -> ~0.7 x 1.5 A
     #define E0_MICROSTEPS    16
     #define E0_RSENSE         0.11
     #define E0_CHAIN_POS     -1
