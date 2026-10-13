@@ -949,10 +949,10 @@
   #endif
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define DELTA_PRINTABLE_RADIUS  60.0    // PROVISOIRE (prudent) : limite par la collision tete/tour, a elargir apres essais
+  #define DELTA_PRINTABLE_RADIUS 100.0    // (mm) zone demandee : diametre 200. ATTENTION : au-dela de ~60 mm la tete peut toucher les tours (a tester a la main)
 
   // Maximum reachable area
-  #define DELTA_MAX_RADIUS        60.0    // PROVISOIRE, voir DELTA_PRINTABLE_RADIUS
+  #define DELTA_MAX_RADIUS       100.0    // (mm) voir DELTA_PRINTABLE_RADIUS
 
   // Center-to-center distance of the holes in the diagonal push rods.
   #define DELTA_DIAGONAL_ROD     200.6    // (mm) entraxe des rotules : tube 210 - 2 x 4.7 (centre de rotule a 4.7 mm du bout)
