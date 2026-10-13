@@ -958,7 +958,7 @@
   #define DELTA_DIAGONAL_ROD     200.6    // (mm) entraxe des rotules : tube 210 - 2 x 4.7 (centre de rotule a 4.7 mm du bout)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT           250.00   // NEVA: A REMPLACER (M665 H)
+  #define DELTA_HEIGHT           320.00   // (mm) mesure apres G28 : pointe de buse - plateau. A affiner (test papier / G33)
 
   #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
 
