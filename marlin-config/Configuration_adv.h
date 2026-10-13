@@ -3175,11 +3175,11 @@
 
   #if EITHER(SENSORLESS_HOMING, SENSORLESS_PROBING)
     // TMC2209: 0...255. TMC2130: -64...63
-    #define X_STALL_SENSITIVITY  65  // regle sur la machine (50 mm/s)
+    #define X_STALL_SENSITIVITY  92  // regle sur la machine (50 mm/s)
     #define X2_STALL_SENSITIVITY X_STALL_SENSITIVITY
-    #define Y_STALL_SENSITIVITY  90  // regle sur la machine (50 mm/s)
+    #define Y_STALL_SENSITIVITY  92  // regle sur la machine (50 mm/s)
     #define Y2_STALL_SENSITIVITY Y_STALL_SENSITIVITY
-    #define Z_STALL_SENSITIVITY  65  // regle sur la machine (50 mm/s)
+    #define Z_STALL_SENSITIVITY  92  // regle sur la machine (50 mm/s)
     //#define Z2_STALL_SENSITIVITY Z_STALL_SENSITIVITY
     //#define Z3_STALL_SENSITIVITY Z_STALL_SENSITIVITY
     //#define Z4_STALL_SENSITIVITY Z_STALL_SENSITIVITY
