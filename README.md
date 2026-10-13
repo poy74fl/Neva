@@ -11,7 +11,7 @@ Basée sur l'exemple `delta/generic` de **Marlin 2.1.2.5** (tag officiel : ces f
 - Ventilateurs : pièce sur FAN0, hotend automatique sur FAN1 (`E0_AUTO_FAN_PIN`)
 - Sonde `FIX_MOUNTED_PROBE` + calibration `G33`
 - Extrudeur BMG en Bowden sur E0 (`415` pas/mm pour un moteur 1,8°, à adapter à ton moteur) ; pas de plateau chauffant (`TEMP_SENSOR_BED 0`)
-- Vitesses, accélérations et homing (30 mm/s) volontairement prudents
+- Vitesses, accélérations et homing (50 mm/s) volontairement prudents
 
 > **État : non compilée.** Le réseau de la session bloquait le téléchargement de PlatformIO.
 > Les valeurs marquées `NEVA:` sont des estimations que je n'ai pas pu confirmer : le dépôt

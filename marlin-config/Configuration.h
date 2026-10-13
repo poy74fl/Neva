@@ -2141,7 +2141,7 @@
 #endif
 
 // Homing speeds (linear=mm/min, rotational=°/min)
-#define HOMING_FEEDRATE_MM_M { (30*60), (30*60), (30*60) }  // 30 mm/s : homing sensorless plus doux
+#define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (50*60) }  // 50 mm/s
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
