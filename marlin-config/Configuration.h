@@ -949,10 +949,10 @@
   #endif
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define DELTA_PRINTABLE_RADIUS  40.0    // PROVISOIRE (prudent) : limite par la collision tete/tour, a elargir apres essais
+  #define DELTA_PRINTABLE_RADIUS  60.0    // PROVISOIRE (prudent) : limite par la collision tete/tour, a elargir apres essais
 
   // Maximum reachable area
-  #define DELTA_MAX_RADIUS        40.0    // PROVISOIRE, voir DELTA_PRINTABLE_RADIUS
+  #define DELTA_MAX_RADIUS        60.0    // PROVISOIRE, voir DELTA_PRINTABLE_RADIUS
 
   // Center-to-center distance of the holes in the diagonal push rods.
   #define DELTA_DIAGONAL_ROD     200.6    // (mm) entraxe des rotules : tube 210 - 2 x 4.7 (centre de rotule a 4.7 mm du bout)
@@ -963,7 +963,7 @@
   #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS            72.0    // (mm) mesure : B (110) - A (38), milieu des billes chariot/tete
+  #define DELTA_RADIUS            97.0    // (mm) mesure : B (135) - A (38), milieu des billes chariot/tete
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
