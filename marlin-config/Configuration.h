@@ -1290,11 +1290,11 @@
  * Set to the state (HIGH or LOW) that applies to each endstop.
  */
 #define X_MIN_ENDSTOP_HIT_STATE LOW
-#define X_MAX_ENDSTOP_HIT_STATE LOW
+#define X_MAX_ENDSTOP_HIT_STATE HIGH   // Sensorless TMC2209 : DIAG = HIGH au decrochage
 #define Y_MIN_ENDSTOP_HIT_STATE LOW
-#define Y_MAX_ENDSTOP_HIT_STATE LOW
+#define Y_MAX_ENDSTOP_HIT_STATE HIGH   // Sensorless TMC2209 : DIAG = HIGH au decrochage
 #define Z_MIN_ENDSTOP_HIT_STATE LOW
-#define Z_MAX_ENDSTOP_HIT_STATE LOW
+#define Z_MAX_ENDSTOP_HIT_STATE HIGH   // Sensorless TMC2209 : DIAG = HIGH au decrochage
 #define I_MIN_ENDSTOP_HIT_STATE HIGH
 #define I_MAX_ENDSTOP_HIT_STATE HIGH
 #define J_MIN_ENDSTOP_HIT_STATE HIGH
@@ -1362,7 +1362,7 @@
 #define XYZ_PULLEY_TEETH 16   // NEVA: a verifier (M92 X = 100 si GT2 16 dents)
 
 #define DEFAULT_XYZ_STEPS_PER_UNIT ((XYZ_FULL_STEPS_PER_ROTATION) * (XYZ_MICROSTEPS) / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, 760*1.1 }  // default steps per unit for Kossel (GT2, 20 tooth)
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, 415 }  // E0 : BMG 3:1, moteur 1.8 deg, 16 micropas = 415 (830 si moteur 0.9 deg)
 
 /**
  * Enable support for M92. Disable to save at least ~530 bytes of flash.

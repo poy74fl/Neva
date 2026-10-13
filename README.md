@@ -10,6 +10,7 @@ Basée sur l'exemple `delta/generic` de Marlin 2.1.2.5, avec :
 - `EEPROM_SETTINGS` activé (nécessaire pour garder la géométrie delta avec `M500`)
 - Ventilateurs : pièce sur FAN0, hotend automatique sur FAN1 (`E0_AUTO_FAN_PIN`)
 - Sonde `FIX_MOUNTED_PROBE` + calibration `G33`
+- Extrudeur BMG en Bowden sur E0 (`415` pas/mm pour un moteur 1,8°, à adapter à ton moteur) ; pas de plateau chauffant (`TEMP_SENSOR_BED 0`)
 - Vitesses, accélérations et homing volontairement prudents
 
 > **État : non compilée.** Le réseau de la session bloquait le téléchargement de PlatformIO.
@@ -40,11 +41,23 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 
 ## 3. Câblage SKR 1.4 pour un delta
 
-- Fins de course de tour : X-STOP, Y-STOP, Z-STOP (Marlin les utilise comme fins de course **max** en delta). Retire les jumpers DIAG si tu ne fais pas de sensorless.
+- **Homing sensorless en haut** (X, Y, Z) : pas de fins de course mécaniques. Garde les jumpers **DIAG** posés sur X, Y et Z : le DIAG du driver arrive sur X-STOP, Y-STOP, Z-STOP, que Marlin utilise comme ports **MAX** (`*_MAX_ENDSTOP_HIT_STATE HIGH` pour les TMC2209). Ne branche rien d'autre sur ces ports.
 - Thermistance hotend sur `T1`/`TH0`, chauffe sur `HE0`, plateau chauffant éventuel sur `T0`/`HB`. Vérifie sur la sérigraphie de ta carte.
 - Ventilateurs : **FAN0** = ventilateur de pièce (`M106`/`M107`) ; **FAN1** = ventilateur de la hotend, automatique : il démarre au-dessus de 50 °C et s'arrête quand la buse refroidit. Vérifie leur tension (12 V ou 24 V comme l'alimentation).
 - Alimentation : vérifie 12 V vs 24 V avant de brancher.
 - **Drivers TMC2209 V1.3 en UART :** consulte la doc BTT pour les jumpers à retirer sous les drivers et la configuration du mode UART sur la SKR 1.4. Après flash, `M122` doit afficher les drivers sans erreur de communication. Si l'UART ne marche pas, remplace `TMC2209` par `TMC2209_STANDALONE` dans `Configuration.h` : le courant se règle alors avec le potentiomètre (Vref) et les micropas avec les jumpers.
+
+### Sensorless : réglage
+
+Config : `SENSORLESS_HOMING`, `X/Y/Z_STALL_SENSITIVITY 8` (valeur de départ), `HOMING_BUMP_MM { 0, 0, 0 }`,
+`IMPROVE_HOMING_RELIABILITY`. Courants de homing identiques sur les 3 tours, et les moteurs ne sont pas coupés à l'arrêt (pas de `DISABLE_X/Y/Z`).
+
+1. Place les chariots au milieu des tours à la main, bras libres, plateau dégagé.
+2. `G28` avec la main sur l'alimentation. Si une tour ne s'arrête pas au sommet, augmente la sensibilité (`M914 X Y Z <valeur>`, 0 à 255 pour un TMC2209). Si elle s'arrête en route, diminue-la.
+3. Les trois tours doivent s'arrêter au même niveau : sinon ajuste chaque valeur séparément.
+4. Quand c'est bon, reporte les valeurs dans `Configuration_adv.h` ou fais `M500`.
+
+Attention : en 12 V le couple est limité, ce qui rend le sensorless moins fiable qu'en 24 V. Si le homing n'est pas fiable, la solution la plus sûre est des fins de course mécaniques (inverser `*_MAX_ENDSTOP_HIT_STATE` selon leur type).
 
 ## 3b. Écran BTT Mini 12864 V2
 
