@@ -35,7 +35,7 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 ## 2. Ce qu'il reste à régler pour ta machine
 
 1. Valeurs `NEVA:` de `Configuration.h` (géométrie delta, rayon imprimable, dents des poulies).
-2. `TEMP_SENSOR_0` (1 = thermistance 100k standard) et `TEMP_SENSOR_BED` si plateau chauffant.
+2. `TEMP_SENSOR_0` (1047 = Pt1000 Trianglelab sur la SKR 1.4 ; 1 = thermistance 100k standard) et `TEMP_SENSOR_BED` si plateau chauffant.
 3. **Sonde PINDA** : `NOZZLE_TO_PROBE_OFFSET` à mesurer, sens du signal (`Z_MIN_PROBE_ENDSTOP_INVERTING`) à vérifier avec `M119`.
 4. Sens des moteurs (`INVERT_X/Y/Z_DIR`, `INVERT_E0_DIR`) et type des fins de course (`*_ENDSTOP_INVERTING`).
 
@@ -43,7 +43,7 @@ Si tu as le `Configuration.h` de l'ancien firmware, c'est encore mieux : envoie-
 ## 3. Câblage SKR 1.4 pour un delta
 
 - **Homing sensorless en haut** (X, Y, Z) : pas de fins de course mécaniques. Garde les jumpers **DIAG** posés sur X, Y et Z : le DIAG du driver arrive sur X-STOP, Y-STOP, Z-STOP, que Marlin utilise comme ports **MAX** (`*_MAX_ENDSTOP_INVERTING false` pour les TMC2209 : DIAG passe à HIGH au décrochage). Ne branche rien d'autre sur ces ports.
-- Thermistance hotend sur `T1`/`TH0`, chauffe sur `HE0`, plateau chauffant éventuel sur `T0`/`HB`. Vérifie sur la sérigraphie de ta carte.
+- Sonde de température Pt1000 sur `TH0`, chauffe sur `HE0`, plateau chauffant éventuel sur `T0`/`HB`. Vérifie sur la sérigraphie de ta carte.
 - Ventilateurs : **FAN0** = ventilateur de pièce (`M106`/`M107`) ; **FAN1** = ventilateur de la hotend, automatique : il démarre au-dessus de 50 °C et s'arrête quand la buse refroidit. Vérifie leur tension (12 V ou 24 V comme l'alimentation).
 - Alimentation : vérifie 12 V vs 24 V avant de brancher.
 - **Drivers TMC2209 V1.3 en UART :** consulte la doc BTT pour les jumpers à retirer sous les drivers et la configuration du mode UART sur la SKR 1.4. Après flash, `M122` doit afficher les drivers sans erreur de communication. Si l'UART ne marche pas, remplace `TMC2209` par `TMC2209_STANDALONE` dans `Configuration.h` : le courant se règle alors avec le potentiomètre (Vref) et les micropas avec les jumpers.
@@ -121,7 +121,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Atténuation automatique de l'écran** : sans action sur la molette pendant `NEVA_LED_DIM_TIMEOUT_S` secondes (60 par défaut, au repos comme en impression), le rétroéclairage passe à `NEVA_LED_DIM_BRIGHTNESS` (20 sur 255) ; il revient dès que tu tournes ou appuies sur la molette, et reste à pleine luminosité tant qu'un message attend ta réponse (fin d'impression en vert, changement de filament…). Réglages dans `Configuration_adv.h` ; commente `NEVA_LED_DIM_TIMEOUT_S` pour désactiver (le patch `marlinui.cpp` reste alors inactif).
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.3 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.4 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
