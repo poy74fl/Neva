@@ -2674,7 +2674,7 @@
                                                   // 0 to disable start loading and skip to fast load only
   #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE   35  // (mm/s) Chargement rapide (apres le depart lent)
   #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     30  // (mm/s^2) Acceleration douce : evite que le moteur decroche
-  #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     830  // Bowden 870 mm - 40 mm de depart lent
+  #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     880  // Bowden 870 mm - 40 mm de depart lent + 50 mm de marge (chargement total : 920 mm)
                                                   //   For Bowden, the full length of the tube and nozzle.
                                                   //   For direct drive, the full length of the nozzle.
   //#define ADVANCED_PAUSE_CONTINUOUS_PURGE       // Purge continuously up to the purge length until interrupted.
