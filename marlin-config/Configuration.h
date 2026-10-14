@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.10"
+#define NEVA_FW_VERSION "1.11"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1870,7 +1870,7 @@
   // After a runout is detected, continue printing this length of filament
   // before executing the runout script. Useful for a sensor at the end of
   // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
-  //#define FILAMENT_RUNOUT_DISTANCE_MM 25
+  #define FILAMENT_RUNOUT_DISTANCE_MM 90   // Neva : capteur 100 mm avant l extrudeur : on continue 90 mm apres detection, la fin du filament est alors encore dans l extrudeur au moment de la pause
 
   #ifdef FILAMENT_RUNOUT_DISTANCE_MM
     // Enable this option to use an encoder disc that toggles the runout pin
