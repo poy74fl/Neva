@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Genere marlin-patches/Marlin/_Bootscreen.h (ecran de demarrage 128x64).
 
-  python3 make_bootscreen.py                 -> logo "DAGOMA NEVA" par defaut
+  python3 make_bootscreen.py                 -> logo "ORIGINAL PRUSA PRO HT90" (blague)
+  python3 make_bootscreen.py --neva          -> logo "DAGOMA NEVA" (petite delta)
   python3 make_bootscreen.py mon_logo.png    -> convertit ton image (noir/blanc, 128x64)
 
 Un pixel allume (blanc dans l'image) = un pixel allume sur l'ecran.
@@ -59,6 +60,23 @@ def default_logo():
     return im
 
 
+def centered(d, txt, top, size, avail=W - 8):
+    while size > 5 and d.textlength(txt, font=font(size)) > avail:
+        size -= 1
+    w = d.textlength(txt, font=font(size))
+    d.text(((W - w) / 2, top), txt, font=font(size), fill=1)
+
+
+def prusa_logo():
+    im = Image.new("1", (W, H), 0)
+    d = ImageDraw.Draw(im)
+    centered(d, "ORIGINAL", 2, 11)
+    centered(d, "PRUSA", 14, 27)
+    d.rounded_rectangle([14, 45, W - 15, 62], radius=4, outline=1, width=2)
+    centered(d, "PRO HT90", 47, 13, avail=W - 40)
+    return im
+
+
 def from_image(path):
     im = Image.open(path).convert("L")
     im = ImageOps.contain(im, (W, H))
@@ -90,7 +108,13 @@ def to_header(im):
 
 
 if __name__ == "__main__":
-    im = from_image(sys.argv[1]) if len(sys.argv) > 1 else default_logo()
+    args = sys.argv[1:]
+    if args and args[0] == "--neva":
+        im = default_logo()
+    elif args:
+        im = from_image(args[0])
+    else:
+        im = prusa_logo()
     OUT_H.write_text(to_header(im))
     big = im.convert("L").resize((W * 6, H * 6), Image.NEAREST)
     bg = Image.new("RGB", big.size, (10, 20, 60))
