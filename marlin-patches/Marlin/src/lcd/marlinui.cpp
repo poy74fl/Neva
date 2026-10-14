@@ -60,6 +60,7 @@
 
   // Appelee regulierement : attenue apres NEVA_LED_DIM_TIMEOUT_S secondes sans action
   static void neva_led_dim_check(const millis_t ms) {
+    if (wait_for_user) { neva_led_wake(ms); return; }     // message en attente (fin d'impression, changement de filament...) : pleine luminosite
     if (!leds.lights_on) return;                          // LED eteintes : rien a faire
     if (leds.color.i <= NEVA_LED_DIM_BRIGHTNESS) return;  // deja aussi sombre que demande
     // Soit le delai est ecoule, soit un evenement (couleur d'etat) vient de remettre la luminosite

@@ -1,6 +1,6 @@
 --- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/marlinui.orig.cpp	2026-10-14 14:21:30.353899093 +0000
-+++ marlin-patches/Marlin/src/lcd/marlinui.cpp	2026-10-14 14:21:30.400230301 +0000
-@@ -38,6 +38,41 @@
++++ marlin-patches/Marlin/src/lcd/marlinui.cpp	2026-10-14 14:24:51.202024664 +0000
+@@ -38,6 +38,42 @@
  
  // All displays share the MarlinUI class
  #include "marlinui.h"
@@ -26,6 +26,7 @@
 +
 +  // Appelee regulierement : attenue apres NEVA_LED_DIM_TIMEOUT_S secondes sans action
 +  static void neva_led_dim_check(const millis_t ms) {
++    if (wait_for_user) { neva_led_wake(ms); return; }     // message en attente (fin d'impression, changement de filament...) : pleine luminosite
 +    if (!leds.lights_on) return;                          // LED eteintes : rien a faire
 +    if (leds.color.i <= NEVA_LED_DIM_BRIGHTNESS) return;  // deja aussi sombre que demande
 +    // Soit le delai est ecoule, soit un evenement (couleur d'etat) vient de remettre la luminosite
@@ -42,7 +43,7 @@
  MarlinUI ui;
  
  #if HAS_DISPLAY
-@@ -1078,6 +1113,10 @@
+@@ -1078,6 +1114,10 @@
  
            reset_status_timeout(ms);
  
@@ -53,7 +54,7 @@
            #if LCD_BACKLIGHT_TIMEOUT_MINS
              refresh_backlight_timeout();
            #elif HAS_DISPLAY_SLEEP
-@@ -1188,6 +1227,10 @@
+@@ -1188,6 +1228,10 @@
            return_to_status();
        #endif
  
