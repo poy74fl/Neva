@@ -1,5 +1,5 @@
 --- orig_menu_main.cpp	2026-10-13 22:42:51.969822928 +0000
-+++ patch/Marlin/src/lcd/menu/menu_main.cpp	2026-10-13 22:42:52.024036884 +0000
++++ patch/Marlin/src/lcd/menu/menu_main.cpp	2026-10-14 07:30:54.034590018 +0000
 @@ -240,11 +240,7 @@
    #endif
  
@@ -13,7 +13,7 @@
  
    if (busy) {
      #if MACHINE_CAN_PAUSE
-@@ -270,165 +266,49 @@
+@@ -270,166 +266,55 @@
      #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
        SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
      #endif
@@ -111,13 +111,21 @@
 -  #if ENABLED(MIXING_EXTRUDER)
 -    SUBMENU(MSG_MIXER, menu_mixer);
 -  #endif
--
++    // 5. Changer filament
++    #if ENABLED(ADVANCED_PAUSE_FEATURE)
++      FILAMENT_CHANGE_ITEM();
++    #endif
+ 
 -  #if ENABLED(MMU2_MENUS)
 -    if (!busy) SUBMENU(MSG_MMU2_MENU, menu_mmu2);
 -  #endif
--
++    // 6. Configuration
++    SUBMENU(MSG_CONFIGURATION, menu_configuration);
+ 
 -  SUBMENU(MSG_CONFIGURATION, menu_configuration);
--
++    // 7. Mouvement
++    SUBMENU(MSG_MOTION, menu_motion);
+ 
 -  #if ENABLED(CUSTOM_MENU_MAIN)
 -    if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
 -      #ifdef CUSTOM_MENU_MAIN_TITLE
@@ -127,21 +135,21 @@
 -      #endif
 -    }
 -  #endif
--
--  #if ENABLED(LCD_INFO_MENU)
--    SUBMENU(MSG_INFO_MENU, menu_info);
--  #endif
-+    // 5. Changer filament
-+    #if ENABLED(ADVANCED_PAUSE_FEATURE)
-+      FILAMENT_CHANGE_ITEM();
++    // 8. Lumiere
++    #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
++      SUBMENU(MSG_LEDS, menu_led);
 +    #endif
++  }
+ 
++  // 9. Infos imprimante (version, carte, thermistances, statistiques)
+   #if ENABLED(LCD_INFO_MENU)
+     SUBMENU(MSG_INFO_MENU, menu_info);
+   #endif
  
 -  #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
 -    SUBMENU(MSG_LEDS, menu_led);
 -  #endif
-+    // 6. Configuration
-+    SUBMENU(MSG_CONFIGURATION, menu_configuration);
- 
+-
 -  //
 -  // Switch power on/off
 -  //
@@ -167,9 +175,7 @@
 -        #if ENABLED(MENU_ADDAUTOSTART)
 -          ACTION_ITEM(MSG_RUN_AUTO_FILES, card.autofile_begin); // Run Auto Files
 -        #endif
-+    // 7. Mouvement
-+    SUBMENU(MSG_MOTION, menu_motion);
- 
+-
 -        #if HAS_SD_DETECT
 -          GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21" TERN_(MULTI_VOLUME, "S"))); // M21 Change Media
 -          #if ENABLED(MULTI_VOLUME)
@@ -202,15 +208,11 @@
 -    }
 -    // END MEDIA MENU
 -  #endif
-+    // 8. Lumiere
-+    #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
-+      SUBMENU(MSG_LEDS, menu_led);
-+    #endif
-+  }
- 
+-
    #if HAS_SERVICE_INTERVALS
      static auto _service_reset = [](const int index) {
-@@ -498,10 +378,6 @@
+       print_job_timer.resetServiceInterval(index);
+@@ -498,10 +383,6 @@
      });
    #endif
  

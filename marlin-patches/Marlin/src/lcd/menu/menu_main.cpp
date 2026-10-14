@@ -310,6 +310,11 @@ void menu_main() {
     #endif
   }
 
+  // 9. Infos imprimante (version, carte, thermistances, statistiques)
+  #if ENABLED(LCD_INFO_MENU)
+    SUBMENU(MSG_INFO_MENU, menu_info);
+  #endif
+
   #if HAS_SERVICE_INTERVALS
     static auto _service_reset = [](const int index) {
       print_job_timer.resetServiceInterval(index);
