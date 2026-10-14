@@ -63,7 +63,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-h311)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
+#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-z132)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -958,7 +958,7 @@
   #define DELTA_DIAGONAL_ROD     200.6    // (mm) entraxe des rotules : tube 210 - 2 x 4.7 (centre de rotule a 4.7 mm du bout)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT           311.25   // (mm) G33 (312.45) corrige de -1.2 : feuille accrochait a Z1.2 avec offset sonde -2.4
+  #define DELTA_HEIGHT           311.25   // (mm) approx. G33 ; a recaler par G33 P1 (sonde) avant chaque impression
 
   #define DELTA_ENDSTOP_ADJ { 0.0, -0.91, -5.77 } // (mm) M666 apres G33. Z tres decale : butee sensorless des tours pas a la meme hauteur
 
@@ -1522,7 +1522,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -3.6 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = -2.4 - 1.2 (test du papier)
+#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -1.32 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = Assistant Sonde Z (papier) sur la machine
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
