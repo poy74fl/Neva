@@ -24,7 +24,7 @@ Connecte l'imprimante (Pronterface, OctoPrint, Cura…) et envoie `M503`. Note s
 
 | Commande | À reporter dans `Configuration.h` |
 |---|---|
-| `M92` | `DEFAULT_AXIS_STEPS_PER_UNIT` (X/Y/Z : modifier `XYZ_PULLEY_TEETH`, E : 4e valeur) |
+| `M92` | `DEFAULT_AXIS_STEPS_PER_UNIT` (X/Y/Z : modifier `XYZ_PULLEY_TEETH` (20 dents = 80 pas/mm), E : 4e valeur) |
 | `M665` L / R / H | `DELTA_DIAGONAL_ROD` / `DELTA_RADIUS` / `DELTA_HEIGHT` |
 | `M666` | `DELTA_ENDSTOP_ADJ` |
 | `M301` ou `M303` | PID du hotend (`DEFAULT_Kp/Ki/Kd`), sinon lance `M303 E0 S200 C8 U1` |

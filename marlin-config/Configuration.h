@@ -63,7 +63,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-probe)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
+#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-steps80)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -1203,7 +1203,7 @@
 #define XYZ_FULL_STEPS_PER_ROTATION 200
 #define XYZ_MICROSTEPS 16
 #define XYZ_BELT_PITCH 2
-#define XYZ_PULLEY_TEETH 16   // NEVA: a verifier (M92 X = 100 si GT2 16 dents)
+#define XYZ_PULLEY_TEETH 20   // Poulies 20 dents -> 80 pas/mm (mesure : la machine descend 1.25x trop avec 16 dents)
 
 #define DEFAULT_XYZ_STEPS_PER_UNIT ((XYZ_FULL_STEPS_PER_ROTATION) * (XYZ_MICROSTEPS) / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, DEFAULT_XYZ_STEPS_PER_UNIT, 415 }  // E0 : BMG 3:1, moteur 1.8 deg, 16 micropas = 415 (830 si moteur 0.9 deg)
