@@ -63,7 +63,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-z132)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
+#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-h31242)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -958,7 +958,7 @@
   #define DELTA_DIAGONAL_ROD     200.6    // (mm) entraxe des rotules : tube 210 - 2 x 4.7 (centre de rotule a 4.7 mm du bout)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT           311.25   // (mm) approx. G33 ; a recaler par G33 P1 (sonde) avant chaque impression
+  #define DELTA_HEIGHT           312.42   // (mm) G33 P1 avec sonde Z -1.32 : buse sur le plateau a Z0 (verifie). Recale par G33 P1 avant impression
 
   #define DELTA_ENDSTOP_ADJ { 0.0, -0.91, -5.77 } // (mm) M666 apres G33. Z tres decale : butee sensorless des tours pas a la meme hauteur
 
