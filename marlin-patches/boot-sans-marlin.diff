@@ -1,0 +1,14 @@
+--- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/Marlin/Marlin/src/lcd/dogm/marlinui_DOGM.cpp	2026-10-01 20:42:43.420531525 +0000
++++ marlin-patches/Marlin/src/lcd/dogm/marlinui_DOGM.cpp	2026-10-14 17:29:57.623014883 +0000
+@@ -246,7 +246,10 @@
+ 
+   void MarlinUI::show_bootscreen() {
+     TERN_(SHOW_CUSTOM_BOOTSCREEN, show_custom_bootscreen());
+-    show_marlin_bootscreen();
++    // Neva : avec un logo perso, on n'affiche pas l'ecran Marlin qui suit d'habitude
++    #if DISABLED(SHOW_CUSTOM_BOOTSCREEN)
++      show_marlin_bootscreen();
++    #endif
+   }
+ 
+   void MarlinUI::bootscreen_completion(const millis_t sofar) {
