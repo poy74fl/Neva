@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.19"
+#define NEVA_FW_VERSION "1.20"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -864,7 +864,7 @@
  * Note: For Bowden Extruders make this large enough to allow load/unload.
  */
 #define PREVENT_LENGTHY_EXTRUDE
-#define EXTRUDE_MAXLENGTH 1000   // Bowden de 870 mm : doit etre >= longueurs de chargement/dechargement (920)
+#define EXTRUDE_MAXLENGTH 1100   // Bowden de 870 mm : doit etre >= longueurs de chargement/dechargement (1000)
 
 //===========================================================================
 //======================== Thermal Runaway Protection =======================

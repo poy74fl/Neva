@@ -2665,7 +2665,7 @@
                                                   // This short retract is done immediately, before parking the nozzle.
   #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     30  // (mm/s) Dechargement (50 mm/s etait trop rapide : le moteur decrochait)
   #define FILAMENT_CHANGE_UNLOAD_ACCEL        30  // (mm/s^2) Acceleration douce : evite que le moteur decroche
-  #define FILAMENT_CHANGE_UNLOAD_LENGTH       920  // Bowden 870 mm + marge
+  #define FILAMENT_CHANGE_UNLOAD_LENGTH      1000  // Bowden 870 mm + 130 mm de marge (capteur de filament a 100 mm de l extrudeur)
                                                   //   For Bowden, the full length of the tube and nozzle.
                                                   //   For direct drive, the full length of the nozzle.
                                                   //   Set to 0 for manual unloading.
@@ -2674,7 +2674,7 @@
                                                   // 0 to disable start loading and skip to fast load only
   #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE   35  // (mm/s) Chargement rapide (apres le depart lent)
   #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     30  // (mm/s^2) Acceleration douce : evite que le moteur decroche
-  #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     880  // Bowden 870 mm - 40 mm de depart lent + 50 mm de marge (chargement total : 920 mm)
+  #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     910  // Bowden 870 mm - 40 mm de depart lent + 80 mm de marge (chargement total : 950 mm)
                                                   //   For Bowden, the full length of the tube and nozzle.
                                                   //   For direct drive, the full length of the nozzle.
   //#define ADVANCED_PAUSE_CONTINUOUS_PURGE       // Purge continuously up to the purge length until interrupted.
