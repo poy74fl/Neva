@@ -3731,7 +3731,7 @@
  *
  * Execute certain G-code commands immediately after power-on.
  */
-#define STARTUP_COMMANDS "M117 Neva fw v" NEVA_FW_VERSION // message sur la ligne du bas de l'ecran de controle
+#define STARTUP_COMMANDS "M117 Fake Prusa fw v" NEVA_FW_VERSION // message sur la ligne du bas de l'ecran de controle
 
 /**
  * G-code Macros
