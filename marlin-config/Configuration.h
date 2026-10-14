@@ -63,7 +63,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-h31242)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
+#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-m503)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -960,7 +960,7 @@
   // Distance between bed and nozzle Z home position
   #define DELTA_HEIGHT           312.42   // (mm) G33 P1 avec sonde Z -1.32 : buse sur le plateau a Z0 (verifie). Recale par G33 P1 avant impression
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, -0.91, -5.77 } // (mm) M666 apres G33. Z tres decale : butee sensorless des tours pas a la meme hauteur
+  #define DELTA_ENDSTOP_ADJ { 0.0, -0.93, -5.74 } // (mm) M666 apres G33. Z tres decale : butee sensorless des tours pas a la meme hauteur
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
   #define DELTA_RADIUS            91.68   // (mm) resultat G33 (mesure initiale : 97, B 135 - A 38)
@@ -968,7 +968,7 @@
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
   // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { -0.25, 0.52, -0.27 } // M665 X Y Z apres G33
+  #define DELTA_TOWER_ANGLE_TRIM { -0.28, 0.56, -0.28 } // M665 X Y Z apres G33
 
   // Delta radius and diagonal rod adjustments
   //#define DELTA_RADIUS_TRIM_TOWER       { 0.0, 0.0, 0.0 } // (mm)
