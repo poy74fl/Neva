@@ -2670,11 +2670,11 @@
                                                   //   For direct drive, the full length of the nozzle.
                                                   //   Set to 0 for manual unloading.
   #define FILAMENT_CHANGE_SLOW_LOAD_FEEDRATE   6  // (mm/s) Slow move when starting load.
-  #define FILAMENT_CHANGE_SLOW_LOAD_LENGTH     0  // (mm) Slow length, to allow time to insert material.
+  #define FILAMENT_CHANGE_SLOW_LOAD_LENGTH    40  // (mm) Depart lent (6 mm/s) : le temps d engager le filament dans l extrudeur
                                                   // 0 to disable start loading and skip to fast load only
-  #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE   50  // (mm/s) Chargement rapide (Bowden 870 mm : environ 18 s)
-  #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     50  // (mm/s^2) Lower acceleration may allow a faster feedrate.
-  #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     870  // Bowden 870 mm (extrudeur -> buse)
+  #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE   35  // (mm/s) Chargement rapide (apres le depart lent)
+  #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     30  // (mm/s^2) Acceleration douce : evite que le moteur decroche
+  #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     830  // Bowden 870 mm - 40 mm de depart lent
                                                   //   For Bowden, the full length of the tube and nozzle.
                                                   //   For direct drive, the full length of the nozzle.
   //#define ADVANCED_PAUSE_CONTINUOUS_PURGE       // Purge continuously up to the purge length until interrupted.
