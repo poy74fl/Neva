@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Genere marlin-patches/Marlin/_Bootscreen.h (ecran de demarrage 128x64).
 
-  python3 make_bootscreen.py                 -> logo "ORIGINAL PRUSA PRO HT90" (blague)
+  python3 make_bootscreen.py                 -> logo "ORIGINAL PRUSA PRO HT90" avec la machine (blague)
+  python3 make_bootscreen.py --texte         -> meme logo, texte seul
   python3 make_bootscreen.py --neva          -> logo "DAGOMA NEVA" (petite delta)
   python3 make_bootscreen.py mon_logo.png    -> convertit ton image (noir/blanc, 128x64)
 
@@ -77,6 +78,55 @@ def prusa_logo():
     return im
 
 
+def draw_machine(d, ox, oy):
+    """Imprimante delta vue de face (56 x 62 px), dessinee a partir du coin (ox, oy)."""
+    def X(x): return ox + x
+    def Y(y): return oy + y
+    # base et plateau
+    d.rectangle([X(1), Y(55), X(55), Y(61)], fill=1)
+    d.rectangle([X(8), Y(48), X(48), Y(51)], fill=1)
+    d.rectangle([X(23), Y(43), X(33), Y(47)], fill=1)          # piece imprimee
+    # tours (arriere plus fine) et plaque du haut
+    d.line([(X(5), Y(5)), (X(5), Y(55))], fill=1, width=3)
+    d.line([(X(51), Y(5)), (X(51), Y(55))], fill=1, width=3)
+    d.line([(X(28), Y(7)), (X(28), Y(48))], fill=1, width=1)
+    d.rectangle([X(2), Y(2), X(54), Y(6)], fill=1)
+    # chariots
+    d.rectangle([X(3), Y(15), X(7), Y(21)], fill=0)
+    d.rectangle([X(3), Y(16), X(7), Y(20)], outline=1)
+    d.rectangle([X(49), Y(15), X(53), Y(21)], fill=0)
+    d.rectangle([X(49), Y(16), X(53), Y(20)], outline=1)
+    d.rectangle([X(26), Y(10), X(30), Y(14)], fill=1)
+    # bras
+    d.line([(X(7), Y(18)), (X(23), Y(35))], fill=1, width=1)
+    d.line([(X(49), Y(18)), (X(33), Y(35))], fill=1, width=1)
+    d.line([(X(28), Y(14)), (X(28), Y(34))], fill=1, width=1)
+    # effecteur + buse
+    d.rectangle([X(22), Y(34), X(34), Y(38)], fill=1)
+    d.polygon([(X(25), Y(39)), (X(31), Y(39)), (X(28), Y(43))], fill=1)
+
+
+def prusa_machine_logo():
+    im = Image.new("1", (W, H), 0)
+    d = ImageDraw.Draw(im)
+    draw_machine(d, 2, 1)
+    x0, avail = 62, W - 62 - 2
+    def txt(t, top, size):
+        while size > 5 and d.textlength(t, font=font(size)) > avail:
+            size -= 1
+        d.text((x0, top), t, font=font(size), fill=1)
+    txt("ORIGINAL", 3, 9)
+    txt("PRUSA", 14, 20)
+    d.rounded_rectangle([x0, 42, W - 3, 58], radius=3, outline=1, width=2)
+    t = "PRO HT90"
+    size = 11
+    while size > 5 and d.textlength(t, font=font(size)) > avail - 8:
+        size -= 1
+    w = d.textlength(t, font=font(size))
+    d.text((x0 + (avail - w) / 2, 43), t, font=font(size), fill=1)
+    return im
+
+
 def from_image(path):
     im = Image.open(path).convert("L")
     im = ImageOps.contain(im, (W, H))
@@ -111,10 +161,12 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     if args and args[0] == "--neva":
         im = default_logo()
+    elif args and args[0] == "--texte":
+        im = prusa_logo()
     elif args:
         im = from_image(args[0])
     else:
-        im = prusa_logo()
+        im = prusa_machine_logo()
     OUT_H.write_text(to_header(im))
     big = im.convert("L").resize((W * 6, H * 6), Image.NEAREST)
     bg = Image.new("RGB", big.size, (10, 20, 60))

@@ -118,7 +118,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 | `marlin-patches/Marlin/src/lcd/language/language_fr.h` | `Marlin/src/lcd/language/language_fr.h` |
 | `marlin-patches/Marlin/_Bootscreen.h` | `Marlin/_Bootscreen.h` (logo de démarrage « Original Prusa PRO HT90 », à côté de `Configuration.h`) |
 
-Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT90 », `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
+Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT90 », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
 Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température), 3 Impr. depuis la SD, 4 Actualiser média, 5 Changer filament, 6 Configuration, 7 Mouvement, 8 Lumière, 9 Infos imprimante.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
