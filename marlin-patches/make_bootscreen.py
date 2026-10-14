@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Genere marlin-patches/Marlin/_Bootscreen.h (ecran de demarrage 128x64).
 
-  python3 make_bootscreen.py                 -> logo "ORIGINAL PRUSA PRO HT90" avec la machine (blague)
+  python3 make_bootscreen.py                 -> logo "FAKE PRUSA PRO HT00" avec la machine (blague)
   python3 make_bootscreen.py --texte         -> meme logo, texte seul
   python3 make_bootscreen.py --neva          -> logo "DAGOMA NEVA" (petite delta)
   python3 make_bootscreen.py mon_logo.png    -> convertit ton image (noir/blanc, 128x64)
@@ -71,10 +71,10 @@ def centered(d, txt, top, size, avail=W - 8):
 def prusa_logo():
     im = Image.new("1", (W, H), 0)
     d = ImageDraw.Draw(im)
-    centered(d, "ORIGINAL", 2, 11)
+    centered(d, "FAKE", 1, 13)
     centered(d, "PRUSA", 14, 27)
     d.rounded_rectangle([14, 45, W - 15, 62], radius=4, outline=1, width=2)
-    centered(d, "PRO HT90", 47, 13, avail=W - 40)
+    centered(d, "PRO HT00", 47, 13, avail=W - 40)
     return im
 
 
@@ -115,10 +115,10 @@ def prusa_machine_logo():
         while size > 5 and d.textlength(t, font=font(size)) > avail:
             size -= 1
         d.text((x0, top), t, font=font(size), fill=1)
-    txt("ORIGINAL", 3, 9)
+    txt("FAKE", 1, 13)
     txt("PRUSA", 14, 20)
     d.rounded_rectangle([x0, 42, W - 3, 58], radius=3, outline=1, width=2)
-    t = "PRO HT90"
+    t = "PRO HT00"
     size = 11
     while size > 5 and d.textlength(t, font=font(size)) > avail - 8:
         size -= 1
