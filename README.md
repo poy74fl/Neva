@@ -92,7 +92,7 @@ Config : `FILAMENT_RUNOUT_SENSOR` sur le port **E0-DET** de la SKR 1.4 (broche P
 - **Conflit possible avec le sensorless :** avec le homing sensorless en haut, Marlin réutilise aussi P1.26 comme « fin de course min » de X. Le capteur ne gêne pas les impressions, mais teste `G28` après installation : si une tour s'arrête bizarrement en redescendant, c'est que le capteur est lu comme un X-MIN. La solution serait de changer la broche dans le fichier de pins de Marlin.
 - **Sens du signal :** `M119` doit afficher `filament: ` (ou `E0 ...`) avec un état différent selon que le filament est présent ou non. Si c'est inversé, change `FIL_RUNOUT_STATE` (`LOW`/`HIGH`).
 - **Bowden :** règle `FILAMENT_CHANGE_UNLOAD_LENGTH` et `FILAMENT_CHANGE_FAST_LOAD_LENGTH` (valeurs d'exemple 500/450 mm) sur la longueur réelle de ton tube.
-- **Capteur KW12 (microswitch mécanique) :** pas d'alimentation à brancher. Relie deux fils seulement : **COM** à GND et **NO** au signal du port E0-DET (pas au 5 V), avec le levier enfoncé par le filament. Config : `FIL_RUNOUT_STATE HIGH` + pull-up interne.
+- **Capteur KW12 (microswitch mécanique) :** pas d'alimentation à brancher. Relie deux fils seulement : **COM** à GND et **NO** au signal du port E0-DET (pas au 5 V), avec le levier enfoncé par le filament. Config : `FIL_RUNOUT_STATE LOW` + pull-up interne (mesuré sur la machine : sans filament = LOW, avec filament = HIGH, donc câblage inverse du schéma COM+NO ; `M119` doit afficher `TRIGGERED` sans filament et `open` avec).
   Le montage COM+NO est « sécurisé » : un fil coupé est lu comme « plus de filament » et arrête l'impression, au lieu de passer inaperçu. Ne câble pas la borne NC.
 
 ## 4. Compiler et flasher
@@ -122,7 +122,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Atténuation automatique de l'écran** : sans action sur la molette pendant `NEVA_LED_DIM_TIMEOUT_S` secondes (60 par défaut, au repos comme en impression), le rétroéclairage passe à `NEVA_LED_DIM_BRIGHTNESS` (20 sur 255) ; il revient dès que tu tournes ou appuies sur la molette, et reste à pleine luminosité tant qu'un message attend ta réponse (fin d'impression en vert, changement de filament…). Réglages dans `Configuration_adv.h` ; commente `NEVA_LED_DIM_TIMEOUT_S` pour désactiver (le patch `marlinui.cpp` reste alors inactif).
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.6 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.7 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
