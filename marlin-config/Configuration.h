@@ -66,6 +66,10 @@
 #define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-htish)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
+// Numero de version de TON firmware (config + patchs Neva), affiche sur l'ecran de controle apres le demarrage.
+// A incrementer a chaque nouvelle version que tu flashes.
+#define NEVA_FW_VERSION "1.0"
+
 /**
  * *** VENDORS PLEASE READ ***
  *

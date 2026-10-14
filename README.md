@@ -118,6 +118,8 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 | `marlin-patches/Marlin/src/lcd/language/language_fr.h` | `Marlin/src/lcd/language/language_fr.h` |
 | `marlin-patches/Marlin/_Bootscreen.h` | `Marlin/_Bootscreen.h` (logo de démarrage « Fake Prusa PRO HT-ish », à côté de `Configuration.h`) |
 
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, « 1.0 » au départ) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Neva fw v1.0 », via `STARTUP_COMMANDS` / `M117`). À incrémenter à chaque nouvelle version flashée.
+
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
 Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température), 3 Impr. depuis la SD, 4 Actualiser média, 5 Changer filament, 6 Configuration, 7 Mouvement, 8 Lumière, 9 Infos imprimante.
