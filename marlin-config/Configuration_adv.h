@@ -2663,8 +2663,8 @@
   #define PAUSE_PARK_RETRACT_FEEDRATE         60  // (mm/s) Initial retract feedrate.
   #define PAUSE_PARK_RETRACT_LENGTH            2  // (mm) Initial retract.
                                                   // This short retract is done immediately, before parking the nozzle.
-  #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     50  // (mm/s) Dechargement rapide (Bowden 870 mm : environ 18 s)
-  #define FILAMENT_CHANGE_UNLOAD_ACCEL        50  // (mm/s^2) Lower acceleration may allow a faster feedrate.
+  #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     30  // (mm/s) Dechargement (50 mm/s etait trop rapide : le moteur decrochait)
+  #define FILAMENT_CHANGE_UNLOAD_ACCEL        30  // (mm/s^2) Acceleration douce : evite que le moteur decroche
   #define FILAMENT_CHANGE_UNLOAD_LENGTH       920  // Bowden 870 mm + marge
                                                   //   For Bowden, the full length of the tube and nozzle.
                                                   //   For direct drive, the full length of the nozzle.
