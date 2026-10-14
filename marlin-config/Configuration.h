@@ -63,7 +63,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-14-probing3)" // Etiquette visible au demarrage et avec M115 : sert a verifier le firmware flashe
+#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-14-ejerk)" // Etiquette visible au demarrage et avec M115 : sert a verifier le firmware flashe
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -1273,7 +1273,7 @@
   #endif
 #endif
 
-#define DEFAULT_EJERK    5.0  // May be used by Linear Advance
+#define DEFAULT_EJERK   10.0  // Doit etre >= 10 avec LIN_ADVANCE (Bowden)
 
 /**
  * Junction Deviation Factor
