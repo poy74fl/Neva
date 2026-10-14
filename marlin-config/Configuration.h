@@ -63,7 +63,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-h317)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
+#define STRING_CONFIG_H_AUTHOR "(NEVA-BUILD-2026-10-15-g33)" // Etiquette visible au demarrage : sert a verifier le firmware flashe
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
@@ -958,17 +958,17 @@
   #define DELTA_DIAGONAL_ROD     200.6    // (mm) entraxe des rotules : tube 210 - 2 x 4.7 (centre de rotule a 4.7 mm du bout)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT           317.00   // (mm) regle sur la machine (test du papier a Z=0). Affine ensuite par G33
+  #define DELTA_HEIGHT           312.45   // (mm) resultat G33 (std dev 0.038) avec sonde Z -2.4 et DELTA_ENDSTOP_ADJ ci-dessous
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { 0.0, -0.91, -5.77 } // (mm) M666 apres G33. Z tres decale : butee sensorless des tours pas a la meme hauteur
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS            97.0    // (mm) mesure : B (135) - A (38), milieu des billes chariot/tete
+  #define DELTA_RADIUS            91.68   // (mm) resultat G33 (mesure initiale : 97, B 135 - A 38)
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
   // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
+  #define DELTA_TOWER_ANGLE_TRIM { -0.25, 0.52, -0.27 } // M665 X Y Z apres G33
 
   // Delta radius and diagonal rod adjustments
   //#define DELTA_RADIUS_TRIM_TOWER       { 0.0, 0.0, 0.0 } // (mm)
@@ -1522,7 +1522,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -2.0 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). NEVA: Z a regler (test du papier)
+#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -2.4 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z mesure : declenchement a Z2.4 au-dessus du plateau
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
