@@ -1,0 +1,29 @@
+--- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/Marlin/Marlin/src/gcode/sd/M24_M25.cpp	2026-10-01 20:42:43.414935039 +0000
++++ marlin-patches/Marlin/src/gcode/sd/M24_M25.cpp	2026-10-14 21:21:17.779980054 +0000
+@@ -47,6 +47,10 @@
+ 
+ #include "../../MarlinCore.h" // for startOrResumeJob
+ 
++#if ENABLED(FILAMENT_RUNOUT_SENSOR)
++  #include "../../feature/runout.h" // Neva : controle du capteur de filament avant de lancer une impression
++#endif
++
+ /**
+  * M24: Start or Resume SD Print
+  */
+@@ -68,6 +72,15 @@
+       return;
+     }
+   #endif
++
++  #if ENABLED(FILAMENT_RUNOUT_SENSOR)
++    // Neva : pas de demarrage d'impression sans filament (capteur de fin de filament actif et plus de filament detecte)
++    if (card.isFileOpen() && FilamentMonitorBase::enabled && (FilamentSensorBase::poll_runout_states() & _BV(0))) {
++      card.closefile();
++      ui.set_status(F("Charger le filament !"), 1);
++      return;
++    }
++  #endif
+ 
+   if (card.isFileOpen()) {
+     card.startOrResumeFilePrinting(); // SD card will now be read for commands
