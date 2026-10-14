@@ -11,7 +11,7 @@ Basée sur l'exemple `delta/generic` de **Marlin 2.1.2.5** (tag officiel : ces f
 - Ventilateurs : pièce sur FAN0, hotend automatique sur FAN1 (`E0_AUTO_FAN_PIN`)
 - Sonde `FIX_MOUNTED_PROBE` + calibration `G33`
 - Extrudeur BMG en Bowden sur E0 (`415` pas/mm pour un moteur 1,8°, à adapter à ton moteur) ; pas de plateau chauffant (`TEMP_SENSOR_BED 0`)
-- Options activées : `TMC_DEBUG` + `MONITOR_DRIVER_STATUS`, `BABYSTEPPING` + `BABYSTEP_ZPROBE_OFFSET`, `PROBE_OFFSET_WIZARD`, `MULTIPLE_PROBING 2`, `FILAMENT_LOAD_UNLOAD_GCODES`, `PID_EDIT_MENU` + `PID_AUTOTUNE_MENU`, `SHOW_REMAINING_TIME`, `S_CURVE_ACCELERATION`, `LIN_ADVANCE` (K = 0,22 par défaut, à régler avec `M900 K…` : un Bowden de 1100 mm demande une valeur plus haute), `FAN_KICKSTART_TIME 100`
+- Options activées : `TMC_DEBUG` + `MONITOR_DRIVER_STATUS`, `BABYSTEPPING` + `BABYSTEP_ZPROBE_OFFSET`, `PROBE_OFFSET_WIZARD`, `MULTIPLE_PROBING 3`, `FILAMENT_LOAD_UNLOAD_GCODES`, `PID_EDIT_MENU` + `PID_AUTOTUNE_MENU`, `SHOW_REMAINING_TIME`, `S_CURVE_ACCELERATION`, `LIN_ADVANCE` (K = 0,22 par défaut, à régler avec `M900 K…` : un Bowden de 1100 mm demande une valeur plus haute), `FAN_KICKSTART_TIME 100`
 - Vitesses, accélérations et homing (50 mm/s) volontairement prudents
 
 > **État : non compilée.** Le réseau de la session bloquait le téléchargement de PlatformIO.
