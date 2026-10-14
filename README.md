@@ -11,7 +11,7 @@ Basée sur l'exemple `delta/generic` de **Marlin 2.1.2.5** (tag officiel : ces f
 - Ventilateurs : pièce sur FAN0, hotend automatique sur FAN1 (`E0_AUTO_FAN_PIN`)
 - Sonde `FIX_MOUNTED_PROBE` + calibration `G33`
 - Extrudeur BMG en Bowden sur E0 (`415` pas/mm pour un moteur 1,8°, à adapter à ton moteur) ; pas de plateau chauffant (`TEMP_SENSOR_BED 0`)
-- Options activées : `TMC_DEBUG` + `MONITOR_DRIVER_STATUS`, `BABYSTEPPING` + `BABYSTEP_ZPROBE_OFFSET`, `PROBE_OFFSET_WIZARD`, `MULTIPLE_PROBING 3`, `FILAMENT_LOAD_UNLOAD_GCODES`, `PID_EDIT_MENU` + `PID_AUTOTUNE_MENU`, `SHOW_REMAINING_TIME`, `S_CURVE_ACCELERATION`, `LIN_ADVANCE` (K = 0,22 par défaut, à régler avec `M900 K…` : un Bowden de 1100 mm demande une valeur plus haute), `FAN_KICKSTART_TIME 100`
+- Options activées : `TMC_DEBUG` + `MONITOR_DRIVER_STATUS`, `BABYSTEPPING` + `BABYSTEP_ZPROBE_OFFSET`, `PROBE_OFFSET_WIZARD`, `MULTIPLE_PROBING 3`, `FILAMENT_LOAD_UNLOAD_GCODES`, `PID_EDIT_MENU` + `PID_AUTOTUNE_MENU`, `SHOW_REMAINING_TIME`, `S_CURVE_ACCELERATION`, `LIN_ADVANCE` (K = 0,22 par défaut, à régler avec `M900 K…` : un Bowden de 870 mm demande une valeur plus haute), `FAN_KICKSTART_TIME 100`
 - Vitesses, accélérations et homing (50 mm/s) volontairement prudents
 
 > **État : non compilée.** Le réseau de la session bloquait le téléchargement de PlatformIO.
@@ -122,7 +122,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Atténuation automatique de l'écran** : sans action sur la molette pendant `NEVA_LED_DIM_TIMEOUT_S` secondes (60 par défaut, au repos comme en impression), le rétroéclairage passe à `NEVA_LED_DIM_BRIGHTNESS` (20 sur 255) ; il revient dès que tu tournes ou appuies sur la molette, et reste à pleine luminosité tant qu'un message attend ta réponse (fin d'impression en vert, changement de filament…). Réglages dans `Configuration_adv.h` ; commente `NEVA_LED_DIM_TIMEOUT_S` pour désactiver (le patch `marlinui.cpp` reste alors inactif).
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.9 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.10 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
