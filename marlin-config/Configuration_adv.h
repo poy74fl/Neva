@@ -1463,6 +1463,13 @@
    * LED Control Menu
    * Add LED Control to the LCD menu
    */
+  // Neva : attenuation automatique du retroeclairage (patch marlinui.cpp). Sans action sur la molette
+  // pendant NEVA_LED_DIM_TIMEOUT_S secondes (repos ou impression), la luminosite passe a
+  // NEVA_LED_DIM_BRIGHTNESS ; elle revient des que tu tournes ou appuies sur la molette.
+  // Mets la ligne en commentaire pour desactiver.
+  #define NEVA_LED_DIM_TIMEOUT_S   60   // (secondes)
+  #define NEVA_LED_DIM_BRIGHTNESS  20   // (0-255)
+
   #define LED_CONTROL_MENU   // Menu "Lumiere" pour regler la couleur du rétroéclairage
   #if ENABLED(LED_CONTROL_MENU)
     #define LED_COLOR_PRESETS                 // Enable the Preset Color menu option

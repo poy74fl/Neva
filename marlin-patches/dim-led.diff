@@ -1,0 +1,66 @@
+--- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/marlinui.orig.cpp	2026-10-14 14:21:30.353899093 +0000
++++ marlin-patches/Marlin/src/lcd/marlinui.cpp	2026-10-14 14:21:30.400230301 +0000
+@@ -38,6 +38,41 @@
+ 
+ // All displays share the MarlinUI class
+ #include "marlinui.h"
++
++// --- Neva : attenuation automatique du retroeclairage RGB (NeoPixel) apres inactivite -----------
++#if ALL(NEOPIXEL_LED, LED_CONTROL_MENU) && defined(NEVA_LED_DIM_TIMEOUT_S) && defined(NEVA_LED_DIM_BRIGHTNESS)
++  #define NEVA_LED_DIM 1
++  #include "../feature/leds/leds.h"
++
++  static millis_t neva_last_activity_ms = 0; // derniere action sur la molette (0 = demarrage)
++  static uint8_t  neva_full_i = 255;         // luminosite normale, memorisee avant attenuation
++  static bool     neva_dimmed = false;
++
++  // Action sur la molette : on remet la luminosite normale
++  static void neva_led_wake(const millis_t ms) {
++    neva_last_activity_ms = ms;
++    if (!neva_dimmed) return;
++    neva_dimmed = false;
++    LEDColor c = leds.color;
++    c.i = neva_full_i;
++    if (leds.lights_on) leds.set_color(c); else leds.color = c;
++  }
++
++  // Appelee regulierement : attenue apres NEVA_LED_DIM_TIMEOUT_S secondes sans action
++  static void neva_led_dim_check(const millis_t ms) {
++    if (!leds.lights_on) return;                          // LED eteintes : rien a faire
++    if (leds.color.i <= NEVA_LED_DIM_BRIGHTNESS) return;  // deja aussi sombre que demande
++    // Soit le delai est ecoule, soit un evenement (couleur d'etat) vient de remettre la luminosite
++    if (neva_dimmed || ELAPSED(ms, neva_last_activity_ms + (NEVA_LED_DIM_TIMEOUT_S) * 1000UL)) {
++      neva_full_i = leds.color.i;
++      neva_dimmed = true;
++      LEDColor c = leds.color;
++      c.i = NEVA_LED_DIM_BRIGHTNESS;
++      leds.set_color(c);
++    }
++  }
++#endif
++// -----------------------------------------------------------------------------------------------
+ MarlinUI ui;
+ 
+ #if HAS_DISPLAY
+@@ -1078,6 +1113,10 @@
+ 
+           reset_status_timeout(ms);
+ 
++          #if NEVA_LED_DIM
++            neva_led_wake(ms);
++          #endif
++
+           #if LCD_BACKLIGHT_TIMEOUT_MINS
+             refresh_backlight_timeout();
+           #elif HAS_DISPLAY_SLEEP
+@@ -1188,6 +1227,10 @@
+           return_to_status();
+       #endif
+ 
++      #if NEVA_LED_DIM
++        neva_led_dim_check(ms);
++      #endif
++
+       #if LCD_BACKLIGHT_TIMEOUT_MINS
+         if (backlight_off_ms && ELAPSED(ms, backlight_off_ms)) {
+           WRITE(LCD_BACKLIGHT_PIN, LOW); // Backlight off
