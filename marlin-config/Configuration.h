@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.20"
+#define NEVA_FW_VERSION "1.21"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -962,7 +962,7 @@
   #define DELTA_DIAGONAL_ROD     200.6    // (mm) entraxe des rotules : tube 210 - 2 x 4.7 (centre de rotule a 4.7 mm du bout)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT           312.42   // (mm) G33 P1 avec sonde Z -1.32 : buse sur le plateau a Z0 (verifie). Recale par G33 P1 avant impression
+  #define DELTA_HEIGHT           312.22   // (mm) 312.42 - 0.2 (buse relevee de 0.2 mm au reglage de la 1re couche). Recale par G33 P1 avant chaque impression
 
   #define DELTA_ENDSTOP_ADJ { 0.0, -0.93, -5.74 } // (mm) M666 apres G33. Z tres decale : butee sensorless des tours pas a la meme hauteur
 
@@ -1526,7 +1526,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -1.32 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = Assistant Sonde Z (papier) sur la machine
+#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -1.12 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = reglage de la 1re couche (double-clic molette) : -1.12
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
