@@ -110,12 +110,15 @@ Tu peux aussi utiliser VS Code + l'extension Auto Build Marlin.
 
 ## 4b. Menu principal réorganisé (patch du code de Marlin)
 
-L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossier `marlin-patches/` contient deux fichiers modifiés à copier **par-dessus** ceux de Marlin 2.1.2.5 :
+L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossier `marlin-patches/` contient trois fichiers à copier **par-dessus** ceux de Marlin 2.1.2.5 :
 
 | Fichier du dépôt | À copier dans Marlin-2.1.2.5/ |
 |---|---|
 | `marlin-patches/Marlin/src/lcd/menu/menu_main.cpp` | `Marlin/src/lcd/menu/menu_main.cpp` |
 | `marlin-patches/Marlin/src/lcd/language/language_fr.h` | `Marlin/src/lcd/language/language_fr.h` |
+| `marlin-patches/Marlin/_Bootscreen.h` | `Marlin/_Bootscreen.h` (logo de démarrage, à côté de `Configuration.h`) |
+
+Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
 Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température), 3 Impr. depuis la SD, 4 Actualiser média, 5 Changer filament, 6 Configuration, 7 Mouvement, 8 Lumière, 9 Infos imprimante.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
