@@ -16,6 +16,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 W, H = 128, 64
 ROOT = Path(__file__).resolve().parent
 OUT_H = ROOT / "Marlin" / "_Bootscreen.h"
+FW_VERSION = "2.1.2.5"   # version Marlin affichee sur l'ecran de demarrage
 OUT_PNG = ROOT.parent / "docs" / "bootscreen_apercu.png"
 FONTS = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
@@ -23,7 +24,18 @@ FONTS = [
 ]
 
 
-def font(size):
+def font(size, mono=False):
+    if mono:
+        try:
+            import matplotlib
+            p = Path(matplotlib.__file__).parent / "mpl-data/fonts/ttf/DejaVuSansMono-Bold.ttf"
+            return ImageFont.truetype(str(p), size)
+        except Exception:
+            for f in ("/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", "DejaVuSansMono-Bold.ttf"):
+                try:
+                    return ImageFont.truetype(f, size)
+                except OSError:
+                    continue
     for f in FONTS:
         try:
             return ImageFont.truetype(f, size)
@@ -115,15 +127,21 @@ def prusa_machine_logo():
         while size > 5 and d.textlength(t, font=font(size)) > avail:
             size -= 1
         d.text((x0, top), t, font=font(size), fill=1)
-    txt("FAKE", 1, 13)
-    txt("PRUSA", 14, 20)
-    d.rounded_rectangle([x0, 42, W - 3, 58], radius=3, outline=1, width=2)
+    txt("FAKE", -1, 12)
+    txt("PRUSA", 10, 19)
+    d.rounded_rectangle([x0, 34, W - 3, 48], radius=3, outline=1, width=2)
     t = "PRO HT-ish"
-    size = 11
-    while size > 5 and d.textlength(t, font=font(size)) > avail - 8:
+    size = 10
+    while size > 5 and d.textlength(t, font=font(size)) > avail - 6:
         size -= 1
     w = d.textlength(t, font=font(size))
-    d.text((x0 + (avail - w) / 2, 43), t, font=font(size), fill=1)
+    d.text((x0 + (avail - w) / 2, 35), t, font=font(size), fill=1)
+    t = "v" + FW_VERSION             # police a largeur fixe : les points restent lisibles
+    size = 11
+    while size > 5 and d.textlength(t, font=font(size, True)) > avail:
+        size -= 1
+    w = d.textlength(t, font=font(size, True))
+    d.text((x0 + (avail - w) / 2, 50), t, font=font(size, True), fill=1)
     return im
 
 
