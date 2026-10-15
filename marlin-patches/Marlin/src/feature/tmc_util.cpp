@@ -336,7 +336,11 @@
       char buf[32];
       sprintf_P(buf, PSTR("X%u Y%u Z%u e%u%%"), (unsigned)m[0], (unsigned)m[1], (unsigned)m[2], (unsigned)spread);
       ui.set_status(buf, true);
-      if (is_final) SERIAL_ECHO_MSG("Courroies: ", buf);
+      if (is_final) {
+        SERIAL_ECHO_MSG("Courroies: ", buf);
+        // Le menu Tests reste a l'ecran apres le script : on revient a l'ecran d'info pour voir le resultat
+        TERN_(HAS_MARLINUI_MENU, ui.return_to_status());
+      }
     }
 
     // StallGuard (SG_RESULT) n'est mis a jour que sous le seuil TCOOLTHRS : 0xFFFFF pendant le test, 0 ensuite
