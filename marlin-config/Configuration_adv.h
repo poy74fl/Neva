@@ -1754,7 +1754,7 @@
   //#define SDCARD_CONNECTION LCD
 
   // Enable if SD detect is rendered useless (e.g., by using an SD extender)
-  //#define NO_SD_DETECT
+  #define NO_SD_DETECT   // Neva : la detection de carte de l'ecran etait instable (message "Media init fail" au demarrage) ; carte lue via le menu "Actualiser media" (M21)
 
   /**
    * Multiple volume support - EXPERIMENTAL.
