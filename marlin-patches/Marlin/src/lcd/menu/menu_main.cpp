@@ -104,6 +104,45 @@ void menu_configuration();
   void menu_language();
 #endif
 
+// Neva : ecran "Test courroies" (valeurs StallGuard moyennes de X, Y, Z affichees en direct)
+#if ALL(CUSTOM_MENU_MAIN, TMC_DEBUG, MONITOR_DRIVER_STATUS, HAS_STALLGUARD, HAS_STATUS_MESSAGE) && defined(NEVA_TEST_COURROIES_GCODE)
+
+  #define NEVA_BELT_SCREEN 1
+
+  void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running); // defini dans feature/tmc_util.cpp
+
+  void menu_neva_belts() {
+    ui.defer_status_screen();                                  // pas de retour automatique a l'ecran d'info pendant le test
+    if (ui.use_click()) { ui.defer_status_screen(false); return ui.go_back(); }
+
+    uint16_t m[3], spread, n;
+    bool running;
+    neva_belt_read(m, spread, n, running);
+
+    char bx[12], by[12], bz[12], be[16];
+    if (n) {
+      sprintf_P(bx, PSTR("%u"), (unsigned)m[0]);
+      sprintf_P(by, PSTR("%u"), (unsigned)m[1]);
+      sprintf_P(bz, PSTR("%u"), (unsigned)m[2]);
+      sprintf_P(be, PSTR("%u %%"), (unsigned)spread);
+    }
+    else {
+      strcpy_P(bx, PSTR("--")); strcpy_P(by, PSTR("--")); strcpy_P(bz, PSTR("--")); strcpy_P(be, PSTR("--"));
+    }
+
+    START_SCREEN();
+    STATIC_ITEM_F((running ? F("COURROIES: EN COURS") : F("COURROIES: FINI")), SS_DEFAULT|SS_INVERT);
+    STATIC_ITEM_F(F("X : "), SS_LEFT, bx);
+    STATIC_ITEM_F(F("Y : "), SS_LEFT, by);
+    STATIC_ITEM_F(F("Z : "), SS_LEFT, bz);
+    STATIC_ITEM_F(F("Ecart : "), SS_LEFT, be);
+    END_SCREEN();
+
+    ui.refresh(LCDVIEW_CALL_REDRAW_NEXT);                      // rafraichit l'ecran en continu
+  }
+
+#endif
+
 #if ENABLED(CUSTOM_MENU_MAIN)
 
   void _lcd_custom_menu_main_gcode(FSTR_P const fstr) {
@@ -216,6 +255,13 @@ void menu_configuration();
     #endif
     #if HAS_CUSTOM_ITEM_MAIN(25)
       CUSTOM_ITEM_MAIN(25);
+    #endif
+    #ifdef NEVA_BELT_SCREEN
+      ACTION_ITEM_F(F("Test courroies"), []{
+        queue.inject(F(NEVA_TEST_COURROIES_GCODE _DONE_SCRIPT));
+        ui.push_current_screen();
+        ui.goto_screen(menu_neva_belts);
+      });
     #endif
     END_MENU();
   }

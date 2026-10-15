@@ -343,6 +343,22 @@
       }
     }
 
+    // Lecture pour l'ecran dedie (menu_main.cpp) : moyennes X, Y, Z, ecart max en %, nombre de mesures X, rapport actif ?
+    void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running) {
+      uint16_t lo = 0xFFFF, hi = 0;
+      uint32_t tot = 0;
+      n = neva_belt_n[0];
+      running = report_tmc_status_interval != 0;
+      for (uint8_t i = 0; i < 3; i++) {
+        m[i] = neva_belt_n[i] ? neva_belt_sum[i] / neva_belt_n[i] : 0;
+        if (!neva_belt_n[i]) n = 0;
+        if (m[i] < lo) lo = m[i];
+        if (m[i] > hi) hi = m[i];
+        tot += m[i];
+      }
+      spread = tot ? uint16_t(uint32_t(hi - lo) * 300UL / tot) : 0;
+    }
+
     // StallGuard (SG_RESULT) n'est mis a jour que sous le seuil TCOOLTHRS : 0xFFFFF pendant le test, 0 ensuite
     static void neva_belt_tcool(const uint32_t v) {
       #if AXIS_DRIVER_TYPE_X(TMC2209)
@@ -548,7 +564,7 @@
 
       if (TERN0(TMC_DEBUG, need_debug_reporting)) SERIAL_EOL();
       #if NEVA_BELT_DISPLAY
-        if (need_debug_reporting) neva_belt_show(false);
+        // (affichage en direct : ecran dedie "Test courroies", voir menu_main.cpp)
       #endif
     }
   }

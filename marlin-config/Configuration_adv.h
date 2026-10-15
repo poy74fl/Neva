@@ -4123,9 +4123,7 @@
   #define MAIN_MENU_ITEM_2_GCODE NEVA_TEST_FILAMENT_GCODE
   #define MAIN_MENU_ITEM_2_CONFIRM
 
-  #define MAIN_MENU_ITEM_3_DESC "Test courroies"
-  #define MAIN_MENU_ITEM_3_GCODE NEVA_TEST_COURROIES_GCODE
-  #define MAIN_MENU_ITEM_3_CONFIRM
+  // "Test courroies" : entree et ecran dedies dans menu_main.cpp (utilise NEVA_TEST_COURROIES_GCODE, sans confirmation)
 #endif
 
 // @section custom config menu
