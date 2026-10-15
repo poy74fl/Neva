@@ -113,11 +113,13 @@ void menu_configuration();
 
   #define NEVA_BELT_SCREEN 1
 
-  void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running); // defini dans feature/tmc_util.cpp
+  void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running); // definis dans feature/tmc_util.cpp
+  void neva_belt_begin();
+  void neva_belt_end();
 
   void menu_neva_belts() {
     ui.defer_status_screen();                                  // pas de retour automatique a l'ecran d'info pendant le test
-    if (ui.use_click()) { ui.defer_status_screen(false); return ui.go_back(); }
+    if (ui.use_click()) { ui.defer_status_screen(false); neva_belt_end(); return ui.go_back(); }
 
     uint16_t m[3], spread, n;
     bool running;
@@ -271,6 +273,7 @@ void menu_configuration();
     #endif
     #ifdef NEVA_BELT_SCREEN
       ACTION_ITEM_F(F("Test courroies"), []{
+        neva_belt_begin();
         queue.inject(F(NEVA_TEST_COURROIES_GCODE _DONE_SCRIPT));
         ui.push_current_screen();
         ui.goto_screen(menu_neva_belts);
