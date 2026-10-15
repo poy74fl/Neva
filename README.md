@@ -110,7 +110,7 @@ Tu peux aussi utiliser VS Code + l'extension Auto Build Marlin.
 
 ## 4b. Menu principal réorganisé (patch du code de Marlin)
 
-L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossier `marlin-patches/` contient six fichiers à copier **par-dessus** ceux de Marlin 2.1.2.5 :
+L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossier `marlin-patches/` contient sept fichiers à copier **par-dessus** ceux de Marlin 2.1.2.5 :
 
 | Fichier du dépôt | À copier dans Marlin-2.1.2.5/ |
 |---|---|
@@ -119,6 +119,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 | `marlin-patches/Marlin/src/lcd/marlinui.cpp` | `Marlin/src/lcd/marlinui.cpp` (atténuation auto du rétroéclairage, diff dans `marlin-patches/dim-led.diff`) |
 | `marlin-patches/Marlin/src/lcd/dogm/marlinui_DOGM.cpp` | `Marlin/src/lcd/dogm/marlinui_DOGM.cpp` (supprime l'écran Marlin qui suit le logo, diff dans `marlin-patches/boot-sans-marlin.diff`) |
 | `marlin-patches/Marlin/src/gcode/sd/M24_M25.cpp` | `Marlin/src/gcode/sd/M24_M25.cpp` (refuse de lancer une impression SD sans filament : message « Charger le filament ! », diff dans `marlin-patches/bloque-sans-filament.diff`) |
+| `marlin-patches/Marlin/src/feature/tmc_util.cpp` | `Marlin/src/feature/tmc_util.cpp` (StallGuard des TMC2209 dans `M122 S1` + affichage des courroies sur l'écran, diff dans `marlin-patches/tmc-courroies.diff`) |
 | `marlin-patches/Marlin/_Bootscreen.h` | `Marlin/_Bootscreen.h` (logo de démarrage « Fake Prusa PRO HT-ish », à côté de `Configuration.h`) |
 
 **Atténuation automatique de l'écran** : sans action sur la molette pendant `NEVA_LED_DIM_TIMEOUT_S` secondes (60 par défaut, au repos comme en impression), le rétroéclairage passe à `NEVA_LED_DIM_BRIGHTNESS` (20 sur 255) ; il revient dès que tu tournes ou appuies sur la molette, et reste à pleine luminosité tant qu'un message attend ta réponse (fin d'impression en vert, changement de filament…). Réglages dans `Configuration_adv.h` ; commente `NEVA_LED_DIM_TIMEOUT_S` pour désactiver (le patch `marlinui.cpp` reste alors inactif).
@@ -127,11 +128,11 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Palpage du plateau (maillage)** : `AUTO_BED_LEVELING_BILINEAR`, grille 7 × 7 sur le disque de rayon 70 mm (`PROBING_MARGIN 30`), soit environ 30 points. Chaque G-code de test et le G-code de début du slicer enchaînent `G28`, `G33 P1` (hauteur), `G29` (maillage), puis la chauffe ; `G29` active la correction pour toute l'impression. Après le flash : `M502`, `M500`. `G28` désactive le maillage ; `M420 V1` l'affiche.
 
-**Test des courroies** (menu « Tests » > « Test courroies », ou `docs/test_courroies.gcode`) : les 3 chariots montent et descendent ensemble (Z 60 ↔ 200 mm, à 30 puis 60 mm/s) pendant que `M122 S1 P250` envoie toutes les 250 ms le `sg` (StallGuard) et le `pwm` de chaque TMC2209 sur le port série (`TMC_DEBUG` et `MONITOR_DRIVER_STATUS` sont déjà activés). `python3 docs/test_courroies.py` (pyserial) lance le test, calcule la médiane par tour et indique l'écart entre tours et la tour qui se distingue ; les mesures sont ajoutées à `docs/mesures_courroies.csv`. Résultat relatif (3 tours entre elles, ou avant/après réglage), pas une tension en newtons ; seuils 10 % / 25 % provisoires.
+**Test des courroies** (menu « Tests » > « Test courroies », ou `docs/test_courroies.gcode`) : les 3 chariots montent et descendent ensemble (Z 60 ↔ 200 mm, à 30 puis 60 mm/s) pendant que `M122 S1 P250` lit le `sg` (StallGuard) de chaque TMC2209. **L'écran affiche en direct la moyenne de chaque tour et l'écart maximal : `X180 Y177 Z183 e7%`** (e = écart max / moyenne), et le résultat reste affiché à la fin (patch `tmc_util.cpp`, diff dans `marlin-patches/tmc-courroies.diff`). Les mêmes valeurs sortent sur le port série ; `python3 docs/test_courroies.py` (pyserial) calcule en plus un résumé détaillé (montée/descente, 30/60 mm/s) et ajoute les mesures à `docs/mesures_courroies.csv`. Résultat relatif (3 tours entre elles, ou avant/après réglage), pas une tension en newtons ; seuils 10 % / 25 % provisoires. Sans le patch, Marlin affiche « - » à la place du `sg` sur TMC2209.
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.26 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.27 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 

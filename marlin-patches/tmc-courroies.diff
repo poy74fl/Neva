@@ -1,0 +1,116 @@
+--- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/Marlin/Marlin/src/feature/tmc_util.cpp	2026-10-01 20:42:43.403086529 +0000
++++ marlin-patches/Marlin/src/feature/tmc_util.cpp	2026-10-15 15:45:23.494130171 +0000
+@@ -171,6 +171,17 @@
+ 
+   #endif // TMC2208 || TMC2209
+ 
++  // Neva : sur TMC2209, le rapport periodique (M122 S1) affichait "-" a la place du StallGuard (le registre DRV_STATUS
++  // ne le contient pas) : on lit SG_RESULT directement, pour le test des courroies.
++  #if ALL(TMC_DEBUG, HAS_STALLGUARD) && HAS_DRIVER(TMC2209)
++    static TMC_driver_data get_driver_data(TMC2209Stepper &st) {
++      TMC_driver_data data = get_driver_data(static_cast<TMC2208Stepper &>(st));
++      data.sg_result = st.SG_RESULT();
++      data.sg_result_reasonable = !data.is_standstill;
++      return data;
++    }
++  #endif
++
+   #if HAS_DRIVER(TMC2660)
+ 
+     #if ENABLED(TMC_DEBUG)
+@@ -278,6 +289,60 @@
+ 
+   #endif
+ 
++  /**
++   * Neva : test des courroies. Pendant un rapport periodique (M122 S1 P250), on moyenne le StallGuard de X, Y et Z
++   * (mouvements en mouvement seulement) et on l'affiche sur l'ecran : "X180 Y177 Z183 e7%" (e = ecart max entre tours).
++   * M122 S0 affiche le resultat final et le laisse a l'ecran.
++   */
++  #if ALL(TMC_DEBUG, HAS_STALLGUARD, HAS_STATUS_MESSAGE)
++    #define NEVA_BELT_DISPLAY 1
++
++    static uint32_t neva_belt_sum[3];
++    static uint16_t neva_belt_n[3];
++
++    template<char L, char D>
++    static char neva_axis_letter(const TMCStorage<L, D> &) { return L; }
++
++    static void neva_belt_reset() {
++      for (uint8_t i = 0; i < 3; i++) { neva_belt_sum[i] = 0; neva_belt_n[i] = 0; }
++    }
++
++    static void neva_belt_sample(const char axis, const bool ok, const uint16_t sg) {
++      if (!ok || axis < 'X' || axis > 'Z') return;
++      neva_belt_sum[axis - 'X'] += sg;
++      neva_belt_n[axis - 'X']++;
++    }
++
++    static void neva_belt_show() {
++      for (uint8_t i = 0; i < 3; i++) if (!neva_belt_n[i]) return;
++      uint16_t m[3], lo = 0xFFFF, hi = 0;
++      uint32_t tot = 0;
++      for (uint8_t i = 0; i < 3; i++) {
++        m[i] = neva_belt_sum[i] / neva_belt_n[i];
++        if (m[i] < lo) lo = m[i];
++        if (m[i] > hi) hi = m[i];
++        tot += m[i];
++      }
++      const uint16_t spread = tot ? uint16_t(uint32_t(hi - lo) * 300UL / tot) : 0;   // 100 x (max - min) / moyenne
++      char buf[32];
++      sprintf_P(buf, PSTR("X%u Y%u Z%u e%u%%"), (unsigned)m[0], (unsigned)m[1], (unsigned)m[2], (unsigned)spread);
++      ui.set_status(buf, true);
++    }
++
++    // StallGuard (SG_RESULT) n'est mis a jour que sous le seuil TCOOLTHRS : 0xFFFFF pendant le test, 0 ensuite
++    static void neva_belt_tcool(const uint32_t v) {
++      #if AXIS_DRIVER_TYPE_X(TMC2209)
++        stepperX.TCOOLTHRS(v);
++      #endif
++      #if AXIS_DRIVER_TYPE_Y(TMC2209)
++        stepperY.TCOOLTHRS(v);
++      #endif
++      #if AXIS_DRIVER_TYPE_Z(TMC2209)
++        stepperZ.TCOOLTHRS(v);
++      #endif
++    }
++  #endif
++
+   template<typename TMC>
+   bool monitor_tmc_driver(TMC &st, const bool need_update_error_counters, const bool need_debug_reporting) {
+     TMC_driver_data data = get_driver_data(st);
+@@ -315,7 +380,12 @@
+     }
+ 
+     #if ENABLED(TMC_DEBUG)
+-      if (need_debug_reporting) report_polled_driver_data(st, data);
++      if (need_debug_reporting) {
++        report_polled_driver_data(st, data);
++        #if NEVA_BELT_DISPLAY
++          neva_belt_sample(neva_axis_letter(st), data.sg_result_reasonable, data.sg_result);
++        #endif
++      }
+     #endif
+ 
+     return should_step_down;
+@@ -463,6 +533,9 @@
+       #endif
+ 
+       if (TERN0(TMC_DEBUG, need_debug_reporting)) SERIAL_EOL();
++      #if NEVA_BELT_DISPLAY
++        if (need_debug_reporting) neva_belt_show();
++      #endif
+     }
+   }
+ 
+@@ -475,6 +548,10 @@
+    */
+   #if ENABLED(MONITOR_DRIVER_STATUS)
+     void tmc_set_report_interval(const uint16_t update_interval) {
++      #if NEVA_BELT_DISPLAY
++        if (update_interval) { neva_belt_reset(); neva_belt_tcool(0xFFFFF); }
++        else if (report_tmc_status_interval) { neva_belt_show(); neva_belt_tcool(0); }
++      #endif
+       if ((report_tmc_status_interval = update_interval))
+         SERIAL_ECHOLNPGM("axis:pwm_scale"
+           TERN_(HAS_STEALTHCHOP, "/curr_scale")

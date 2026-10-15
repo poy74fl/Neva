@@ -3769,7 +3769,7 @@
   // Neva : menu "Tests" (en bas du menu principal) avec des scripts G-code integres au firmware.
   // Les memes scripts sont dans docs/test_premiere_couche.gcode, docs/test_filament.gcode et docs/test_courroies.gcode.
   #define CUSTOM_MENU_MAIN_TITLE "Tests"
-  #define CUSTOM_MENU_MAIN_SCRIPT_DONE "M117 Test termine"
+  #define CUSTOM_MENU_MAIN_SCRIPT_DONE "M300 S880 P150"   // simple bip : ne pas ecraser le message final du test (ex. resultat des courroies)
   #define CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK
   #define CUSTOM_MENU_MAIN_SCRIPT_RETURN     // Retour a l'ecran d'information : on voit la machine travailler
   #define CUSTOM_MENU_MAIN_ONLY_IDLE         // Visible uniquement quand la machine est au repos
@@ -4089,8 +4089,9 @@
     "M104 S0\n" \
     "M84 E\n"
 
-  // Test courroies : les 3 chariots montent/descendent ensemble, M122 S1 envoie le StallGuard de chaque moteur sur le port serie
-  // (resume automatique : python3 docs/test_courroies.py ; meme script que docs/test_courroies.gcode)
+  // Test courroies : les 3 chariots montent/descendent ensemble ; M122 S1 envoie le StallGuard de chaque moteur sur le port serie
+  // ET (patch tmc_util.cpp) affiche sur l'ecran la moyenne de X, Y, Z et l'ecart max : "X180 Y177 Z183 e7%", laisse a la fin.
+  // (resume sur Mac : python3 docs/test_courroies.py ; meme script que docs/test_courroies.gcode)
   #define NEVA_TEST_COURROIES_GCODE \
     "M117 Test courroies...\n" \
     "G90\n" \
@@ -4112,8 +4113,7 @@
     "G1 Z60 F3600\n" \
     "G1 Z200 F3600\n" \
     "M400\n" \
-    "M122 S0\n" \
-    "M117 Courroies fini\n"
+    "M122 S0\n"
 
   #define MAIN_MENU_ITEM_1_DESC "Test 1ere couche"
   #define MAIN_MENU_ITEM_1_GCODE NEVA_TEST_COUCHE1_GCODE
