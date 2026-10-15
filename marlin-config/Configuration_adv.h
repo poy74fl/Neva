@@ -2696,6 +2696,10 @@
   #define FILAMENT_CHANGE_ALERT_BEEPS         10  // Number of alert beeps to play when a response is needed.
   #define PAUSE_PARK_NO_STEPPER_TIMEOUT           // Enable for XYZ steppers to stay powered on during filament change.
   #define FILAMENT_CHANGE_RESUME_ON_INSERT        // Neva : le chargement demarre tout seul quand le capteur voit le filament (pendant le message "Inserer le filament")
+  // Neva : chargement automatique au repos (patch marlinui.cpp). Machine au repos, le filament arrive devant le
+  // capteur : la buse chauffe a NEVA_AUTOLOAD_TEMP puis le chargement demarre (M701). Mets en commentaire pour desactiver.
+  #define NEVA_AUTOLOAD_TEMP      210   // (degres C) temperature de chargement (PLA)
+  #define NEVA_AUTOLOAD_DELAY_MS 1500   // (ms) le filament doit rester detecte aussi longtemps avant de lancer
   //#define PAUSE_REHEAT_FAST_RESUME              // Reduce number of waits by not prompting again post-timeout before continuing.
 
   #define PARK_HEAD_ON_PAUSE                    // Park the nozzle during pause and filament change.
@@ -3760,33 +3764,337 @@
 // @section custom main menu
 
 // Custom Menu: Main Menu
-//#define CUSTOM_MENU_MAIN
+#define CUSTOM_MENU_MAIN
 #if ENABLED(CUSTOM_MENU_MAIN)
-  //#define CUSTOM_MENU_MAIN_TITLE "Custom Commands"
-  #define CUSTOM_MENU_MAIN_SCRIPT_DONE "M117 User Script Done"
+  // Neva : menu "Tests" (en bas du menu principal) avec des scripts G-code integres au firmware.
+  // Les memes scripts sont dans docs/test_premiere_couche.gcode et docs/test_filament.gcode.
+  #define CUSTOM_MENU_MAIN_TITLE "Tests"
+  #define CUSTOM_MENU_MAIN_SCRIPT_DONE "M117 Test termine"
   #define CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK
-  //#define CUSTOM_MENU_MAIN_SCRIPT_RETURN   // Return to status screen after a script
-  #define CUSTOM_MENU_MAIN_ONLY_IDLE         // Only show custom menu when the machine is idle
+  #define CUSTOM_MENU_MAIN_SCRIPT_RETURN     // Retour a l'ecran d'information : on voit la machine travailler
+  #define CUSTOM_MENU_MAIN_ONLY_IDLE         // Visible uniquement quand la machine est au repos
 
-  #define MAIN_MENU_ITEM_1_DESC "Home & UBL Info"
-  #define MAIN_MENU_ITEM_1_GCODE "G28\nG29 W"
-  //#define MAIN_MENU_ITEM_1_CONFIRM          // Show a confirmation dialog before this action
+  #define NEVA_TEST_COUCHE1_GCODE \
+    "M107\n" \
+    "G90\n" \
+    "M83\n" \
+    "G28\n" \
+    "G33 P1\n" \
+    "M104 S210\n" \
+    "M109 S210\n" \
+    "G1 Z5 F3000\n" \
+    "G1 X-40.0 Y-30.0 F6000\n" \
+    "G1 Z0.3 F600\n" \
+    "G1 E12 F200\n" \
+    "G1 E-1 F1800\n" \
+    "G1 X-30.0 Y-30.0 F6000\n" \
+    "G1 Z0.2 F300\n" \
+    "G1 E1 F600\n" \
+    "G1 X-30.00 Y-30.00 F1500\n" \
+    "G1 X-30.00 Y30.00 E2.400 F1500\n" \
+    "G1 X-29.55 Y30.00 E0.018 F1500\n" \
+    "G1 X-29.55 Y-30.00 E2.400 F1500\n" \
+    "G1 X-29.10 Y-30.00 E0.018 F1500\n" \
+    "G1 X-29.10 Y30.00 E2.400 F1500\n" \
+    "G1 X-28.65 Y30.00 E0.018 F1500\n" \
+    "G1 X-28.65 Y-30.00 E2.400 F1500\n" \
+    "G1 X-28.20 Y-30.00 E0.018 F1500\n" \
+    "G1 X-28.20 Y30.00 E2.400 F1500\n" \
+    "G1 X-27.75 Y30.00 E0.018 F1500\n" \
+    "G1 X-27.75 Y-30.00 E2.400 F1500\n" \
+    "G1 X-27.30 Y-30.00 E0.018 F1500\n" \
+    "G1 X-27.30 Y30.00 E2.400 F1500\n" \
+    "G1 X-26.85 Y30.00 E0.018 F1500\n" \
+    "G1 X-26.85 Y-30.00 E2.400 F1500\n" \
+    "G1 X-26.40 Y-30.00 E0.018 F1500\n" \
+    "G1 X-26.40 Y30.00 E2.400 F1500\n" \
+    "G1 X-25.95 Y30.00 E0.018 F1500\n" \
+    "G1 X-25.95 Y-30.00 E2.400 F1500\n" \
+    "G1 X-25.50 Y-30.00 E0.018 F1500\n" \
+    "G1 X-25.50 Y30.00 E2.400 F1500\n" \
+    "G1 X-25.05 Y30.00 E0.018 F1500\n" \
+    "G1 X-25.05 Y-30.00 E2.400 F1500\n" \
+    "G1 X-24.60 Y-30.00 E0.018 F1500\n" \
+    "G1 X-24.60 Y30.00 E2.400 F1500\n" \
+    "G1 X-24.15 Y30.00 E0.018 F1500\n" \
+    "G1 X-24.15 Y-30.00 E2.400 F1500\n" \
+    "G1 X-23.70 Y-30.00 E0.018 F1500\n" \
+    "G1 X-23.70 Y30.00 E2.400 F1500\n" \
+    "G1 X-23.25 Y30.00 E0.018 F1500\n" \
+    "G1 X-23.25 Y-30.00 E2.400 F1500\n" \
+    "G1 X-22.80 Y-30.00 E0.018 F1500\n" \
+    "G1 X-22.80 Y30.00 E2.400 F1500\n" \
+    "G1 X-22.35 Y30.00 E0.018 F1500\n" \
+    "G1 X-22.35 Y-30.00 E2.400 F1500\n" \
+    "G1 X-21.90 Y-30.00 E0.018 F1500\n" \
+    "G1 X-21.90 Y30.00 E2.400 F1500\n" \
+    "G1 X-21.45 Y30.00 E0.018 F1500\n" \
+    "G1 X-21.45 Y-30.00 E2.400 F1500\n" \
+    "G1 X-21.00 Y-30.00 E0.018 F1500\n" \
+    "G1 X-21.00 Y30.00 E2.400 F1500\n" \
+    "G1 X-20.55 Y30.00 E0.018 F1500\n" \
+    "G1 X-20.55 Y-30.00 E2.400 F1500\n" \
+    "G1 X-20.10 Y-30.00 E0.018 F1500\n" \
+    "G1 X-20.10 Y30.00 E2.400 F1500\n" \
+    "G1 X-19.65 Y30.00 E0.018 F1500\n" \
+    "G1 X-19.65 Y-30.00 E2.400 F1500\n" \
+    "G1 X-19.20 Y-30.00 E0.018 F1500\n" \
+    "G1 X-19.20 Y30.00 E2.400 F1500\n" \
+    "G1 X-18.75 Y30.00 E0.018 F1500\n" \
+    "G1 X-18.75 Y-30.00 E2.400 F1500\n" \
+    "G1 X-18.30 Y-30.00 E0.018 F1500\n" \
+    "G1 X-18.30 Y30.00 E2.400 F1500\n" \
+    "G1 X-17.85 Y30.00 E0.018 F1500\n" \
+    "G1 X-17.85 Y-30.00 E2.400 F1500\n" \
+    "G1 X-17.40 Y-30.00 E0.018 F1500\n" \
+    "G1 X-17.40 Y30.00 E2.400 F1500\n" \
+    "G1 X-16.95 Y30.00 E0.018 F1500\n" \
+    "G1 X-16.95 Y-30.00 E2.400 F1500\n" \
+    "G1 X-16.50 Y-30.00 E0.018 F1500\n" \
+    "G1 X-16.50 Y30.00 E2.400 F1500\n" \
+    "G1 X-16.05 Y30.00 E0.018 F1500\n" \
+    "G1 X-16.05 Y-30.00 E2.400 F1500\n" \
+    "G1 X-15.60 Y-30.00 E0.018 F1500\n" \
+    "G1 X-15.60 Y30.00 E2.400 F1500\n" \
+    "G1 X-15.15 Y30.00 E0.018 F1500\n" \
+    "G1 X-15.15 Y-30.00 E2.400 F1500\n" \
+    "G1 X-14.70 Y-30.00 E0.018 F1500\n" \
+    "G1 X-14.70 Y30.00 E2.400 F1500\n" \
+    "G1 X-14.25 Y30.00 E0.018 F1500\n" \
+    "G1 X-14.25 Y-30.00 E2.400 F1500\n" \
+    "G1 X-13.80 Y-30.00 E0.018 F1500\n" \
+    "G1 X-13.80 Y30.00 E2.400 F1500\n" \
+    "G1 X-13.35 Y30.00 E0.018 F1500\n" \
+    "G1 X-13.35 Y-30.00 E2.400 F1500\n" \
+    "G1 X-12.90 Y-30.00 E0.018 F1500\n" \
+    "G1 X-12.90 Y30.00 E2.400 F1500\n" \
+    "G1 X-12.45 Y30.00 E0.018 F1500\n" \
+    "G1 X-12.45 Y-30.00 E2.400 F1500\n" \
+    "G1 X-12.00 Y-30.00 E0.018 F1500\n" \
+    "G1 X-12.00 Y30.00 E2.400 F1500\n" \
+    "G1 X-11.55 Y30.00 E0.018 F1500\n" \
+    "G1 X-11.55 Y-30.00 E2.400 F1500\n" \
+    "G1 X-11.10 Y-30.00 E0.018 F1500\n" \
+    "G1 X-11.10 Y30.00 E2.400 F1500\n" \
+    "G1 X-10.65 Y30.00 E0.018 F1500\n" \
+    "G1 X-10.65 Y-30.00 E2.400 F1500\n" \
+    "G1 X-10.20 Y-30.00 E0.018 F1500\n" \
+    "G1 X-10.20 Y30.00 E2.400 F1500\n" \
+    "G1 X-9.75 Y30.00 E0.018 F1500\n" \
+    "G1 X-9.75 Y-30.00 E2.400 F1500\n" \
+    "G1 X-9.30 Y-30.00 E0.018 F1500\n" \
+    "G1 X-9.30 Y30.00 E2.400 F1500\n" \
+    "G1 X-8.85 Y30.00 E0.018 F1500\n" \
+    "G1 X-8.85 Y-30.00 E2.400 F1500\n" \
+    "G1 X-8.40 Y-30.00 E0.018 F1500\n" \
+    "G1 X-8.40 Y30.00 E2.400 F1500\n" \
+    "G1 X-7.95 Y30.00 E0.018 F1500\n" \
+    "G1 X-7.95 Y-30.00 E2.400 F1500\n" \
+    "G1 X-7.50 Y-30.00 E0.018 F1500\n" \
+    "G1 X-7.50 Y30.00 E2.400 F1500\n" \
+    "G1 X-7.05 Y30.00 E0.018 F1500\n" \
+    "G1 X-7.05 Y-30.00 E2.400 F1500\n" \
+    "G1 X-6.60 Y-30.00 E0.018 F1500\n" \
+    "G1 X-6.60 Y30.00 E2.400 F1500\n" \
+    "G1 X-6.15 Y30.00 E0.018 F1500\n" \
+    "G1 X-6.15 Y-30.00 E2.400 F1500\n" \
+    "G1 X-5.70 Y-30.00 E0.018 F1500\n" \
+    "G1 X-5.70 Y30.00 E2.400 F1500\n" \
+    "G1 X-5.25 Y30.00 E0.018 F1500\n" \
+    "G1 X-5.25 Y-30.00 E2.400 F1500\n" \
+    "G1 X-4.80 Y-30.00 E0.018 F1500\n" \
+    "G1 X-4.80 Y30.00 E2.400 F1500\n" \
+    "G1 X-4.35 Y30.00 E0.018 F1500\n" \
+    "G1 X-4.35 Y-30.00 E2.400 F1500\n" \
+    "G1 X-3.90 Y-30.00 E0.018 F1500\n" \
+    "G1 X-3.90 Y30.00 E2.400 F1500\n" \
+    "G1 X-3.45 Y30.00 E0.018 F1500\n" \
+    "G1 X-3.45 Y-30.00 E2.400 F1500\n" \
+    "G1 X-3.00 Y-30.00 E0.018 F1500\n" \
+    "G1 X-3.00 Y30.00 E2.400 F1500\n" \
+    "G1 X-2.55 Y30.00 E0.018 F1500\n" \
+    "G1 X-2.55 Y-30.00 E2.400 F1500\n" \
+    "G1 X-2.10 Y-30.00 E0.018 F1500\n" \
+    "G1 X-2.10 Y30.00 E2.400 F1500\n" \
+    "G1 X-1.65 Y30.00 E0.018 F1500\n" \
+    "G1 X-1.65 Y-30.00 E2.400 F1500\n" \
+    "G1 X-1.20 Y-30.00 E0.018 F1500\n" \
+    "G1 X-1.20 Y30.00 E2.400 F1500\n" \
+    "G1 X-0.75 Y30.00 E0.018 F1500\n" \
+    "G1 X-0.75 Y-30.00 E2.400 F1500\n" \
+    "G1 X-0.30 Y-30.00 E0.018 F1500\n" \
+    "G1 X-0.30 Y30.00 E2.400 F1500\n" \
+    "G1 X0.15 Y30.00 E0.018 F1500\n" \
+    "G1 X0.15 Y-30.00 E2.400 F1500\n" \
+    "G1 X0.60 Y-30.00 E0.018 F1500\n" \
+    "G1 X0.60 Y30.00 E2.400 F1500\n" \
+    "G1 X1.05 Y30.00 E0.018 F1500\n" \
+    "G1 X1.05 Y-30.00 E2.400 F1500\n" \
+    "G1 X1.50 Y-30.00 E0.018 F1500\n" \
+    "G1 X1.50 Y30.00 E2.400 F1500\n" \
+    "G1 X1.95 Y30.00 E0.018 F1500\n" \
+    "G1 X1.95 Y-30.00 E2.400 F1500\n" \
+    "G1 X2.40 Y-30.00 E0.018 F1500\n" \
+    "G1 X2.40 Y30.00 E2.400 F1500\n" \
+    "G1 X2.85 Y30.00 E0.018 F1500\n" \
+    "G1 X2.85 Y-30.00 E2.400 F1500\n" \
+    "G1 X3.30 Y-30.00 E0.018 F1500\n" \
+    "G1 X3.30 Y30.00 E2.400 F1500\n" \
+    "G1 X3.75 Y30.00 E0.018 F1500\n" \
+    "G1 X3.75 Y-30.00 E2.400 F1500\n" \
+    "G1 X4.20 Y-30.00 E0.018 F1500\n" \
+    "G1 X4.20 Y30.00 E2.400 F1500\n" \
+    "G1 X4.65 Y30.00 E0.018 F1500\n" \
+    "G1 X4.65 Y-30.00 E2.400 F1500\n" \
+    "G1 X5.10 Y-30.00 E0.018 F1500\n" \
+    "G1 X5.10 Y30.00 E2.400 F1500\n" \
+    "G1 X5.55 Y30.00 E0.018 F1500\n" \
+    "G1 X5.55 Y-30.00 E2.400 F1500\n" \
+    "G1 X6.00 Y-30.00 E0.018 F1500\n" \
+    "G1 X6.00 Y30.00 E2.400 F1500\n" \
+    "G1 X6.45 Y30.00 E0.018 F1500\n" \
+    "G1 X6.45 Y-30.00 E2.400 F1500\n" \
+    "G1 X6.90 Y-30.00 E0.018 F1500\n" \
+    "G1 X6.90 Y30.00 E2.400 F1500\n" \
+    "G1 X7.35 Y30.00 E0.018 F1500\n" \
+    "G1 X7.35 Y-30.00 E2.400 F1500\n" \
+    "G1 X7.80 Y-30.00 E0.018 F1500\n" \
+    "G1 X7.80 Y30.00 E2.400 F1500\n" \
+    "G1 X8.25 Y30.00 E0.018 F1500\n" \
+    "G1 X8.25 Y-30.00 E2.400 F1500\n" \
+    "G1 X8.70 Y-30.00 E0.018 F1500\n" \
+    "G1 X8.70 Y30.00 E2.400 F1500\n" \
+    "G1 X9.15 Y30.00 E0.018 F1500\n" \
+    "G1 X9.15 Y-30.00 E2.400 F1500\n" \
+    "G1 X9.60 Y-30.00 E0.018 F1500\n" \
+    "G1 X9.60 Y30.00 E2.400 F1500\n" \
+    "G1 X10.05 Y30.00 E0.018 F1500\n" \
+    "G1 X10.05 Y-30.00 E2.400 F1500\n" \
+    "G1 X10.50 Y-30.00 E0.018 F1500\n" \
+    "G1 X10.50 Y30.00 E2.400 F1500\n" \
+    "G1 X10.95 Y30.00 E0.018 F1500\n" \
+    "G1 X10.95 Y-30.00 E2.400 F1500\n" \
+    "G1 X11.40 Y-30.00 E0.018 F1500\n" \
+    "G1 X11.40 Y30.00 E2.400 F1500\n" \
+    "G1 X11.85 Y30.00 E0.018 F1500\n" \
+    "G1 X11.85 Y-30.00 E2.400 F1500\n" \
+    "G1 X12.30 Y-30.00 E0.018 F1500\n" \
+    "G1 X12.30 Y30.00 E2.400 F1500\n" \
+    "G1 X12.75 Y30.00 E0.018 F1500\n" \
+    "G1 X12.75 Y-30.00 E2.400 F1500\n" \
+    "G1 X13.20 Y-30.00 E0.018 F1500\n" \
+    "G1 X13.20 Y30.00 E2.400 F1500\n" \
+    "G1 X13.65 Y30.00 E0.018 F1500\n" \
+    "G1 X13.65 Y-30.00 E2.400 F1500\n" \
+    "G1 X14.10 Y-30.00 E0.018 F1500\n" \
+    "G1 X14.10 Y30.00 E2.400 F1500\n" \
+    "G1 X14.55 Y30.00 E0.018 F1500\n" \
+    "G1 X14.55 Y-30.00 E2.400 F1500\n" \
+    "G1 X15.00 Y-30.00 E0.018 F1500\n" \
+    "G1 X15.00 Y30.00 E2.400 F1500\n" \
+    "G1 X15.45 Y30.00 E0.018 F1500\n" \
+    "G1 X15.45 Y-30.00 E2.400 F1500\n" \
+    "G1 X15.90 Y-30.00 E0.018 F1500\n" \
+    "G1 X15.90 Y30.00 E2.400 F1500\n" \
+    "G1 X16.35 Y30.00 E0.018 F1500\n" \
+    "G1 X16.35 Y-30.00 E2.400 F1500\n" \
+    "G1 X16.80 Y-30.00 E0.018 F1500\n" \
+    "G1 X16.80 Y30.00 E2.400 F1500\n" \
+    "G1 X17.25 Y30.00 E0.018 F1500\n" \
+    "G1 X17.25 Y-30.00 E2.400 F1500\n" \
+    "G1 X17.70 Y-30.00 E0.018 F1500\n" \
+    "G1 X17.70 Y30.00 E2.400 F1500\n" \
+    "G1 X18.15 Y30.00 E0.018 F1500\n" \
+    "G1 X18.15 Y-30.00 E2.400 F1500\n" \
+    "G1 X18.60 Y-30.00 E0.018 F1500\n" \
+    "G1 X18.60 Y30.00 E2.400 F1500\n" \
+    "G1 X19.05 Y30.00 E0.018 F1500\n" \
+    "G1 X19.05 Y-30.00 E2.400 F1500\n" \
+    "G1 X19.50 Y-30.00 E0.018 F1500\n" \
+    "G1 X19.50 Y30.00 E2.400 F1500\n" \
+    "G1 X19.95 Y30.00 E0.018 F1500\n" \
+    "G1 X19.95 Y-30.00 E2.400 F1500\n" \
+    "G1 X20.40 Y-30.00 E0.018 F1500\n" \
+    "G1 X20.40 Y30.00 E2.400 F1500\n" \
+    "G1 X20.85 Y30.00 E0.018 F1500\n" \
+    "G1 X20.85 Y-30.00 E2.400 F1500\n" \
+    "G1 X21.30 Y-30.00 E0.018 F1500\n" \
+    "G1 X21.30 Y30.00 E2.400 F1500\n" \
+    "G1 X21.75 Y30.00 E0.018 F1500\n" \
+    "G1 X21.75 Y-30.00 E2.400 F1500\n" \
+    "G1 X22.20 Y-30.00 E0.018 F1500\n" \
+    "G1 X22.20 Y30.00 E2.400 F1500\n" \
+    "G1 X22.65 Y30.00 E0.018 F1500\n" \
+    "G1 X22.65 Y-30.00 E2.400 F1500\n" \
+    "G1 X23.10 Y-30.00 E0.018 F1500\n" \
+    "G1 X23.10 Y30.00 E2.400 F1500\n" \
+    "G1 X23.55 Y30.00 E0.018 F1500\n" \
+    "G1 X23.55 Y-30.00 E2.400 F1500\n" \
+    "G1 X24.00 Y-30.00 E0.018 F1500\n" \
+    "G1 X24.00 Y30.00 E2.400 F1500\n" \
+    "G1 X24.45 Y30.00 E0.018 F1500\n" \
+    "G1 X24.45 Y-30.00 E2.400 F1500\n" \
+    "G1 X24.90 Y-30.00 E0.018 F1500\n" \
+    "G1 X24.90 Y30.00 E2.400 F1500\n" \
+    "G1 X25.35 Y30.00 E0.018 F1500\n" \
+    "G1 X25.35 Y-30.00 E2.400 F1500\n" \
+    "G1 X25.80 Y-30.00 E0.018 F1500\n" \
+    "G1 X25.80 Y30.00 E2.400 F1500\n" \
+    "G1 X26.25 Y30.00 E0.018 F1500\n" \
+    "G1 X26.25 Y-30.00 E2.400 F1500\n" \
+    "G1 X26.70 Y-30.00 E0.018 F1500\n" \
+    "G1 X26.70 Y30.00 E2.400 F1500\n" \
+    "G1 X27.15 Y30.00 E0.018 F1500\n" \
+    "G1 X27.15 Y-30.00 E2.400 F1500\n" \
+    "G1 X27.60 Y-30.00 E0.018 F1500\n" \
+    "G1 X27.60 Y30.00 E2.400 F1500\n" \
+    "G1 X28.05 Y30.00 E0.018 F1500\n" \
+    "G1 X28.05 Y-30.00 E2.400 F1500\n" \
+    "G1 X28.50 Y-30.00 E0.018 F1500\n" \
+    "G1 X28.50 Y30.00 E2.400 F1500\n" \
+    "G1 X28.95 Y30.00 E0.018 F1500\n" \
+    "G1 X28.95 Y-30.00 E2.400 F1500\n" \
+    "G1 X29.40 Y-30.00 E0.018 F1500\n" \
+    "G1 X29.40 Y30.00 E2.400 F1500\n" \
+    "G1 X29.85 Y30.00 E0.018 F1500\n" \
+    "G1 X29.85 Y-30.00 E2.400 F1500\n" \
+    "G1 E-2 F1800\n" \
+    "G1 Z10 F3000\n" \
+    "M104 S0\n" \
+    "M117 Test 1re couche fini\n" \
+    "G28\n"
 
-  #define MAIN_MENU_ITEM_2_DESC "Preheat for " PREHEAT_1_LABEL
-  #define MAIN_MENU_ITEM_2_GCODE "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
-  //#define MAIN_MENU_ITEM_2_CONFIRM
+  #define NEVA_TEST_FILAMENT_GCODE \
+    "M117 Chauffe 200C...\n" \
+    "M104 S200\n" \
+    "M109 S200\n" \
+    "M83\n" \
+    "G92 E0\n" \
+    "M117 Extrusion 10 mm\n" \
+    "G1 E10 F100\n" \
+    "G4 S3\n" \
+    "M117 Marque a 120mm !\n" \
+    "G4 S10\n" \
+    "M117 Extrusion 100 mm\n" \
+    "G1 E100 F100\n" \
+    "G4 S2\n" \
+    "M117 Mesure: marque?\n" \
+    "G4 S15\n" \
+    "M117 Retrait 5 mm\n" \
+    "G1 E-5 F1800\n" \
+    "G4 S2\n" \
+    "G1 E5 F600\n" \
+    "M117 Test termine\n" \
+    "M104 S0\n" \
+    "M84 E\n"
 
-  //#define MAIN_MENU_ITEM_3_DESC "Preheat for " PREHEAT_2_LABEL
-  //#define MAIN_MENU_ITEM_3_GCODE "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
-  //#define MAIN_MENU_ITEM_3_CONFIRM
+  #define MAIN_MENU_ITEM_1_DESC "Test 1ere couche"
+  #define MAIN_MENU_ITEM_1_GCODE NEVA_TEST_COUCHE1_GCODE
+  #define MAIN_MENU_ITEM_1_CONFIRM          // Demande confirmation avant de lancer
 
-  //#define MAIN_MENU_ITEM_4_DESC "Heat Bed/Home/Level"
-  //#define MAIN_MENU_ITEM_4_GCODE "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nG28\nG29"
-  //#define MAIN_MENU_ITEM_4_CONFIRM
-
-  //#define MAIN_MENU_ITEM_5_DESC "Home & Info"
-  //#define MAIN_MENU_ITEM_5_GCODE "G28\nM503"
-  //#define MAIN_MENU_ITEM_5_CONFIRM
+  #define MAIN_MENU_ITEM_2_DESC "Test filament"
+  #define MAIN_MENU_ITEM_2_GCODE NEVA_TEST_FILAMENT_GCODE
+  #define MAIN_MENU_ITEM_2_CONFIRM
 #endif
 
 // @section custom config menu

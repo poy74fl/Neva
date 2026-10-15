@@ -1,6 +1,6 @@
 --- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/marlinui.orig.cpp	2026-10-14 14:21:30.353899093 +0000
-+++ marlin-patches/Marlin/src/lcd/marlinui.cpp	2026-10-14 14:24:51.202024664 +0000
-@@ -38,6 +38,42 @@
++++ marlin-patches/Marlin/src/lcd/marlinui.cpp	2026-10-15 13:37:11.129670553 +0000
+@@ -38,6 +38,82 @@
  
  // All displays share the MarlinUI class
  #include "marlinui.h"
@@ -40,10 +40,50 @@
 +  }
 +#endif
 +// -----------------------------------------------------------------------------------------------
++
++// --- Neva : chargement automatique du filament au repos --------------------------------------------
++// Machine au repos : quand le capteur de filament passe de "plus de filament" a "filament present"
++// (tu viens d'inserer le filament), la buse chauffe a NEVA_AUTOLOAD_TEMP puis M701 charge le filament.
++#if ALL(FILAMENT_RUNOUT_SENSOR, ADVANCED_PAUSE_FEATURE, FILAMENT_LOAD_UNLOAD_GCODES) && defined(NEVA_AUTOLOAD_TEMP) && defined(NEVA_AUTOLOAD_DELAY_MS)
++  #define NEVA_AUTOLOAD 1
++  #include "../feature/runout.h"
++  #include "../gcode/queue.h"
++  #include "../module/temperature.h"
++  #include "../module/planner.h"
++
++  static bool     neva_al_init = false, neva_al_prev_present = false, neva_al_armed = false;
++  static millis_t neva_al_since = 0;
++
++  static void neva_autoload_check(const millis_t ms) {
++    const bool present = !(FilamentSensorBase::poll_runout_states() & _BV(0));   // 1 = plus de filament
++    if (!neva_al_init) { neva_al_init = true; neva_al_prev_present = present; return; }  // au demarrage : pas de declenchement
++
++    const bool idle = FilamentMonitorBase::enabled && !printingIsActive() && !wait_for_user
++                      && !queue.has_commands_queued() && !planner.has_blocks_queued();
++
++    if (!idle || !present) { neva_al_armed = false; neva_al_prev_present = present; return; }
++
++    if (!neva_al_prev_present) {          // front montant : le filament vient d'arriver devant le capteur
++      neva_al_prev_present = true;
++      neva_al_armed = true;
++      neva_al_since = ms;
++      return;
++    }
++
++    if (neva_al_armed && ELAPSED(ms, neva_al_since + (NEVA_AUTOLOAD_DELAY_MS))) {   // stable : on lance
++      neva_al_armed = false;
++      if (thermalManager.degTargetHotend(0) < NEVA_AUTOLOAD_TEMP)
++        queue.inject(F("M117 Chargement auto\nM104 S" STRINGIFY(NEVA_AUTOLOAD_TEMP) "\nM701"));
++      else
++        queue.inject(F("M117 Chargement auto\nM701"));
++    }
++  }
++#endif
++// -----------------------------------------------------------------------------------------------
  MarlinUI ui;
  
  #if HAS_DISPLAY
-@@ -1078,6 +1114,10 @@
+@@ -1078,6 +1154,10 @@
  
            reset_status_timeout(ms);
  
@@ -54,12 +94,16 @@
            #if LCD_BACKLIGHT_TIMEOUT_MINS
              refresh_backlight_timeout();
            #elif HAS_DISPLAY_SLEEP
-@@ -1188,6 +1228,10 @@
+@@ -1188,6 +1268,14 @@
            return_to_status();
        #endif
  
 +      #if NEVA_LED_DIM
 +        neva_led_dim_check(ms);
++      #endif
++
++      #if NEVA_AUTOLOAD
++        neva_autoload_check(ms);
 +      #endif
 +
        #if LCD_BACKLIGHT_TIMEOUT_MINS

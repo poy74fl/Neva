@@ -123,7 +123,11 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Atténuation automatique de l'écran** : sans action sur la molette pendant `NEVA_LED_DIM_TIMEOUT_S` secondes (60 par défaut, au repos comme en impression), le rétroéclairage passe à `NEVA_LED_DIM_BRIGHTNESS` (20 sur 255) ; il revient dès que tu tournes ou appuies sur la molette, et reste à pleine luminosité tant qu'un message attend ta réponse (fin d'impression en vert, changement de filament…). Réglages dans `Configuration_adv.h` ; commente `NEVA_LED_DIM_TIMEOUT_S` pour désactiver (le patch `marlinui.cpp` reste alors inactif).
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.23 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Menu « Tests »** (en bas du menu principal, au repos) : scripts G-code intégrés au firmware, « Test 1ere couche » (carré de 60 × 60 mm, PLA 210 °C, ventilateur coupé) et « Test filament » (extrusion de 100 mm mesurée). Ils sont aussi dans `docs/test_premiere_couche.gcode` et `docs/test_filament.gcode`. Réglage dans `Configuration_adv.h` (`CUSTOM_MENU_MAIN`).
+
+**Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
+
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.24 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 

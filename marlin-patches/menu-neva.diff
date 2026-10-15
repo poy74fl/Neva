@@ -1,5 +1,5 @@
---- orig_menu_main.cpp	2026-10-13 22:42:51.969822928 +0000
-+++ patch/Marlin/src/lcd/menu/menu_main.cpp	2026-10-14 07:30:54.034590018 +0000
+--- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/orig_menu_main.cpp	2026-10-13 22:42:51.969822928 +0000
++++ marlin-patches/Marlin/src/lcd/menu/menu_main.cpp	2026-10-15 13:35:57.892442965 +0000
 @@ -240,11 +240,7 @@
    #endif
  
@@ -13,7 +13,7 @@
  
    if (busy) {
      #if MACHINE_CAN_PAUSE
-@@ -270,166 +266,55 @@
+@@ -270,89 +266,56 @@
      #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
        SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
      #endif
@@ -99,41 +99,25 @@
 -  #if HAS_CUTTER
 -    SUBMENU(MSG_CUTTER(MENU), STICKY_SCREEN(menu_spindle_laser));
 -  #endif
--
--  #if HAS_TEMPERATURE
--    SUBMENU(MSG_TEMPERATURE, menu_temperature);
--  #endif
--
--  #if HAS_POWER_MONITOR
--    SUBMENU(MSG_POWER_MONITOR, menu_power_monitor);
--  #endif
--
--  #if ENABLED(MIXING_EXTRUDER)
--    SUBMENU(MSG_MIXER, menu_mixer);
--  #endif
 +    // 5. Changer filament
 +    #if ENABLED(ADVANCED_PAUSE_FEATURE)
 +      FILAMENT_CHANGE_ITEM();
 +    #endif
  
--  #if ENABLED(MMU2_MENUS)
--    if (!busy) SUBMENU(MSG_MMU2_MENU, menu_mmu2);
+-  #if HAS_TEMPERATURE
+-    SUBMENU(MSG_TEMPERATURE, menu_temperature);
 -  #endif
 +    // 6. Configuration
 +    SUBMENU(MSG_CONFIGURATION, menu_configuration);
  
--  SUBMENU(MSG_CONFIGURATION, menu_configuration);
+-  #if HAS_POWER_MONITOR
+-    SUBMENU(MSG_POWER_MONITOR, menu_power_monitor);
+-  #endif
 +    // 7. Mouvement
 +    SUBMENU(MSG_MOTION, menu_motion);
  
--  #if ENABLED(CUSTOM_MENU_MAIN)
--    if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
--      #ifdef CUSTOM_MENU_MAIN_TITLE
--        SUBMENU_F(F(CUSTOM_MENU_MAIN_TITLE), custom_menus_main);
--      #else
--        SUBMENU(MSG_CUSTOM_COMMANDS, custom_menus_main);
--      #endif
--    }
+-  #if ENABLED(MIXING_EXTRUDER)
+-    SUBMENU(MSG_MIXER, menu_mixer);
 -  #endif
 +    // 8. Lumiere
 +    #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
@@ -141,11 +125,27 @@
 +    #endif
 +  }
  
+-  #if ENABLED(MMU2_MENUS)
+-    if (!busy) SUBMENU(MSG_MMU2_MENU, menu_mmu2);
 +  // 9. Infos imprimante (version, carte, thermistances, statistiques)
-   #if ENABLED(LCD_INFO_MENU)
-     SUBMENU(MSG_INFO_MENU, menu_info);
++  #if ENABLED(LCD_INFO_MENU)
++    SUBMENU(MSG_INFO_MENU, menu_info);
    #endif
  
+-  SUBMENU(MSG_CONFIGURATION, menu_configuration);
+-
++  // 10. Tests (scripts G-code integres : 1ere couche, filament) - voir Configuration_adv.h
+   #if ENABLED(CUSTOM_MENU_MAIN)
+     if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
+       #ifdef CUSTOM_MENU_MAIN_TITLE
+@@ -363,73 +326,6 @@
+     }
+   #endif
+ 
+-  #if ENABLED(LCD_INFO_MENU)
+-    SUBMENU(MSG_INFO_MENU, menu_info);
+-  #endif
+-
 -  #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
 -    SUBMENU(MSG_LEDS, menu_led);
 -  #endif
@@ -212,7 +212,7 @@
    #if HAS_SERVICE_INTERVALS
      static auto _service_reset = [](const int index) {
        print_job_timer.resetServiceInterval(index);
-@@ -498,10 +383,6 @@
+@@ -498,10 +394,6 @@
      });
    #endif
  
@@ -223,23 +223,3 @@
    END_MENU();
  }
  
---- orig_language_fr.h	2026-10-13 22:42:51.971989259 +0000
-+++ patch/Marlin/src/lcd/language/language_fr.h	2026-10-13 22:46:58.673983671 +0000
-@@ -308,7 +308,7 @@
-   LSTR MSG_N_STEPS                        = _UxGT("@ pas/mm");
-   LSTR MSG_E_STEPS                        = _UxGT("E pas/mm");
-   LSTR MSG_EN_STEPS                       = _UxGT("* pas/mm");
--  LSTR MSG_TEMPERATURE                    = _UxGT("Température");
-+  LSTR MSG_TEMPERATURE                    = _UxGT("Préchauffage");
-   LSTR MSG_MOTION                         = _UxGT("Mouvement");
-   LSTR MSG_FILAMENT                       = _UxGT("Filament");
-   LSTR MSG_VOLUMETRIC_ENABLED             = _UxGT("E en mm") SUPERSCRIPT_THREE;
-@@ -355,7 +355,7 @@
-   LSTR MSG_CANCEL_OBJECT                  = _UxGT("Annuler objet");
-   LSTR MSG_CANCEL_OBJECT_N                = _UxGT("Annuler objet {");
-   LSTR MSG_OUTAGE_RECOVERY                = _UxGT("Récup. coup.");
--  LSTR MSG_MEDIA_MENU                     = _UxGT("Impression SD");
-+  LSTR MSG_MEDIA_MENU                     = _UxGT("Impr. depuis la SD");
-   LSTR MSG_NO_MEDIA                       = _UxGT("Pas de média");
-   LSTR MSG_DWELL                          = _UxGT("Repos...");
-   LSTR MSG_USERWAIT                       = _UxGT("Attente utilis.");

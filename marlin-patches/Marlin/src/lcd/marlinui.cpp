@@ -74,6 +74,46 @@
   }
 #endif
 // -----------------------------------------------------------------------------------------------
+
+// --- Neva : chargement automatique du filament au repos --------------------------------------------
+// Machine au repos : quand le capteur de filament passe de "plus de filament" a "filament present"
+// (tu viens d'inserer le filament), la buse chauffe a NEVA_AUTOLOAD_TEMP puis M701 charge le filament.
+#if ALL(FILAMENT_RUNOUT_SENSOR, ADVANCED_PAUSE_FEATURE, FILAMENT_LOAD_UNLOAD_GCODES) && defined(NEVA_AUTOLOAD_TEMP) && defined(NEVA_AUTOLOAD_DELAY_MS)
+  #define NEVA_AUTOLOAD 1
+  #include "../feature/runout.h"
+  #include "../gcode/queue.h"
+  #include "../module/temperature.h"
+  #include "../module/planner.h"
+
+  static bool     neva_al_init = false, neva_al_prev_present = false, neva_al_armed = false;
+  static millis_t neva_al_since = 0;
+
+  static void neva_autoload_check(const millis_t ms) {
+    const bool present = !(FilamentSensorBase::poll_runout_states() & _BV(0));   // 1 = plus de filament
+    if (!neva_al_init) { neva_al_init = true; neva_al_prev_present = present; return; }  // au demarrage : pas de declenchement
+
+    const bool idle = FilamentMonitorBase::enabled && !printingIsActive() && !wait_for_user
+                      && !queue.has_commands_queued() && !planner.has_blocks_queued();
+
+    if (!idle || !present) { neva_al_armed = false; neva_al_prev_present = present; return; }
+
+    if (!neva_al_prev_present) {          // front montant : le filament vient d'arriver devant le capteur
+      neva_al_prev_present = true;
+      neva_al_armed = true;
+      neva_al_since = ms;
+      return;
+    }
+
+    if (neva_al_armed && ELAPSED(ms, neva_al_since + (NEVA_AUTOLOAD_DELAY_MS))) {   // stable : on lance
+      neva_al_armed = false;
+      if (thermalManager.degTargetHotend(0) < NEVA_AUTOLOAD_TEMP)
+        queue.inject(F("M117 Chargement auto\nM104 S" STRINGIFY(NEVA_AUTOLOAD_TEMP) "\nM701"));
+      else
+        queue.inject(F("M117 Chargement auto\nM701"));
+    }
+  }
+#endif
+// -----------------------------------------------------------------------------------------------
 MarlinUI ui;
 
 #if HAS_DISPLAY
@@ -1230,6 +1270,10 @@ void MarlinUI::init() {
 
       #if NEVA_LED_DIM
         neva_led_dim_check(ms);
+      #endif
+
+      #if NEVA_AUTOLOAD
+        neva_autoload_check(ms);
       #endif
 
       #if LCD_BACKLIGHT_TIMEOUT_MINS

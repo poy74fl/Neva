@@ -315,6 +315,17 @@ void menu_main() {
     SUBMENU(MSG_INFO_MENU, menu_info);
   #endif
 
+  // 10. Tests (scripts G-code integres : 1ere couche, filament) - voir Configuration_adv.h
+  #if ENABLED(CUSTOM_MENU_MAIN)
+    if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
+      #ifdef CUSTOM_MENU_MAIN_TITLE
+        SUBMENU_F(F(CUSTOM_MENU_MAIN_TITLE), custom_menus_main);
+      #else
+        SUBMENU(MSG_CUSTOM_COMMANDS, custom_menus_main);
+      #endif
+    }
+  #endif
+
   #if HAS_SERVICE_INTERVALS
     static auto _service_reset = [](const int index) {
       print_job_timer.resetServiceInterval(index);
