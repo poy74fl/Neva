@@ -345,11 +345,12 @@
     void neva_belt_end()   { neva_belt_busy = false; }
 
     // Lecture pour l'ecran dedie (menu_main.cpp) : moyennes X, Y, Z, ecart max en %, nombre de mesures X, rapport actif ?
-    void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running) {
+    void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running, bool &reporting) {
       uint16_t lo = 0xFFFF, hi = 0;
       uint32_t tot = 0;
       n = neva_belt_n[0];
       running = neva_belt_busy;
+      reporting = report_tmc_status_interval != 0;
       for (uint8_t i = 0; i < 3; i++) {
         m[i] = neva_belt_n[i] ? neva_belt_sum[i] / neva_belt_n[i] : 0;
         if (!neva_belt_n[i]) n = 0;
@@ -581,7 +582,10 @@
     void tmc_set_report_interval(const uint16_t update_interval) {
       #if NEVA_BELT_DISPLAY
         if (update_interval) { neva_belt_reset(); neva_belt_tcool(0xFFFFF); }
-        else if (report_tmc_status_interval) { neva_belt_show(true); neva_belt_tcool(0); neva_belt_busy = false; }
+        else {
+          if (report_tmc_status_interval) { neva_belt_show(true); neva_belt_tcool(0); }
+          neva_belt_busy = false;
+        }
       #endif
       if ((report_tmc_status_interval = update_interval))
         SERIAL_ECHOLNPGM("axis:pwm_scale"

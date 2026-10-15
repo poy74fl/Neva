@@ -113,7 +113,7 @@ void menu_configuration();
 
   #define NEVA_BELT_SCREEN 1
 
-  void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running); // definis dans feature/tmc_util.cpp
+  void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running, bool &reporting); // definis dans feature/tmc_util.cpp
   void neva_belt_begin();
   void neva_belt_end();
 
@@ -122,18 +122,21 @@ void menu_configuration();
     if (ui.use_click()) { ui.defer_status_screen(false); neva_belt_end(); return ui.go_back(); }
 
     uint16_t m[3], spread, n;
-    bool running;
-    neva_belt_read(m, spread, n, running);
+    bool running, reporting;
+    neva_belt_read(m, spread, n, running, reporting);
+    static uint8_t redraws;                                    // diagnostic : compteur de rafraichissements de l'ecran
+    ++redraws;
 
-    char bx[12], by[12], bz[12], be[16];
+    char bx[12], by[12], bz[12], be[24];
     if (n) {
       sprintf_P(bx, PSTR("%u"), (unsigned)m[0]);
       sprintf_P(by, PSTR("%u"), (unsigned)m[1]);
       sprintf_P(bz, PSTR("%u"), (unsigned)m[2]);
-      sprintf_P(be, PSTR("%u %%"), (unsigned)spread);
+      sprintf_P(be, PSTR("%u%% n%u r%u %c"), (unsigned)spread, (unsigned)n, (unsigned)(redraws % 100), reporting ? 'R' : '-');
     }
     else {
-      strcpy_P(bx, PSTR("--")); strcpy_P(by, PSTR("--")); strcpy_P(bz, PSTR("--")); strcpy_P(be, PSTR("--"));
+      strcpy_P(bx, PSTR("--")); strcpy_P(by, PSTR("--")); strcpy_P(bz, PSTR("--"));
+      sprintf_P(be, PSTR("-- n0 r%u %c"), (unsigned)(redraws % 100), reporting ? 'R' : '-');
     }
 
     START_SCREEN();
@@ -141,7 +144,7 @@ void menu_configuration();
     STATIC_ITEM_F(F("X : "), SS_LEFT, bx);
     STATIC_ITEM_F(F("Y : "), SS_LEFT, by);
     STATIC_ITEM_F(F("Z : "), SS_LEFT, bz);
-    STATIC_ITEM_F(F("Ecart : "), SS_LEFT, be);
+    STATIC_ITEM_F(F("E: "), SS_LEFT, be);
     END_SCREEN();
 
     ui.refresh(LCDVIEW_CALL_REDRAW_NEXT);                      // rafraichit l'ecran en continu

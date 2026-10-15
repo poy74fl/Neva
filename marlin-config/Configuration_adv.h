@@ -4094,6 +4094,7 @@
   // (resume sur Mac : python3 docs/test_courroies.py ; meme script que docs/test_courroies.gcode)
   #define NEVA_TEST_COURROIES_GCODE \
     "M117 Test courroies...\n" \
+    "M122 S0\n" \
     "G90\n" \
     "G28\n" \
     "G1 X0 Y0 Z200 F6000\n" \
