@@ -4063,7 +4063,7 @@
     "G1 Z10 F3000\n" \
     "M104 S0\n" \
     "M117 Test 1re couche fini\n" \
-    "G28\n"
+    "G28"
 
   #define NEVA_TEST_FILAMENT_GCODE \
     "M117 Chauffe 200C...\n" \
@@ -4087,7 +4087,7 @@
     "G1 E5 F600\n" \
     "M117 Test termine\n" \
     "M104 S0\n" \
-    "M84 E\n"
+    "M84 E"
 
   // Test courroies : les 3 chariots montent/descendent ensemble ; M122 S1 envoie le StallGuard de chaque moteur sur le port serie
   // ET (patch tmc_util.cpp) affiche sur l'ecran la moyenne de X, Y, Z et l'ecart max : "X180 Y177 Z183 e7%", laisse a la fin.
@@ -4113,7 +4113,7 @@
     "G1 Z60 F3600\n" \
     "G1 Z200 F3600\n" \
     "M400\n" \
-    "M122 S0\n"
+    "M122 S0"
 
   #define MAIN_MENU_ITEM_1_DESC "Test 1ere couche"
   #define MAIN_MENU_ITEM_1_GCODE NEVA_TEST_COUCHE1_GCODE
