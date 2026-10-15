@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Genere docs/test_premiere_couche_spirale.gcode : une SEULE ligne en spirale sur tout le plateau
-(pas de 4 mm : les lignes restent separees, on voit l'ecrasement partout), qui se termine par un
+(pas de 8 mm : les lignes restent separees, on voit l'ecrasement partout), qui se termine par un
 rond plein (pas de 0,45 mm) au centre. Spirale faite avec des demi-cercles G2/G3 (une centaine de lignes de G-code).
 
   python3 docs/make_test_spirale.py            -> rayon exterieur 90 mm, rond plein de 20 mm
@@ -11,7 +11,7 @@ from pathlib import Path
 
 R_OUT = float(sys.argv[1]) if len(sys.argv) > 1 else 90.0   # rayon exterieur de la spirale (mm)
 R_DISC = float(sys.argv[2]) if len(sys.argv) > 2 else 20.0  # rayon du rond plein central (mm)
-PITCH_OUT, PITCH_DISC = 4.0, 0.45                          # pas des deux spirales (mm)
+PITCH_OUT, PITCH_DISC = 8.0, 0.45                          # pas des deux spirales (mm)
 K = 0.040                                                  # mm de filament par mm de ligne (0,45 x 0,2 + ecrasement)
 F = 1500                                                   # 25 mm/s
 
@@ -49,7 +49,7 @@ def rotate180(arcs):
     return [((-s[0], -s[1]), (-e[0], -e[1]), (-c[0], -c[1]), sens) for s, e, c, sens in arcs]
 
 
-outer = reverse(spiral_out(PITCH_OUT, R_OUT))    # de l'exterieur vers le centre, pas de 4 mm
+outer = reverse(spiral_out(PITCH_OUT, R_OUT))    # de l'exterieur vers le centre, pas de 8 mm
 disc = reverse(spiral_out(PITCH_DISC, R_DISC))   # rond plein, de R_DISC vers le centre
 
 # --- raccord : la spirale exterieure s'arrete a "end1", le rond plein doit commencer au meme point ---
@@ -76,13 +76,14 @@ a = L.append
 a("; === Test de premiere couche : UNE SEULE ligne en spirale sur tout le plateau, puis un rond plein ===")
 a(f"; Spirale de rayon {R_OUT:.0f} mm, pas {PITCH_OUT:.1f} mm (lignes separees : on voit l'ecrasement partout),")
 a(f"; puis rond plein de {R_DISC:.0f} mm au centre (pas {PITCH_DISC} mm). PLA 210 C, ventilateur coupe.")
-a("; Duree : environ 6 minutes. Pendant la 1re couche : DOUBLE-CLIC sur la molette = reglage Z (Decalage Z).")
+a("; Duree : environ 4 minutes + palpage. Pendant la 1re couche : DOUBLE-CLIC sur la molette = reglage Z (Decalage Z).")
 a("; Lecture : lignes regulieres et de meme largeur partout = plateau plat et hauteur bonne.")
 a("M107")
 a("G90")
 a("M83")
 a("G28")
 a("G33 P1")
+a("G29                   ; palpage du plateau en plusieurs points (maillage)")
 a("M104 S210")
 a("M109 S210")
 a("G1 Z5 F3000")

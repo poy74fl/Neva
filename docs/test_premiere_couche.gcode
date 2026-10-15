@@ -7,6 +7,7 @@ G90
 M83                   ; extrusion relative
 G28
 G33 P1                ; la sonde recale Z0
+G29                   ; palpage du plateau en plusieurs points (maillage), actif pour toute la suite
 M104 S210
 M109 S210
 G1 Z5 F3000

@@ -125,9 +125,11 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Menu « Tests »** (en bas du menu principal, au repos) : scripts G-code intégrés au firmware, « Test 1ere couche » (carré de 60 × 60 mm, PLA 210 °C, ventilateur coupé) et « Test filament » (extrusion de 100 mm mesurée). Ils sont aussi dans `docs/test_premiere_couche.gcode` et `docs/test_filament.gcode`. Réglage dans `Configuration_adv.h` (`CUSTOM_MENU_MAIN`).
 
+**Palpage du plateau (maillage)** : `AUTO_BED_LEVELING_BILINEAR`, grille 7 × 7 sur le disque de rayon 70 mm (`PROBING_MARGIN 30`), soit environ 30 points. Chaque G-code de test et le G-code de début du slicer enchaînent `G28`, `G33 P1` (hauteur), `G29` (maillage), puis la chauffe ; `G29` active la correction pour toute l'impression. Après le flash : `M502`, `M500`. `G28` désactive le maillage ; `M420 V1` l'affiche.
+
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.24 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.25 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 

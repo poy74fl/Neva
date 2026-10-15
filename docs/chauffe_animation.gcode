@@ -5,6 +5,7 @@
 ;
 G28                               ; origine
 G33 P1                            ; la sonde recale Z0
+G29                               ; palpage du plateau en plusieurs points (maillage)
 M104 S[first_layer_temperature]   ; lance la chauffe SANS attendre (Cura : {material_print_temperature_layer_0})
 M117 Chauffe en cours...
 G1 Z100 F6000                     ; hauteur de securite au-dessus du plateau
