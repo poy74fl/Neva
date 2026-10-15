@@ -299,12 +299,14 @@
 
     static uint32_t neva_belt_sum[3];
     static uint16_t neva_belt_n[3];
+    static millis_t neva_belt_next;
 
     template<char L, char D>
     static char neva_axis_letter(const TMCStorage<L, D> &) { return L; }
 
     static void neva_belt_reset() {
       for (uint8_t i = 0; i < 3; i++) { neva_belt_sum[i] = 0; neva_belt_n[i] = 0; }
+      neva_belt_next = 0;
     }
 
     static void neva_belt_sample(const char axis, const bool ok, const uint16_t sg) {
@@ -313,7 +315,14 @@
       neva_belt_n[axis - 'X']++;
     }
 
-    static void neva_belt_show() {
+    // En cours de test, l'ecran n'est rafraichi que toutes les 2 s (un affichage a 4 Hz charge trop la liaison de l'ecran
+    // pendant que les moteurs tournent) ; le resultat final est affiche et aussi envoye sur le port serie.
+    static void neva_belt_show(const bool is_final) {
+      if (!is_final) {
+        const millis_t ms = millis();
+        if (!ELAPSED(ms, neva_belt_next)) return;
+        neva_belt_next = ms + 2000UL;
+      }
       for (uint8_t i = 0; i < 3; i++) if (!neva_belt_n[i]) return;
       uint16_t m[3], lo = 0xFFFF, hi = 0;
       uint32_t tot = 0;
@@ -327,6 +336,7 @@
       char buf[32];
       sprintf_P(buf, PSTR("X%u Y%u Z%u e%u%%"), (unsigned)m[0], (unsigned)m[1], (unsigned)m[2], (unsigned)spread);
       ui.set_status(buf, true);
+      if (is_final) SERIAL_ECHO_MSG("Courroies: ", buf);
     }
 
     // StallGuard (SG_RESULT) n'est mis a jour que sous le seuil TCOOLTHRS : 0xFFFFF pendant le test, 0 ensuite
@@ -534,7 +544,7 @@
 
       if (TERN0(TMC_DEBUG, need_debug_reporting)) SERIAL_EOL();
       #if NEVA_BELT_DISPLAY
-        if (need_debug_reporting) neva_belt_show();
+        if (need_debug_reporting) neva_belt_show(false);
       #endif
     }
   }
@@ -550,7 +560,7 @@
     void tmc_set_report_interval(const uint16_t update_interval) {
       #if NEVA_BELT_DISPLAY
         if (update_interval) { neva_belt_reset(); neva_belt_tcool(0xFFFFF); }
-        else if (report_tmc_status_interval) { neva_belt_show(); neva_belt_tcool(0); }
+        else if (report_tmc_status_interval) { neva_belt_show(true); neva_belt_tcool(0); }
       #endif
       if ((report_tmc_status_interval = update_interval))
         SERIAL_ECHOLNPGM("axis:pwm_scale"
