@@ -3767,7 +3767,7 @@
 #define CUSTOM_MENU_MAIN
 #if ENABLED(CUSTOM_MENU_MAIN)
   // Neva : menu "Tests" (en bas du menu principal) avec des scripts G-code integres au firmware.
-  // Les memes scripts sont dans docs/test_premiere_couche.gcode et docs/test_filament.gcode.
+  // Les memes scripts sont dans docs/test_premiere_couche.gcode, docs/test_filament.gcode et docs/test_courroies.gcode.
   #define CUSTOM_MENU_MAIN_TITLE "Tests"
   #define CUSTOM_MENU_MAIN_SCRIPT_DONE "M117 Test termine"
   #define CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK
@@ -4089,6 +4089,32 @@
     "M104 S0\n" \
     "M84 E\n"
 
+  // Test courroies : les 3 chariots montent/descendent ensemble, M122 S1 envoie le StallGuard de chaque moteur sur le port serie
+  // (resume automatique : python3 docs/test_courroies.py ; meme script que docs/test_courroies.gcode)
+  #define NEVA_TEST_COURROIES_GCODE \
+    "M117 Test courroies...\n" \
+    "G90\n" \
+    "G28\n" \
+    "G1 X0 Y0 Z200 F6000\n" \
+    "M400\n" \
+    "M122 S1 P250\n" \
+    "G1 Z60 F1800\n" \
+    "G1 Z200 F1800\n" \
+    "G1 Z60 F1800\n" \
+    "G1 Z200 F1800\n" \
+    "G1 Z60 F1800\n" \
+    "G1 Z200 F1800\n" \
+    "M400\n" \
+    "G1 Z60 F3600\n" \
+    "G1 Z200 F3600\n" \
+    "G1 Z60 F3600\n" \
+    "G1 Z200 F3600\n" \
+    "G1 Z60 F3600\n" \
+    "G1 Z200 F3600\n" \
+    "M400\n" \
+    "M122 S0\n" \
+    "M117 Courroies fini\n"
+
   #define MAIN_MENU_ITEM_1_DESC "Test 1ere couche"
   #define MAIN_MENU_ITEM_1_GCODE NEVA_TEST_COUCHE1_GCODE
   #define MAIN_MENU_ITEM_1_CONFIRM          // Demande confirmation avant de lancer
@@ -4096,6 +4122,10 @@
   #define MAIN_MENU_ITEM_2_DESC "Test filament"
   #define MAIN_MENU_ITEM_2_GCODE NEVA_TEST_FILAMENT_GCODE
   #define MAIN_MENU_ITEM_2_CONFIRM
+
+  #define MAIN_MENU_ITEM_3_DESC "Test courroies"
+  #define MAIN_MENU_ITEM_3_GCODE NEVA_TEST_COURROIES_GCODE
+  #define MAIN_MENU_ITEM_3_CONFIRM
 #endif
 
 // @section custom config menu

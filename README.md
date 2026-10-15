@@ -127,9 +127,11 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Palpage du plateau (maillage)** : `AUTO_BED_LEVELING_BILINEAR`, grille 7 × 7 sur le disque de rayon 70 mm (`PROBING_MARGIN 30`), soit environ 30 points. Chaque G-code de test et le G-code de début du slicer enchaînent `G28`, `G33 P1` (hauteur), `G29` (maillage), puis la chauffe ; `G29` active la correction pour toute l'impression. Après le flash : `M502`, `M500`. `G28` désactive le maillage ; `M420 V1` l'affiche.
 
+**Test des courroies** (menu « Tests » > « Test courroies », ou `docs/test_courroies.gcode`) : les 3 chariots montent et descendent ensemble (Z 60 ↔ 200 mm, à 30 puis 60 mm/s) pendant que `M122 S1 P250` envoie toutes les 250 ms le `sg` (StallGuard) et le `pwm` de chaque TMC2209 sur le port série (`TMC_DEBUG` et `MONITOR_DRIVER_STATUS` sont déjà activés). `python3 docs/test_courroies.py` (pyserial) lance le test, calcule la médiane par tour et indique l'écart entre tours et la tour qui se distingue ; les mesures sont ajoutées à `docs/mesures_courroies.csv`. Résultat relatif (3 tours entre elles, ou avant/après réglage), pas une tension en newtons ; seuils 10 % / 25 % provisoires.
+
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.25 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.26 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
