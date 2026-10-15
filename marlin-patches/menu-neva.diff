@@ -1,6 +1,17 @@
 --- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/orig_menu_main.cpp	2026-10-13 22:42:51.969822928 +0000
-+++ marlin-patches/Marlin/src/lcd/menu/menu_main.cpp	2026-10-15 20:30:23.022147984 +0000
-@@ -104,6 +104,45 @@
++++ marlin-patches/Marlin/src/lcd/menu/menu_main.cpp	2026-10-15 20:31:21.073638635 +0000
+@@ -35,6 +35,10 @@
+ #include "../../module/stepper.h"
+ #include "../../sd/cardreader.h"
+ 
++#if ENABLED(FILAMENT_RUNOUT_SENSOR)
++  #include "../../feature/runout.h"
++#endif
++
+ #if ENABLED(PSU_CONTROL)
+   #include "../../feature/power.h"
+ #endif
+@@ -104,9 +108,57 @@
    void menu_language();
  #endif
  
@@ -46,7 +57,19 @@
  #if ENABLED(CUSTOM_MENU_MAIN)
  
    void _lcd_custom_menu_main_gcode(FSTR_P const fstr) {
-@@ -217,6 +256,13 @@
++    // Neva : les tests qui extrudent (1ere couche, filament, spirale) ne demarrent pas sans filament charge
++    #if ENABLED(FILAMENT_RUNOUT_SENSOR)
++      if (FilamentMonitorBase::enabled && (FilamentSensorBase::poll_runout_states() & _BV(0))) {
++        ui.set_status(F("Charger le filament !"), 0);
++        ui.completion_feedback(false);
++        ui.return_to_status();
++        return;
++      }
++    #endif
+     queue.inject(fstr);
+     TERN_(CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK, ui.completion_feedback());
+     TERN_(CUSTOM_MENU_MAIN_SCRIPT_RETURN, ui.return_to_status());
+@@ -217,6 +269,13 @@
      #if HAS_CUSTOM_ITEM_MAIN(25)
        CUSTOM_ITEM_MAIN(25);
      #endif
@@ -60,7 +83,7 @@
      END_MENU();
    }
  
-@@ -240,11 +286,7 @@
+@@ -240,11 +299,7 @@
    #endif
  
    START_MENU();
@@ -73,7 +96,7 @@
  
    if (busy) {
      #if MACHINE_CAN_PAUSE
-@@ -270,89 +312,56 @@
+@@ -270,89 +325,56 @@
      #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
        SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
      #endif
@@ -155,21 +178,21 @@
 -  #if ENABLED(ADVANCED_PAUSE_FEATURE) && (!HAS_ENCODER_WHEEL || ENABLED(DISABLE_ENCODER))
 -    FILAMENT_CHANGE_ITEM();
 -  #endif
--
--  #if HAS_CUTTER
--    SUBMENU(MSG_CUTTER(MENU), STICKY_SCREEN(menu_spindle_laser));
--  #endif
 +    // 5. Changer filament
 +    #if ENABLED(ADVANCED_PAUSE_FEATURE)
 +      FILAMENT_CHANGE_ITEM();
 +    #endif
  
--  #if HAS_TEMPERATURE
--    SUBMENU(MSG_TEMPERATURE, menu_temperature);
+-  #if HAS_CUTTER
+-    SUBMENU(MSG_CUTTER(MENU), STICKY_SCREEN(menu_spindle_laser));
 -  #endif
 +    // 6. Configuration
 +    SUBMENU(MSG_CONFIGURATION, menu_configuration);
  
+-  #if HAS_TEMPERATURE
+-    SUBMENU(MSG_TEMPERATURE, menu_temperature);
+-  #endif
+-
 -  #if HAS_POWER_MONITOR
 -    SUBMENU(MSG_POWER_MONITOR, menu_power_monitor);
 -  #endif
@@ -198,7 +221,7 @@
    #if ENABLED(CUSTOM_MENU_MAIN)
      if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
        #ifdef CUSTOM_MENU_MAIN_TITLE
-@@ -363,73 +372,6 @@
+@@ -363,73 +385,6 @@
      }
    #endif
  
@@ -272,7 +295,7 @@
    #if HAS_SERVICE_INTERVALS
      static auto _service_reset = [](const int index) {
        print_job_timer.resetServiceInterval(index);
-@@ -498,10 +440,6 @@
+@@ -498,10 +453,6 @@
      });
    #endif
  

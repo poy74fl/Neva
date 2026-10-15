@@ -35,6 +35,10 @@
 #include "../../module/stepper.h"
 #include "../../sd/cardreader.h"
 
+#if ENABLED(FILAMENT_RUNOUT_SENSOR)
+  #include "../../feature/runout.h"
+#endif
+
 #if ENABLED(PSU_CONTROL)
   #include "../../feature/power.h"
 #endif
@@ -146,6 +150,15 @@ void menu_configuration();
 #if ENABLED(CUSTOM_MENU_MAIN)
 
   void _lcd_custom_menu_main_gcode(FSTR_P const fstr) {
+    // Neva : les tests qui extrudent (1ere couche, filament, spirale) ne demarrent pas sans filament charge
+    #if ENABLED(FILAMENT_RUNOUT_SENSOR)
+      if (FilamentMonitorBase::enabled && (FilamentSensorBase::poll_runout_states() & _BV(0))) {
+        ui.set_status(F("Charger le filament !"), 0);
+        ui.completion_feedback(false);
+        ui.return_to_status();
+        return;
+      }
+    #endif
     queue.inject(fstr);
     TERN_(CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK, ui.completion_feedback());
     TERN_(CUSTOM_MENU_MAIN_SCRIPT_RETURN, ui.return_to_status());
