@@ -2695,7 +2695,7 @@
   #define PAUSE_PARK_NOZZLE_TIMEOUT          240  // (secondes) Neva : la buse reste chaude 4 minutes pendant une pause / un changement de filament
   #define FILAMENT_CHANGE_ALERT_BEEPS         10  // Number of alert beeps to play when a response is needed.
   #define PAUSE_PARK_NO_STEPPER_TIMEOUT           // Enable for XYZ steppers to stay powered on during filament change.
-  //#define FILAMENT_CHANGE_RESUME_ON_INSERT      // Automatically continue / load filament when runout sensor is triggered again.
+  #define FILAMENT_CHANGE_RESUME_ON_INSERT        // Neva : le chargement demarre tout seul quand le capteur voit le filament (pendant le message "Inserer le filament")
   //#define PAUSE_REHEAT_FAST_RESUME              // Reduce number of waits by not prompting again post-timeout before continuing.
 
   #define PARK_HEAD_ON_PAUSE                    // Park the nozzle during pause and filament change.
