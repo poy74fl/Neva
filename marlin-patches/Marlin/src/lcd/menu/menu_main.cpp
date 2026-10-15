@@ -275,11 +275,16 @@ void menu_configuration();
       CUSTOM_ITEM_MAIN(25);
     #endif
     #ifdef NEVA_BELT_SCREEN
-      ACTION_ITEM_F(F("Test courroies"), []{
-        neva_belt_begin();
-        queue.inject(F(NEVA_TEST_COURROIES_GCODE _DONE_SCRIPT));
-        ui.push_current_screen();
-        ui.goto_screen(menu_neva_belts);
+      SUBMENU_F(F("Test courroies"), []{
+        MenuItem_confirm::confirm_screen(
+          []{
+            neva_belt_begin();
+            queue.inject(F(NEVA_TEST_COURROIES_GCODE _DONE_SCRIPT));
+            ui.goto_screen(menu_neva_belts);
+          },
+          nullptr,
+          F("Test courroies?")
+        );
       });
     #endif
     END_MENU();

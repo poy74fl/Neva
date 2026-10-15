@@ -1,5 +1,5 @@
 --- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/Marlin/Marlin/src/feature/tmc_util.cpp	2026-10-01 20:42:43.403086529 +0000
-+++ marlin-patches/Marlin/src/feature/tmc_util.cpp	2026-10-15 21:00:10.682261866 +0000
++++ marlin-patches/Marlin/src/feature/tmc_util.cpp	2026-10-15 21:10:55.437115909 +0000
 @@ -171,6 +171,17 @@
  
    #endif // TMC2208 || TMC2209
@@ -135,15 +135,17 @@
      }
    }
  
-@@ -475,6 +580,13 @@
+@@ -475,6 +580,15 @@
     */
    #if ENABLED(MONITOR_DRIVER_STATUS)
      void tmc_set_report_interval(const uint16_t update_interval) {
 +      #if NEVA_BELT_DISPLAY
 +        if (update_interval) { neva_belt_reset(); neva_belt_tcool(0xFFFFF); }
-+        else {
-+          if (report_tmc_status_interval) { neva_belt_show(true); neva_belt_tcool(0); }
-+          neva_belt_busy = false;
++        else if (report_tmc_status_interval) {
++          const bool has_data = neva_belt_n[0] && neva_belt_n[1] && neva_belt_n[2];
++          neva_belt_show(true);
++          neva_belt_tcool(0);
++          if (has_data) neva_belt_busy = false;   // vraie fin de test : on garde "EN COURS" tant qu'il n'y a pas de resultat
 +        }
 +      #endif
        if ((report_tmc_status_interval = update_interval))

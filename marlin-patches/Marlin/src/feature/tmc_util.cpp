@@ -582,9 +582,11 @@
     void tmc_set_report_interval(const uint16_t update_interval) {
       #if NEVA_BELT_DISPLAY
         if (update_interval) { neva_belt_reset(); neva_belt_tcool(0xFFFFF); }
-        else {
-          if (report_tmc_status_interval) { neva_belt_show(true); neva_belt_tcool(0); }
-          neva_belt_busy = false;
+        else if (report_tmc_status_interval) {
+          const bool has_data = neva_belt_n[0] && neva_belt_n[1] && neva_belt_n[2];
+          neva_belt_show(true);
+          neva_belt_tcool(0);
+          if (has_data) neva_belt_busy = false;   // vraie fin de test : on garde "EN COURS" tant qu'il n'y a pas de resultat
         }
       #endif
       if ((report_tmc_status_interval = update_interval))
