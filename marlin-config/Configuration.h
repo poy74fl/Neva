@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.36"
+#define NEVA_FW_VERSION "1.37"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1530,7 +1530,7 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 30   // Neva : zone palpee = disque de rayon 100 - 30 = 70 mm (la tete reste loin des tours)
+#define PROBING_MARGIN 20   // Neva : zone palpee = disque de rayon 100 - 23 (decalage de la sonde) = 77 mm ; la machine est prevue pour un rayon de 100 mm
 
 // X and Y axis travel speed (mm/min) between probes
 #define XY_PROBE_FEEDRATE (66*60)
