@@ -132,7 +132,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.54 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.55 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
@@ -171,6 +171,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Correctif G29 (v1.53)** : depuis la v1.50, `G29` répondait `? (L,R,F,B) out of bounds.` et ne faisait aucun maillage (l'avant du maillage, à -85 mm, demandait à la buse d'aller à -108 mm, hors de sa course). La borne avant est maintenant -77 mm (rayon imprimable - décalage Y de la sonde). Le maillage a 33 points sondés sur 49 ; les autres sont extrapolés. En v1.50 à v1.52 : `G29 F-77` donnait le bon maillage.
 
 **Écran qui "saute" (v1.54)** : la réinitialisation de l'écran (v1.51) se déclenchait aussi pendant un palpage ou une attente de chauffe, quand la file de commandes est brièvement vide, ce qui faisait sauter l'affichage. Elle n'a plus lieu pendant une chauffe en attente ou une impression, et seulement après 10 s d'inactivité.
+
+**Fichiers SD du plus récent au plus ancien (v1.55)** : la liste de l'écran est triée par date de modification (le plus récent en premier, dossiers en tête ; à date égale, ordre alphabétique) au lieu de l'ordre alphabétique. Patch : `Marlin/src/sd/cardreader.cpp`. Limite : seuls les 40 premiers éléments d'un dossier (ordre de la carte) sont triés (`SDSORT_LIMIT`).
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)

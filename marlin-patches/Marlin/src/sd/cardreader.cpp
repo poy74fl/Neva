@@ -242,6 +242,9 @@ int16_t CardReader::countVisibleItems(MediaFile dir) {
   return c;
 }
 
+// Neva : date/heure de derniere modification du dernier element lu (FAT : date<<16 | heure), pour trier du plus recent au plus ancien
+static uint32_t neva_last_mtime = 0;
+
 //
 // Get file/folder info for an item by index
 //
@@ -251,6 +254,7 @@ void CardReader::selectByIndex(MediaFile dir, const int16_t index) {
     if (is_visible_entity(p)) {
       if (cnt == index) {
         createFilename(filename, p);
+        neva_last_mtime = (uint32_t(p.lastWriteDate) << 16) | p.lastWriteTime;
         return;  // 0 based index
       }
       cnt++;
@@ -1096,6 +1100,8 @@ void CardReader::cdroot() {
    *  - Some RAM: Buffer the directory just for this sort
    *  - Most RAM: Buffer the directory and return filenames from RAM
    */
+  static uint32_t neva_mtime[SDSORT_LIMIT];   // Neva : date de chaque element, indexee comme sortnames[]
+
   void CardReader::presort() {
     // Throw away old sort index
     flush_presort();
@@ -1155,6 +1161,7 @@ void CardReader::cdroot() {
           // If using RAM then read all filenames now.
           #if ENABLED(SDSORT_USES_RAM)
             selectFileByIndex(i);
+            neva_mtime[i] = neva_last_mtime;   // Neva : date de l'element i (sans cache, car sort_count vaut 0 ici)
             SET_SORTNAME(i);
             SET_SORTSHORT(i);
             //char out[30];
@@ -1188,7 +1195,8 @@ void CardReader::cdroot() {
               const bool sort = strcasecmp(n1, n2) > 0;
               return (TERN(SDSORT_GCODE, card.sort_alpha == AS_REV, ENABLED(SDSORT_REVERSE))) ? !sort : sort;
             };
-            #define _SORT_CMP_FILE() _sort_cmp_file(TERN(SDSORT_USES_RAM, sortnames[o1], name1), TERN(SDSORT_USES_RAM, sortnames[o2], name2))
+            // Neva : tri chronologique, du plus recent au plus ancien (a date egale : ordre alphabetique)
+            #define _SORT_CMP_FILE() (neva_mtime[o1] != neva_mtime[o2] ? (neva_mtime[o1] < neva_mtime[o2]) : _sort_cmp_file(sortnames[o1], sortnames[o2]))
 
             #if HAS_FOLDER_SORTING
               #if ENABLED(SDSORT_USES_RAM)
