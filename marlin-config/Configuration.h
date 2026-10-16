@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.57"
+#define NEVA_FW_VERSION "1.58"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1541,7 +1541,7 @@
 #define Z_PROBE_FEEDRATE_FAST (30*60)   // Neva : etait 200 mm/s ; une approche trop rapide fait bouger la tete et fausse le palpage
 
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_FEEDRATE_SLOW (5*60)    // Neva : 5 mm/s pour la mesure finale (etait 100 mm/s)
+#define Z_PROBE_FEEDRATE_SLOW (8*60)    // Neva : 8 mm/s pour la mesure finale (5 mm/s en v1.43-v1.57, 100 mm/s avant) : palpage plus rapide
 
 /**
  * Probe Activation Switch
@@ -1607,7 +1607,7 @@
  */
 #define Z_CLEARANCE_DEPLOY_PROBE   15 // (mm) Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // (mm) Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     5 // (mm) Z Clearance between multiple probes
+#define Z_CLEARANCE_MULTI_PROBE     3 // (mm) Z Clearance between multiple probes (Neva : 3 au lieu de 5, descente lente plus courte)
 //#define Z_AFTER_PROBING           5 // (mm) Z position after probing is done
 
 #define Z_PROBE_LOW_POINT          -2 // (mm) Farthest distance below the trigger-point to go before stopping
