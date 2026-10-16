@@ -5,12 +5,21 @@ rond plein (pas de 0,45 mm) au centre. Spirale faite avec des demi-cercles G2/G3
 
   python3 docs/make_test_spirale.py            -> rayon exterieur 90 mm, rond plein de 20 mm
   python3 docs/make_test_spirale.py 85 18      -> rayon exterieur 85 mm, rond plein de 18 mm
+  python3 docs/make_test_spirale.py 85 20 test_spirale_r85_corrigee.gcode corr
+        -> comme ci-dessus, ecrit dans le fichier donne, avec les corrections M421 du maillage (arriere, cote droit)
 """
 import math, sys
 from pathlib import Path
 
 R_OUT = float(sys.argv[1]) if len(sys.argv) > 1 else 90.0   # rayon exterieur de la spirale (mm)
 R_DISC = float(sys.argv[2]) if len(sys.argv) > 2 else 20.0  # rayon du rond plein central (mm)
+OUT_NAME = sys.argv[3] if len(sys.argv) > 3 else "test_premiere_couche_spirale.gcode"
+WITH_CORR = len(sys.argv) > 4 and sys.argv[4] == "corr"
+CORR = [  # corrections du maillage determinees avec docs/test_5_carres_correction.gcode (Q > 0 : buse plus haute)
+    "M421 I2 J6 Q0.20", "M421 I3 J6 Q0.20", "M421 I4 J6 Q0.20",
+    "M421 I2 J5 Q0.10", "M421 I3 J5 Q0.10", "M421 I4 J5 Q0.10",
+    "M421 I5 J3 Q-0.10", "M421 I6 J3 Q-0.10", "M421 I5 J4 Q-0.10", "M421 I6 J4 Q-0.10",
+]
 PITCH_OUT, PITCH_DISC = 8.0, 0.45                          # pas des deux spirales (mm)
 K = 0.040                                                  # mm de filament par mm de ligne (0,45 x 0,2 + ecrasement)
 F = 1500                                                   # 25 mm/s
@@ -85,6 +94,9 @@ a("M104 S210            ; la buse chauffe pendant le homing et le palpage")
 a("G28")
 a("G33 P1")
 a("G29                   ; palpage du plateau en plusieurs points (maillage)")
+if WITH_CORR:
+    a("; corrections du maillage (arriere +0,20 ; droite -0,10)")
+    for c in CORR: a(c)
 a("M109 S210")
 a("G1 Z5 F3000")
 sx, sy = arcs_all[0][0]
@@ -109,7 +121,7 @@ a("M104 S0")
 a("M117 Spirale terminee")
 a("G28")
 
-out = Path(__file__).resolve().parent / "test_premiere_couche_spirale.gcode"
+out = Path(__file__).resolve().parent / OUT_NAME
 out.write_text("\n".join(L) + "\n")
 print(f"{len(arcs_all)} arcs, {total:.0f} mm de ligne, {total * K:.0f} mm de filament, {total / (F / 60):.0f} s -> {out}")
 
