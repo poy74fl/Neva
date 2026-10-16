@@ -301,6 +301,9 @@
     static uint16_t neva_belt_n[3];
     static millis_t neva_belt_next;
     static bool neva_belt_busy;   // vrai du lancement du test (menu) jusqu'a son resultat final (M122 S0)
+    // Resultat final fige : l'ecran dedie l'affiche tant qu'un nouveau test n'est pas lance, meme si les compteurs sont remis a zero ensuite
+    static uint16_t neva_belt_fin_m[3], neva_belt_fin_spread, neva_belt_fin_n;
+    static bool neva_belt_fin_ok;
 
     template<char L, char D>
     static char neva_axis_letter(const TMCStorage<L, D> &) { return L; }
@@ -337,20 +340,32 @@
       char buf[32];
       sprintf_P(buf, PSTR("X%u Y%u Z%u e%u%%"), (unsigned)m[0], (unsigned)m[1], (unsigned)m[2], (unsigned)spread);
       ui.set_status(buf, true);
-      if (is_final) SERIAL_ECHO_MSG("Courroies: ", buf);
+      if (is_final) {
+        for (uint8_t i = 0; i < 3; i++) neva_belt_fin_m[i] = m[i];
+        neva_belt_fin_spread = spread;
+        neva_belt_fin_n = neva_belt_n[0];
+        neva_belt_fin_ok = true;
+        SERIAL_ECHO_MSG("Courroies: ", buf);
+      }
     }
 
     // Appeles par l'ecran dedie (menu_main.cpp) : debut du test (efface les valeurs), fin
-    void neva_belt_begin() { neva_belt_reset(); neva_belt_busy = true; }
+    void neva_belt_begin() { neva_belt_reset(); neva_belt_fin_ok = false; neva_belt_busy = true; }
     void neva_belt_end()   { neva_belt_busy = false; }
 
     // Lecture pour l'ecran dedie (menu_main.cpp) : moyennes X, Y, Z, ecart max en %, nombre de mesures X, rapport actif ?
     void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running, bool &reporting) {
       uint16_t lo = 0xFFFF, hi = 0;
       uint32_t tot = 0;
-      n = neva_belt_n[0];
       running = neva_belt_busy;
       reporting = report_tmc_status_interval != 0;
+      if (neva_belt_fin_ok && !neva_belt_busy) {   // test fini : on affiche le resultat fige
+        for (uint8_t i = 0; i < 3; i++) m[i] = neva_belt_fin_m[i];
+        spread = neva_belt_fin_spread;
+        n = neva_belt_fin_n;
+        return;
+      }
+      n = neva_belt_n[0];
       for (uint8_t i = 0; i < 3; i++) {
         m[i] = neva_belt_n[i] ? neva_belt_sum[i] / neva_belt_n[i] : 0;
         if (!neva_belt_n[i]) n = 0;

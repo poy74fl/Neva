@@ -1,5 +1,5 @@
---- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/Marlin/Marlin/src/feature/tmc_util.cpp	2026-10-01 20:42:43.403086529 +0000
-+++ marlin-patches/Marlin/src/feature/tmc_util.cpp	2026-10-15 21:10:55.437115909 +0000
+--- a/Marlin/src/feature/tmc_util.cpp
++++ b/Marlin/src/feature/tmc_util.cpp
 @@ -171,6 +171,17 @@
  
    #endif // TMC2208 || TMC2209
@@ -18,7 +18,7 @@
    #if HAS_DRIVER(TMC2660)
  
      #if ENABLED(TMC_DEBUG)
-@@ -278,6 +289,92 @@
+@@ -278,6 +289,107 @@
  
    #endif
  
@@ -34,6 +34,9 @@
 +    static uint16_t neva_belt_n[3];
 +    static millis_t neva_belt_next;
 +    static bool neva_belt_busy;   // vrai du lancement du test (menu) jusqu'a son resultat final (M122 S0)
++    // Resultat final fige : l'ecran dedie l'affiche tant qu'un nouveau test n'est pas lance, meme si les compteurs sont remis a zero ensuite
++    static uint16_t neva_belt_fin_m[3], neva_belt_fin_spread, neva_belt_fin_n;
++    static bool neva_belt_fin_ok;
 +
 +    template<char L, char D>
 +    static char neva_axis_letter(const TMCStorage<L, D> &) { return L; }
@@ -70,20 +73,32 @@
 +      char buf[32];
 +      sprintf_P(buf, PSTR("X%u Y%u Z%u e%u%%"), (unsigned)m[0], (unsigned)m[1], (unsigned)m[2], (unsigned)spread);
 +      ui.set_status(buf, true);
-+      if (is_final) SERIAL_ECHO_MSG("Courroies: ", buf);
++      if (is_final) {
++        for (uint8_t i = 0; i < 3; i++) neva_belt_fin_m[i] = m[i];
++        neva_belt_fin_spread = spread;
++        neva_belt_fin_n = neva_belt_n[0];
++        neva_belt_fin_ok = true;
++        SERIAL_ECHO_MSG("Courroies: ", buf);
++      }
 +    }
 +
 +    // Appeles par l'ecran dedie (menu_main.cpp) : debut du test (efface les valeurs), fin
-+    void neva_belt_begin() { neva_belt_reset(); neva_belt_busy = true; }
++    void neva_belt_begin() { neva_belt_reset(); neva_belt_fin_ok = false; neva_belt_busy = true; }
 +    void neva_belt_end()   { neva_belt_busy = false; }
 +
 +    // Lecture pour l'ecran dedie (menu_main.cpp) : moyennes X, Y, Z, ecart max en %, nombre de mesures X, rapport actif ?
 +    void neva_belt_read(uint16_t m[3], uint16_t &spread, uint16_t &n, bool &running, bool &reporting) {
 +      uint16_t lo = 0xFFFF, hi = 0;
 +      uint32_t tot = 0;
-+      n = neva_belt_n[0];
 +      running = neva_belt_busy;
 +      reporting = report_tmc_status_interval != 0;
++      if (neva_belt_fin_ok && !neva_belt_busy) {   // test fini : on affiche le resultat fige
++        for (uint8_t i = 0; i < 3; i++) m[i] = neva_belt_fin_m[i];
++        spread = neva_belt_fin_spread;
++        n = neva_belt_fin_n;
++        return;
++      }
++      n = neva_belt_n[0];
 +      for (uint8_t i = 0; i < 3; i++) {
 +        m[i] = neva_belt_n[i] ? neva_belt_sum[i] / neva_belt_n[i] : 0;
 +        if (!neva_belt_n[i]) n = 0;
@@ -111,7 +126,7 @@
    template<typename TMC>
    bool monitor_tmc_driver(TMC &st, const bool need_update_error_counters, const bool need_debug_reporting) {
      TMC_driver_data data = get_driver_data(st);
-@@ -315,7 +412,12 @@
+@@ -315,7 +427,12 @@
      }
  
      #if ENABLED(TMC_DEBUG)
@@ -125,7 +140,7 @@
      #endif
  
      return should_step_down;
-@@ -463,6 +565,9 @@
+@@ -463,6 +580,9 @@
        #endif
  
        if (TERN0(TMC_DEBUG, need_debug_reporting)) SERIAL_EOL();
@@ -135,7 +150,7 @@
      }
    }
  
-@@ -475,6 +580,15 @@
+@@ -475,6 +595,15 @@
     */
    #if ENABLED(MONITOR_DRIVER_STATUS)
      void tmc_set_report_interval(const uint16_t update_interval) {
