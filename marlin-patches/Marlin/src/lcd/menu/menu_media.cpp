@@ -41,6 +41,10 @@ void lcd_sd_updir() {
 // Neva : nom (8.3) du dernier fichier lance depuis l'ecran, pour proposer de le reimprimer a la fin
 static char neva_last_file[16];
 
+// Neva : goto_screen() remet la selection de l'ecran de confirmation sur "Annuler" ; on la force sur "Imprimer" au premier
+// affichage de l'ecran (ce drapeau est leve juste avant goto_screen puis consomme par l'ecran)
+static bool neva_confirm_first = false;
+
 #if ENABLED(SD_REPRINT_LAST_SELECTED_FILE)
 
   uint16_t sd_encoder_position = 0xFFFF;
@@ -49,9 +53,10 @@ static char neva_last_file[16];
   // Neva : a la fin d'une impression, ecran "Reimprimer <fichier> ?" avec "Imprimer" deja selectionne : un clic relance
   void MarlinUI::reselect_last_file() {
     if (!neva_last_file[0]) return;
-    ui.set_selection(true);
     defer_status_screen();
+    neva_confirm_first = true;
     goto_screen([]{
+      if (neva_confirm_first) { neva_confirm_first = false; ui.set_selection(true); }
       MenuItem_confirm::select_screen(
         GET_TEXT_F(MSG_BUTTON_PRINT), GET_TEXT_F(MSG_BUTTON_CANCEL),
         []{ card.openAndPrintFile(neva_last_file); ui.return_to_status(); ui.reset_status(); }, nullptr,
@@ -83,8 +88,9 @@ class MenuItem_sdfile : public MenuItem_sdbase {
         sd_items = screen_items;
       #endif
       #if ENABLED(SD_MENU_CONFIRM_START)
-        ui.set_selection(true);   // Neva : "Imprimer" est selectionne d'office (un seul clic de plus pour lancer)
+        neva_confirm_first = true;   // Neva : "Imprimer" est selectionne d'office (un seul clic de plus pour lancer)
         MenuItem_submenu::action(fstr, []{
+          if (neva_confirm_first) { neva_confirm_first = false; ui.set_selection(true); }
           char * const filename = card.longest_filename();
           MenuItem_confirm::select_screen(
             GET_TEXT_F(MSG_BUTTON_PRINT), GET_TEXT_F(MSG_BUTTON_CANCEL),
