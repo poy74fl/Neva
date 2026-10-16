@@ -1,7 +1,7 @@
 ; === Test de 5 carres AVEC CORRECTION DU MAILLAGE (M421) : sans rien flasher ===
 ; Apres le G29, on corrige a la main quelques points du maillage :
 ;   - ARRIERE trop ecrase  -> on RELEVE la buse de 0,12 mm (rangee arriere du maillage, J6, colonnes 2 a 4) ; 0,05 mm n'a pas suffi
-;   - DROITE (BMG) trop haute -> on ABAISSE la buse de 0,05 mm (colonnes 5 et 6, rangees 3 et 4)
+;   - DROITE (BMG) trop haute -> on ABAISSE la buse de 0,10 mm (colonnes 5 et 6, rangees 3 et 4)
 ; Pour changer l'effet : modifie les valeurs Q (en mm). Q positif = la buse monte, Q negatif = la buse descend.
 ; Si ce test est bon, ces lignes M421 sont a copier telles quelles dans le G-code de debut de PrusaSlicer, apres G29.
 ; Carres de 20 mm : centre, droite (cote BMG), arriere, gauche, avant (a 70 mm du centre). PLA 210 C.
@@ -20,10 +20,10 @@ M421 I4 J6 Q0.12
 M421 I2 J5 Q0.06
 M421 I3 J5 Q0.06
 M421 I4 J5 Q0.06
-M421 I5 J3 Q-0.05    ; droite (BMG) : la buse descend
-M421 I6 J3 Q-0.05
-M421 I5 J4 Q-0.05
-M421 I6 J4 Q-0.05
+M421 I5 J3 Q-0.10    ; droite (BMG) : la buse descend
+M421 I6 J3 Q-0.10
+M421 I5 J4 Q-0.10
+M421 I6 J4 Q-0.10
 M109 S210
 G1 Z5 F3000
 G1 X-85 Y0 F6000     ; goutte de purge sur le bord gauche
