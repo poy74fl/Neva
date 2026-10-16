@@ -33,6 +33,10 @@ M421 I5 J3 Q-0.08
 M421 I6 J3 Q-0.17
 M421 I5 J4 Q-0.08
 M421 I6 J4 Q-0.17
+M421 I5 J5 Q-0.08
+M421 I6 J5 Q-0.10
+M421 I5 J6 Q-0.08
+M421 I6 J6 Q-0.10
 M109 S{first_layer_temperature[0]}
 G1 Z5 F3000
 G1 X-85 Y0 F6000
@@ -41,7 +45,7 @@ G1 E10 F200
 G1 E-1 F1800
 G1 Z5 F3000
 ```
-Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, **dix corrections du maillage (`M421`)** qui compensent un petit defaut de la machine (arriere : buse relevee de 0,20 mm ; cote droit/BMG : buse abaissee de 0,08 mm, puis 0,17 mm tout au bord, determines avec `docs/test_5_carres_correction.gcode`), attente de la température (`M109`), puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
+Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, **quatorze corrections du maillage (`M421`)** qui compensent un petit defaut de la machine (arriere : buse relevee de 0,20 mm ; cote droit/BMG : buse abaissee de 0,08 mm, puis 0,17 mm tout au bord ; coin arriere-droit : abaissee de 0,08 a 0,10 mm, determines avec `docs/test_5_carres_correction.gcode`), attente de la température (`M109`), puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
 
 ### Fin du G-code (End G-code)
 ```

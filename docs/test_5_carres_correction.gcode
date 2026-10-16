@@ -24,6 +24,10 @@ M421 I5 J3 Q-0.08    ; droite (BMG) : la buse descend, un peu plus au bord
 M421 I6 J3 Q-0.17
 M421 I5 J4 Q-0.08
 M421 I6 J4 Q-0.17
+M421 I5 J5 Q-0.08    ; coin arriere-droit (entre BMG et fond) : la buse descend
+M421 I6 J5 Q-0.10
+M421 I5 J6 Q-0.08
+M421 I6 J6 Q-0.10
 M109 S210
 G1 Z5 F3000
 G1 X-85 Y0 F6000     ; goutte de purge sur le bord gauche
