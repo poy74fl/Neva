@@ -1,0 +1,24 @@
+--- a/Marlin/src/feature/bedlevel/abl/bbl.cpp
++++ b/Marlin/src/feature/bedlevel/abl/bbl.cpp
+@@ -27,6 +27,7 @@
+ #include "../bedlevel.h"
+ 
+ #include "../../../module/motion.h"
++#include "../../../module/probe.h"   // Neva : probe.offset_xy
+ 
+ #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
+ #include "../../../core/debug_out.h"
+@@ -290,6 +291,13 @@
+   // XY relative to the probed area
+   xy_pos_t rel = raw - grid_start.asFloat();
+ 
++  #ifdef NEVA_MESH_SHIFT
++    // Neva : le maillage a ete mesure avec la buse 23 mm devant la sonde ; l'erreur de la delta depend de la position de la
++    // BUSE, pas de celle de la sonde. On lit donc le maillage la ou la sonde etait quand la buse etait ici (decalage de la sonde).
++    rel.x += probe.offset_xy.x;
++    rel.y += probe.offset_xy.y;
++  #endif
++
+   #if ENABLED(EXTRAPOLATE_BEYOND_GRID)
+     #define FAR_EDGE_OR_BOX 2   // Keep using the last grid box
+   #else

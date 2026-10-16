@@ -132,7 +132,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.51 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.52 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
@@ -165,6 +165,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Bip plus fort, écran réparé en fin d'opération (v1.51)** : le bip de fin des tests passe à 2700 Hz / 300 ms (le buzzer de l'écran est plus fort vers 2-3 kHz). Quand la machine redevient inactive (plus de commandes ni de mouvements depuis 1,5 s) et que l'écran d'accueil est affiché, l'écran est réinitialisé une fois, ce qui répare l'affichage perturbé par les moteurs ou le bip (patch : `Marlin/src/lcd/marlinui.cpp`).
 
 **Balayage par côtés** : `docs/scan_cotes.gcode` mesure la hauteur du plateau le long de 4 axes (droite = côté BMG, gauche, arrière, avant) jusqu'à 85 mm, pour comparer les côtés à rayon égal.
+
+**Maillage décalé de la sonde (v1.52)** : le maillage est mesuré avec la buse 23 mm devant la sonde, mais l'erreur de la delta dépend de la position de la *buse*. Avec `NEVA_MESH_SHIFT` (`Configuration.h`, patch `Marlin/src/feature/bedlevel/abl/bbl.cpp`), le maillage est lu là où la sonde se trouvait quand la buse était à cet endroit. Effet attendu : l'avant (jusqu'à 100 mm) est couvert par le maillage au lieu d'être extrapolé, et l'arrière (test du papier : « coincé ») est mieux corrigé. Pour revenir à l'ancien comportement : commenter `#define NEVA_MESH_SHIFT`. Tests : `docs/test_papier_fin.gcode` puis la spirale.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)
