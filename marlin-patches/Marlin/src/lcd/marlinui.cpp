@@ -126,8 +126,13 @@ MarlinUI ui;
   static millis_t neva_lcd_busy_ms = 0;
 
   static void neva_lcd_repair_check(const millis_t ms) {
-    if (queue.has_commands_queued() || planner.has_blocks_queued()) { neva_lcd_busy_seen = true; neva_lcd_busy_ms = ms; return; }
-    if (neva_lcd_busy_seen && ELAPSED(ms, neva_lcd_busy_ms + 1500UL) && ui.on_status_screen()) {
+    // "occupe" = commandes en attente, mouvements, chauffe en attente (M109/M190) ou impression en cours
+    if (queue.has_commands_queued() || planner.has_blocks_queued() || wait_for_heatup || printingIsActive()) {
+      neva_lcd_busy_seen = true; neva_lcd_busy_ms = ms; return;
+    }
+    // inactif depuis 10 s (et pas 1,5 s : pendant un palpage ou une attente la file est souvent vide un instant,
+    // et la reinitialisation faisait "sauter" l'ecran)
+    if (neva_lcd_busy_seen && ELAPSED(ms, neva_lcd_busy_ms + 10000UL) && ui.on_status_screen()) {
       neva_lcd_busy_seen = false;
       ui.reinit_lcd();
       ui.refresh();
