@@ -1,0 +1,13 @@
+--- a/Marlin/src/module/probe.h
++++ b/Marlin/src/module/probe.h
+@@ -200,7 +200,9 @@
+         TERN_(IS_SCARA, SCARA_PRINTABLE_RADIUS)
+       );
+       static constexpr float probe_radius(const xy_pos_t &probe_offset_xy=offset_xy) {
+-        return printable_radius - _MAX(PROBING_MARGIN, HYPOT(probe_offset_xy.x, probe_offset_xy.y));
++        // Neva : zone du maillage = rayon imprimable - NEVA_MESH_MARGIN (le decalage de la sonde n'est plus retranche) ;
++        // can_reach() continue d'ecarter les points que la buse ne peut pas atteindre (devant : sonde derriere la buse)
++        return printable_radius - NEVA_MESH_MARGIN;
+       }
+     #endif
+ 

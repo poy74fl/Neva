@@ -132,7 +132,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.49 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.50 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
@@ -159,6 +159,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Chauffe pendant le palpage (v1.48)** : dans les tests du menu et les fichiers de `docs/`, `M104 S210` est lancé avant `G28` (la buse chauffe pendant le homing et le palpage), `M109 S210` n'attend la température qu'après `G29`. Gain : plusieurs minutes. À surveiller : la sonde chauffe un peu avec la buse ; si la hauteur de première couche change, corriger le décalage Z une fois.
 
 **Calibration G33 sur un cercle plus large (v1.49)** : `PROBING_MARGIN` passe de 20 à 10. `G33` mesure maintenant sur un cercle de 67 mm de rayon (avant 57 mm), plus près des bords où se voit le défaut. Le maillage `G29` ne change pas (77 mm). Après avoir flashé : refaire la « Calibration auto ».
+
+**Maillage plus large (v1.50)** : le maillage `G29` couvrait un disque de 77 mm (100 - 23, décalage de la sonde). Il couvre maintenant 85 mm (`NEVA_MESH_MARGIN 15` dans `Configuration.h`, patch `Marlin/src/module/probe.h`). Sur les côtés et à l'arrière la sonde atteint ce rayon ; à l'avant la buse devrait aller trop loin (la sonde est 23 mm derrière la buse) : ces points sont ignorés automatiquement et le maillage y est extrapolé. Grille 7×7 : environ 28 mm entre points.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)
