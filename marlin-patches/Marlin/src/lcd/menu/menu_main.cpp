@@ -356,7 +356,11 @@ void menu_main() {
     #if HAS_MEDIA
       if (card_detected) {
         if (!card_open)
-          SUBMENU(MSG_MEDIA_MENU, MEDIA_MENU_GATEWAY);      // Media Menu (or Password First)
+          ACTION_ITEM(MSG_MEDIA_MENU, []{                    // Neva : lit la liste AVANT d'ouvrir le menu,
+            card.get_num_items();                           // puis reinitialise l'ecran (bus SPI partage avec la SD)
+            ui.reinit_lcd();
+            ui.goto_screen(MEDIA_MENU_GATEWAY);
+          });
       }
       else
         ACTION_ITEM(MSG_NO_MEDIA, nullptr);                 // "Pas de media"

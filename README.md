@@ -132,11 +132,13 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.37 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.38 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
 Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température), 3 Impr. depuis la SD, 4 Actualiser média, 5 Changer filament, 6 Configuration, 7 Mouvement, 8 Lumière, 9 Infos imprimante.
+
+**Écran qui bugue dans le menu SD (v1.38)** : l'écran et la SD partagent les fils SCK/MOSI. Avant, la carte était relue à chaque rafraîchissement de l'écran (pas de tri) et, avec `NO_SD_DETECT`, l'écran n'était jamais réinitialisé après un accès SD. Maintenant : liste triée en RAM une seule fois (`SDCARD_SORT_ALPHA` + `SDSORT_CACHE_NAMES`), `REINIT_NOISY_LCD` forcé, et l'entrée « Impr. depuis la SD » lit la carte puis réinitialise l'écran avant d'ouvrir la liste.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)

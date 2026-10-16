@@ -1,5 +1,5 @@
---- /tmp/claude-0/-home-user-Neva/857c6e7e-7e50-5da3-8a63-3c600a5bdfea/scratchpad/orig_menu_main.cpp	2026-10-13 22:42:51.969822928 +0000
-+++ marlin-patches/Marlin/src/lcd/menu/menu_main.cpp	2026-10-15 21:10:55.437692912 +0000
+--- a/Marlin/src/lcd/menu/menu_main.cpp
++++ b/Marlin/src/lcd/menu/menu_main.cpp
 @@ -35,6 +35,10 @@
  #include "../../module/stepper.h"
  #include "../../sd/cardreader.h"
@@ -107,7 +107,7 @@
  
    if (busy) {
      #if MACHINE_CAN_PAUSE
-@@ -270,89 +336,56 @@
+@@ -270,89 +336,60 @@
      #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
        SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
      #endif
@@ -176,7 +176,11 @@
 +    #if HAS_MEDIA
 +      if (card_detected) {
 +        if (!card_open)
-+          SUBMENU(MSG_MEDIA_MENU, MEDIA_MENU_GATEWAY);      // Media Menu (or Password First)
++          ACTION_ITEM(MSG_MEDIA_MENU, []{                    // Neva : lit la liste AVANT d'ouvrir le menu,
++            card.get_num_items();                           // puis reinitialise l'ecran (bus SPI partage avec la SD)
++            ui.reinit_lcd();
++            ui.goto_screen(MEDIA_MENU_GATEWAY);
++          });
 +      }
 +      else
 +        ACTION_ITEM(MSG_NO_MEDIA, nullptr);                 // "Pas de media"
@@ -189,21 +193,21 @@
 -  #if ENABLED(ADVANCED_PAUSE_FEATURE) && (!HAS_ENCODER_WHEEL || ENABLED(DISABLE_ENCODER))
 -    FILAMENT_CHANGE_ITEM();
 -  #endif
+-
+-  #if HAS_CUTTER
+-    SUBMENU(MSG_CUTTER(MENU), STICKY_SCREEN(menu_spindle_laser));
+-  #endif
 +    // 5. Changer filament
 +    #if ENABLED(ADVANCED_PAUSE_FEATURE)
 +      FILAMENT_CHANGE_ITEM();
 +    #endif
  
--  #if HAS_CUTTER
--    SUBMENU(MSG_CUTTER(MENU), STICKY_SCREEN(menu_spindle_laser));
+-  #if HAS_TEMPERATURE
+-    SUBMENU(MSG_TEMPERATURE, menu_temperature);
 -  #endif
 +    // 6. Configuration
 +    SUBMENU(MSG_CONFIGURATION, menu_configuration);
  
--  #if HAS_TEMPERATURE
--    SUBMENU(MSG_TEMPERATURE, menu_temperature);
--  #endif
--
 -  #if HAS_POWER_MONITOR
 -    SUBMENU(MSG_POWER_MONITOR, menu_power_monitor);
 -  #endif
@@ -232,7 +236,7 @@
    #if ENABLED(CUSTOM_MENU_MAIN)
      if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
        #ifdef CUSTOM_MENU_MAIN_TITLE
-@@ -363,73 +396,6 @@
+@@ -363,73 +400,6 @@
      }
    #endif
  
@@ -306,7 +310,7 @@
    #if HAS_SERVICE_INTERVALS
      static auto _service_reset = [](const int index) {
        print_job_timer.resetServiceInterval(index);
-@@ -498,10 +464,6 @@
+@@ -498,10 +468,6 @@
      });
    #endif
  
