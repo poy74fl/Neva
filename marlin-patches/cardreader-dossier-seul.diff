@@ -1,0 +1,17 @@
+--- a/Marlin/src/sd/cardreader.cpp
++++ b/Marlin/src/sd/cardreader.cpp
+@@ -1254,9 +1254,11 @@
+           selectFileByIndex(0);
+           SET_SORTNAME(0);
+           SET_SORTSHORT(0);
+-          #if ALL(HAS_FOLDER_SORTING, SDSORT_DYNAMIC_RAM)
+-            isDir = new uint8_t[1];
+-            isDir[0] = flag.filenameIsDir;
++          #if HAS_FOLDER_SORTING
++            #if ENABLED(SDSORT_DYNAMIC_RAM)
++              isDir = new uint8_t[1];
++            #endif
++            isDir[0] = flag.filenameIsDir;  // Neva : sans ca, un dossier seul dans la liste etait pris pour un fichier
+           #endif
+         #endif
+       }
