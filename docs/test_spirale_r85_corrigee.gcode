@@ -10,17 +10,17 @@ M104 S210            ; la buse chauffe pendant le homing et le palpage
 G28
 G33 P1
 G29                   ; palpage du plateau en plusieurs points (maillage)
-; corrections du maillage (arriere +0,20 ; droite -0,10)
+; corrections du maillage (arriere +0,20 ; droite -0,08 puis -0,17 au bord)
 M421 I2 J6 Q0.20
 M421 I3 J6 Q0.20
 M421 I4 J6 Q0.20
 M421 I2 J5 Q0.10
 M421 I3 J5 Q0.10
 M421 I4 J5 Q0.10
-M421 I5 J3 Q-0.10
-M421 I6 J3 Q-0.10
-M421 I5 J4 Q-0.10
-M421 I6 J4 Q-0.10
+M421 I5 J3 Q-0.08
+M421 I6 J3 Q-0.17
+M421 I5 J4 Q-0.08
+M421 I6 J4 Q-0.17
 M109 S210
 G1 Z5 F3000
 G1 X-89.00 Y0.00 F6000     ; point de purge, juste a l'exterieur de la spirale

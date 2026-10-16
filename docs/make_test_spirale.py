@@ -18,7 +18,7 @@ WITH_CORR = len(sys.argv) > 4 and sys.argv[4] == "corr"
 CORR = [  # corrections du maillage determinees avec docs/test_5_carres_correction.gcode (Q > 0 : buse plus haute)
     "M421 I2 J6 Q0.20", "M421 I3 J6 Q0.20", "M421 I4 J6 Q0.20",
     "M421 I2 J5 Q0.10", "M421 I3 J5 Q0.10", "M421 I4 J5 Q0.10",
-    "M421 I5 J3 Q-0.10", "M421 I6 J3 Q-0.10", "M421 I5 J4 Q-0.10", "M421 I6 J4 Q-0.10",
+    "M421 I5 J3 Q-0.08", "M421 I6 J3 Q-0.17", "M421 I5 J4 Q-0.08", "M421 I6 J4 Q-0.17",
 ]
 PITCH_OUT, PITCH_DISC = 8.0, 0.45                          # pas des deux spirales (mm)
 K = 0.040                                                  # mm de filament par mm de ligne (0,45 x 0,2 + ecrasement)
@@ -95,7 +95,7 @@ a("G28")
 a("G33 P1")
 a("G29                   ; palpage du plateau en plusieurs points (maillage)")
 if WITH_CORR:
-    a("; corrections du maillage (arriere +0,20 ; droite -0,10)")
+    a("; corrections du maillage (arriere +0,20 ; droite -0,08 puis -0,17 au bord)")
     for c in CORR: a(c)
 a("M109 S210")
 a("G1 Z5 F3000")
