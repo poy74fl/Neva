@@ -20,10 +20,10 @@ M421 I4 J6 Q0.20
 M421 I2 J5 Q0.10
 M421 I3 J5 Q0.10
 M421 I4 J5 Q0.10
-M421 I5 J3 Q-0.08    ; droite (BMG) : la buse descend, un peu plus au bord
-M421 I6 J3 Q-0.12
-M421 I5 J4 Q-0.08
-M421 I6 J4 Q-0.12
+M421 I5 J3 Q-0.10    ; droite (BMG) : la buse descend, un peu plus au bord
+M421 I6 J3 Q-0.06
+M421 I5 J4 Q-0.10
+M421 I6 J4 Q-0.06
 M421 I5 J5 Q-0.08    ; coin arriere-droit (entre BMG et fond) : la buse descend
 M421 I6 J5 Q-0.10
 M421 I5 J6 Q-0.08
