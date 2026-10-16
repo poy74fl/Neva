@@ -11,3 +11,13 @@
        }
      #endif
  
+@@ -227,7 +229,8 @@
+     }
+     static constexpr float _min_y(const xy_pos_t &probe_offset_xy=offset_xy) {
+       return TERN(IS_KINEMATIC,
+-        (Y_CENTER) - probe_radius(probe_offset_xy),
++        // Neva : a l'avant la buse (23 mm devant la sonde) atteint le bord avant avant la sonde : borne = rayon imprimable - decalage Y
++        (Y_CENTER) - _MIN(probe_radius(probe_offset_xy), printable_radius - probe_offset_xy.y),
+         _MAX((Y_MIN_BED) + (PROBING_MARGIN_FRONT), (Y_MIN_POS) + probe_offset_xy.y)
+       );
+     }
