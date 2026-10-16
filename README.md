@@ -132,7 +132,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.56 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.57 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
@@ -175,6 +175,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Fichiers SD du plus récent au plus ancien (v1.55)** : la liste de l'écran est triée par date de modification (le plus récent en premier, dossiers en tête ; à date égale, ordre alphabétique) au lieu de l'ordre alphabétique. Patch : `Marlin/src/sd/cardreader.cpp`. Limite : seuls les 40 premiers éléments d'un dossier (ordre de la carte) sont triés (`SDSORT_LIMIT`).
 
 **« Imprimer » sélectionné d'office, correctif (v1.56)** : depuis la v1.41 la sélection par défaut restait sur « Annuler », car `goto_screen()` remet la sélection à zéro après l'avoir réglée. Elle est maintenant réglée au premier affichage de l'écran de confirmation (choix d'un fichier, et « Reimprimer » de fin d'impression). Patch : `Marlin/src/lcd/menu/menu_media.cpp`.
+
+**Nom du fichier à la réimpression (v1.57)** : l'écran « Reimprimer » affichait le nom court 8.3 (`TEST_~75.GCO?`) ; il affiche maintenant le nom complet, avec un espace avant le « ? ».
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)

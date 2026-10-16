@@ -39,7 +39,8 @@ void lcd_sd_updir() {
 }
 
 // Neva : nom (8.3) du dernier fichier lance depuis l'ecran, pour proposer de le reimprimer a la fin
-static char neva_last_file[16];
+static char neva_last_file[16];     // nom court 8.3 (sert a relancer l'impression)
+static char neva_last_name[32];     // nom long (sert a l'affichage)
 
 // Neva : goto_screen() remet la selection de l'ecran de confirmation sur "Annuler" ; on la force sur "Imprimer" au premier
 // affichage de l'ecran (ce drapeau est leve juste avant goto_screen puis consomme par l'ecran)
@@ -60,7 +61,7 @@ static bool neva_confirm_first = false;
       MenuItem_confirm::select_screen(
         GET_TEXT_F(MSG_BUTTON_PRINT), GET_TEXT_F(MSG_BUTTON_CANCEL),
         []{ card.openAndPrintFile(neva_last_file); ui.return_to_status(); ui.reset_status(); }, nullptr,
-        F("Reimprimer"), neva_last_file, F("?")
+        F("Reimprimer"), neva_last_name, F(" ?")
       );
     });
     TERN_(HAS_TOUCH_SLEEP, ui.wakeup_screen());
@@ -70,6 +71,7 @@ static bool neva_confirm_first = false;
 
 inline void sdcard_start_selected_file() {
   strncpy(neva_last_file, card.filename, sizeof(neva_last_file) - 1);
+  strncpy(neva_last_name, card.longest_filename(), sizeof(neva_last_name) - 1);
   card.openAndPrintFile(card.filename);
   ui.return_to_status();
   ui.reset_status();
