@@ -1,6 +1,6 @@
 ; === Test de 5 carres AVEC CORRECTION DU MAILLAGE (M421) : sans rien flasher ===
 ; Apres le G29, on corrige a la main quelques points du maillage :
-;   - ARRIERE trop ecrase  -> on RELEVE la buse de 0,12 mm (rangee arriere du maillage, J6, colonnes 2 a 4) ; 0,05 mm n'a pas suffi
+;   - ARRIERE trop ecrase  -> on RELEVE la buse de 0,20 mm (rangee arriere du maillage, J6, colonnes 2 a 4) ; 0,05 puis 0,12 mm n'ont pas suffi
 ;   - DROITE (BMG) trop haute -> on ABAISSE la buse de 0,10 mm (colonnes 5 et 6, rangees 3 et 4)
 ; Pour changer l'effet : modifie les valeurs Q (en mm). Q positif = la buse monte, Q negatif = la buse descend.
 ; Si ce test est bon, ces lignes M421 sont a copier telles quelles dans le G-code de debut de PrusaSlicer, apres G29.
@@ -14,12 +14,12 @@ M104 S210            ; la buse chauffe pendant le homing et le palpage
 G28
 G33 P1
 G29                  ; palpage du plateau en plusieurs points (maillage)
-M421 I2 J6 Q0.12     ; arriere : la buse monte
-M421 I3 J6 Q0.12
-M421 I4 J6 Q0.12
-M421 I2 J5 Q0.06
-M421 I3 J5 Q0.06
-M421 I4 J5 Q0.06
+M421 I2 J6 Q0.20     ; arriere : la buse monte
+M421 I3 J6 Q0.20
+M421 I4 J6 Q0.20
+M421 I2 J5 Q0.10
+M421 I3 J5 Q0.10
+M421 I4 J5 Q0.10
 M421 I5 J3 Q-0.10    ; droite (BMG) : la buse descend
 M421 I6 J3 Q-0.10
 M421 I5 J4 Q-0.10
