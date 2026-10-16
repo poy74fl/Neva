@@ -132,7 +132,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.45 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.46 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
@@ -153,6 +153,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Réglage Z enregistré automatiquement (v1.44)** : quand tu quittes l'écran « Décalage Z » (double-clic sur la molette pendant l'impression, puis un clic pour sortir), les paramètres sont enregistrés comme avec `M500` (bip de confirmation). Patch : `Marlin/src/lcd/menu/menu.cpp`.
 
 **Menu « Calibration auto » (v1.45)** : dans le menu Tests, un clic lance `G28`, `G33` puis `M500` (enregistrement). Il fonctionne sans filament. Réglages PrusaSlicer (début/fin de G-code avec `G29`) : voir `docs/prusaslicer_gcode.md`.
+
+**Réimprimer en fin d'impression (v1.46)** : à la fin d'une impression SD, l'écran ouvre la liste sur le même fichier (`SD_REPRINT_LAST_SELECTED_FILE`). Un clic ouvre la confirmation (« Imprimer » déjà sélectionné), un second clic relance.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)
