@@ -132,7 +132,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.43 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.44 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
@@ -149,6 +149,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Test courroies : résultat figé à l'écran (v1.42)** : le résultat final (X, Y, Z, écart) est mémorisé et affiché sur l'écran « COURROIES: FINI » jusqu'au prochain test, même si les compteurs sont remis à zéro ensuite. Il est aussi toujours envoyé sur le port série (`Courroies: X… Y… Z… e…%`).
 
 **Palpage plus lent (v1.43)** : la sonde descendait à 200 mm/s (approche) puis 100 mm/s (mesure), ce qui pouvait faire bouger la tête et fausser la mesure. Maintenant 30 mm/s pour l'approche et 5 mm/s pour la mesure finale (`Z_PROBE_FEEDRATE_FAST/SLOW`). Un `G29` et un `G33` prennent plus de temps ; après ce changement, refaire `G33` + `M500` et vérifier la hauteur de première couche (`M851 Z` si besoin).
+
+**Réglage Z enregistré automatiquement (v1.44)** : quand tu quittes l'écran « Décalage Z » (double-clic sur la molette pendant l'impression, puis un clic pour sortir), les paramètres sont enregistrés comme avec `M500` (bip de confirmation). Patch : `Marlin/src/lcd/menu/menu.cpp`.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)

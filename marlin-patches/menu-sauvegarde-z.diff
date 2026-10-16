@@ -1,0 +1,14 @@
+--- a/Marlin/src/lcd/menu/menu.cpp
++++ b/Marlin/src/lcd/menu/menu.cpp
+@@ -285,7 +285,10 @@
+   #include "../../feature/babystep.h"
+ 
+   void lcd_babystep_zoffset() {
+-    if (ui.use_click()) return ui.goto_previous_screen_no_defer();
++    if (ui.use_click()) {
++      TERN_(EEPROM_SETTINGS, ui.store_settings());   // Neva : le reglage Z est enregistre en quittant l'ecran (bip de confirmation)
++      return ui.goto_previous_screen_no_defer();
++    }
+     ui.defer_status_screen();
+     const bool do_probe = DISABLED(BABYSTEP_HOTEND_Z_OFFSET) || active_extruder == 0;
+     if (ui.encoderPosition) {
