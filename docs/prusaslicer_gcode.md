@@ -43,7 +43,7 @@ G1 Z10 F3000
 G90
 G28
 M117 Impression terminee
-M300 S880 P300
+M300 S2700 P300
 ```
 Il coupe la buse, rétracte, remonte, remet la tête en haut (`G28`) et fait un bip. Pas de `M84` : sur une delta, couper les moteurs peut faire retomber les chariots.
 

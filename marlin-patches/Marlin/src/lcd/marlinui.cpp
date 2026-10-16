@@ -116,6 +116,27 @@
 // -----------------------------------------------------------------------------------------------
 MarlinUI ui;
 
+// --- Neva : l'ecran partage ses fils avec la SD et subit des parasites (moteurs, bip) ; apres une operation longue il peut
+// afficher n'importe quoi. Quand la machine redevient inactive et que l'ecran d'accueil est affiche, on le reinitialise une fois.
+#if HAS_MARLINUI_MENU && defined(REINIT_NOISY_LCD)
+  #include "../gcode/queue.h"
+  #include "../module/planner.h"
+
+  static bool     neva_lcd_busy_seen = false;
+  static millis_t neva_lcd_busy_ms = 0;
+
+  static void neva_lcd_repair_check(const millis_t ms) {
+    if (queue.has_commands_queued() || planner.has_blocks_queued()) { neva_lcd_busy_seen = true; neva_lcd_busy_ms = ms; return; }
+    if (neva_lcd_busy_seen && ELAPSED(ms, neva_lcd_busy_ms + 1500UL) && ui.on_status_screen()) {
+      neva_lcd_busy_seen = false;
+      ui.reinit_lcd();
+      ui.refresh();
+    }
+  }
+  #define NEVA_LCD_REPAIR 1
+#endif
+// -----------------------------------------------------------------------------------------------
+
 #if HAS_DISPLAY
   #include "../gcode/queue.h"
   #include "utf8.h"
@@ -1274,6 +1295,10 @@ void MarlinUI::init() {
 
       #if NEVA_AUTOLOAD
         neva_autoload_check(ms);
+      #endif
+
+      #if NEVA_LCD_REPAIR
+        neva_lcd_repair_check(ms);
       #endif
 
       #if LCD_BACKLIGHT_TIMEOUT_MINS

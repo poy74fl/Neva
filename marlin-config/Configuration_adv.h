@@ -3770,7 +3770,7 @@
   // Neva : menu "Tests" (en bas du menu principal) avec des scripts G-code integres au firmware.
   // Les memes scripts sont dans docs/test_premiere_couche.gcode, docs/test_filament.gcode et docs/test_courroies.gcode.
   #define CUSTOM_MENU_MAIN_TITLE "Tests"
-  #define CUSTOM_MENU_MAIN_SCRIPT_DONE "M300 S880 P150"   // simple bip : ne pas ecraser le message final du test (ex. resultat des courroies)
+  #define CUSTOM_MENU_MAIN_SCRIPT_DONE "M300 S2700 P300"  // bip plus aigu et plus long (le buzzer est plus fort vers 2-3 kHz) ; ne pas ecraser le message final du test
   #define CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK
   #define CUSTOM_MENU_MAIN_SCRIPT_RETURN     // Retour a l'ecran d'information : on voit la machine travailler
   #define CUSTOM_MENU_MAIN_ONLY_IDLE         // Visible uniquement quand la machine est au repos
