@@ -77,6 +77,31 @@ inline void sdcard_start_selected_file() {
   ui.reset_status();
 }
 
+// Neva : entree "Imprimer le dernier" du menu principal. La liste est triee du plus recent au plus ancien : le premier
+// fichier (pas un dossier) de la racine est le dernier copie sur la carte. Ecran de confirmation, "Imprimer" selectionne.
+void neva_print_latest_file() {
+  card.mount();               // remonte la carte et revient a la racine
+  ui.reinit_lcd();
+  const int16_t n = card.get_num_items();
+  for (int16_t i = 0; i < n; i++) {
+    card.selectFileByIndexSorted(i);
+    if (card.flag.filenameIsDir) continue;
+    strncpy(neva_last_file, card.filename, sizeof(neva_last_file) - 1);
+    strncpy(neva_last_name, card.longest_filename(), sizeof(neva_last_name) - 1);
+    neva_confirm_first = true;
+    ui.goto_screen([]{
+      if (neva_confirm_first) { neva_confirm_first = false; ui.set_selection(true); }
+      MenuItem_confirm::select_screen(
+        GET_TEXT_F(MSG_BUTTON_PRINT), GET_TEXT_F(MSG_BUTTON_CANCEL),
+        []{ card.openAndPrintFile(neva_last_file); ui.return_to_status(); ui.reset_status(); }, nullptr,
+        F("Imprimer le dernier"), neva_last_name, F(" ?")
+      );
+    });
+    return;
+  }
+  ui.set_status(F("Aucun fichier"));
+}
+
 class MenuItem_sdfile : public MenuItem_sdbase {
   public:
     static inline void draw(const bool sel, const uint8_t row, FSTR_P const fstr, CardReader &theCard) {

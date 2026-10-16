@@ -132,7 +132,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.58 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.59 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
@@ -179,6 +179,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Nom du fichier à la réimpression (v1.57)** : l'écran « Reimprimer » affichait le nom court 8.3 (`TEST_~75.GCO?`) ; il affiche maintenant le nom complet, avec un espace avant le « ? ».
 
 **Palpage plus rapide (v1.58)** : mesure lente 8 mm/s (au lieu de 5) et dégagement entre deux mesures 3 mm (au lieu de 5). Gain estimé : 35 à 45 % sur la durée d'un `G29`. À vérifier : la hauteur de première couche et les corrections `M421` (docs/test_5_carres_correction.gcode) peuvent bouger de quelques centièmes.
+
+**« Imprimer le dernier » (v1.59)** : nouvelle entrée du menu principal. Elle remonte la carte, prend le premier fichier (le plus récent, grâce au tri par date) de la racine, et affiche « Imprimer le dernier <fichier> ? » avec « Imprimer » déjà sélectionné. Si la racine ne contient aucun fichier : « Aucun fichier ». Patchs : `menu_media.cpp` et `menu_main.cpp`.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)

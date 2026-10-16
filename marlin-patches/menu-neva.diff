@@ -11,10 +11,12 @@
  #if ENABLED(PSU_CONTROL)
    #include "../../feature/power.h"
  #endif
-@@ -104,9 +108,64 @@
+@@ -104,9 +108,66 @@
    void menu_language();
  #endif
  
++void neva_print_latest_file();   // defini dans menu_media.cpp
++
 +// Neva : ecran "Test courroies" (valeurs StallGuard moyennes de X, Y, Z affichees en direct)
 +#if ALL(CUSTOM_MENU_MAIN, TMC_DEBUG, MONITOR_DRIVER_STATUS, HAS_STALLGUARD, HAS_STATUS_MESSAGE) && defined(NEVA_TEST_COURROIES_GCODE)
 +
@@ -76,7 +78,7 @@
      queue.inject(fstr);
      TERN_(CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK, ui.completion_feedback());
      TERN_(CUSTOM_MENU_MAIN_SCRIPT_RETURN, ui.return_to_status());
-@@ -217,6 +276,19 @@
+@@ -217,6 +278,19 @@
      #if HAS_CUSTOM_ITEM_MAIN(25)
        CUSTOM_ITEM_MAIN(25);
      #endif
@@ -96,7 +98,7 @@
      END_MENU();
    }
  
-@@ -240,11 +312,7 @@
+@@ -240,11 +314,7 @@
    #endif
  
    START_MENU();
@@ -109,7 +111,7 @@
  
    if (busy) {
      #if MACHINE_CAN_PAUSE
-@@ -270,89 +338,57 @@
+@@ -270,89 +340,58 @@
      #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
        SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
      #endif
@@ -183,6 +185,7 @@
 +          ui.reinit_lcd();
 +          ui.goto_screen(MEDIA_MENU_GATEWAY);
 +        });
++      if (!card_open) ACTION_ITEM_F(F("Imprimer le dernier"), []{ neva_print_latest_file(); });   // Neva : fichier le plus recent de la racine
 +      GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21"));              // M21 : actualiser / remonter la SD
      #endif
  
@@ -235,7 +238,7 @@
    #if ENABLED(CUSTOM_MENU_MAIN)
      if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
        #ifdef CUSTOM_MENU_MAIN_TITLE
-@@ -363,73 +399,6 @@
+@@ -363,73 +402,6 @@
      }
    #endif
  
@@ -309,7 +312,7 @@
    #if HAS_SERVICE_INTERVALS
      static auto _service_reset = [](const int index) {
        print_job_timer.resetServiceInterval(index);
-@@ -498,10 +467,6 @@
+@@ -498,10 +470,6 @@
      });
    #endif
  

@@ -108,6 +108,8 @@ void menu_configuration();
   void menu_language();
 #endif
 
+void neva_print_latest_file();   // defini dans menu_media.cpp
+
 // Neva : ecran "Test courroies" (valeurs StallGuard moyennes de X, Y, Z affichees en direct)
 #if ALL(CUSTOM_MENU_MAIN, TMC_DEBUG, MONITOR_DRIVER_STATUS, HAS_STALLGUARD, HAS_STATUS_MESSAGE) && defined(NEVA_TEST_COURROIES_GCODE)
 
@@ -363,6 +365,7 @@ void menu_main() {
           ui.reinit_lcd();
           ui.goto_screen(MEDIA_MENU_GATEWAY);
         });
+      if (!card_open) ACTION_ITEM_F(F("Imprimer le dernier"), []{ neva_print_latest_file(); });   // Neva : fichier le plus recent de la racine
       GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21"));              // M21 : actualiser / remonter la SD
     #endif
 
