@@ -4248,17 +4248,31 @@
     "G28"
   // END NEVA_SPIRALE
 
-  #define MAIN_MENU_ITEM_1_DESC "Test 1ere couche"
-  #define MAIN_MENU_ITEM_1_GCODE NEVA_TEST_COUCHE1_GCODE
+  // Calibration automatique : homing, calibration de la delta (G33), puis enregistrement (M500). G33 n'applique un
+  // nouveau reglage que s'il ameliore le precedent, donc enregistrer ensuite est sans risque.
+  #define NEVA_CALIBRATION_GCODE \
+    "M117 Calibration...\n" \
+    "G90\n" \
+    "G28\n" \
+    "G33\n" \
+    "M500\n" \
+    "M117 Calibration finie"
+
+  #define MAIN_MENU_ITEM_1_DESC "Calibration auto"
+  #define MAIN_MENU_ITEM_1_GCODE NEVA_CALIBRATION_GCODE
   #define MAIN_MENU_ITEM_1_CONFIRM          // Demande confirmation avant de lancer
 
-  #define MAIN_MENU_ITEM_2_DESC "Test filament"
-  #define MAIN_MENU_ITEM_2_GCODE NEVA_TEST_FILAMENT_GCODE
+  #define MAIN_MENU_ITEM_2_DESC "Test 1ere couche"
+  #define MAIN_MENU_ITEM_2_GCODE NEVA_TEST_COUCHE1_GCODE
   #define MAIN_MENU_ITEM_2_CONFIRM
 
-  #define MAIN_MENU_ITEM_3_DESC "Test spirale"
-  #define MAIN_MENU_ITEM_3_GCODE NEVA_TEST_SPIRALE_GCODE
+  #define MAIN_MENU_ITEM_3_DESC "Test filament"
+  #define MAIN_MENU_ITEM_3_GCODE NEVA_TEST_FILAMENT_GCODE
   #define MAIN_MENU_ITEM_3_CONFIRM
+
+  #define MAIN_MENU_ITEM_4_DESC "Test spirale"
+  #define MAIN_MENU_ITEM_4_GCODE NEVA_TEST_SPIRALE_GCODE
+  #define MAIN_MENU_ITEM_4_CONFIRM
 
   // "Test courroies" : entree et ecran dedies dans menu_main.cpp (utilise NEVA_TEST_COURROIES_GCODE, sans confirmation)
 #endif

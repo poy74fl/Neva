@@ -157,7 +157,9 @@ void menu_configuration();
   void _lcd_custom_menu_main_gcode(FSTR_P const fstr) {
     // Neva : les tests qui extrudent (1ere couche, filament, spirale) ne demarrent pas sans filament charge
     #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-      if (FilamentMonitorBase::enabled && (FilamentSensorBase::poll_runout_states() & _BV(0))) {
+      // La calibration (M117 Calibration...) n'extrude pas : pas besoin de filament
+      const bool neva_needs_filament = strncmp_P(FTOP(fstr), PSTR("M117 Calibration"), 16) != 0;
+      if (neva_needs_filament && FilamentMonitorBase::enabled && (FilamentSensorBase::poll_runout_states() & _BV(0))) {
         ui.set_status(F("Charger le filament !"), 0);
         ui.completion_feedback(false);
         ui.return_to_status();

@@ -11,7 +11,7 @@
  #if ENABLED(PSU_CONTROL)
    #include "../../feature/power.h"
  #endif
-@@ -104,9 +108,62 @@
+@@ -104,9 +108,64 @@
    void menu_language();
  #endif
  
@@ -64,7 +64,9 @@
    void _lcd_custom_menu_main_gcode(FSTR_P const fstr) {
 +    // Neva : les tests qui extrudent (1ere couche, filament, spirale) ne demarrent pas sans filament charge
 +    #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-+      if (FilamentMonitorBase::enabled && (FilamentSensorBase::poll_runout_states() & _BV(0))) {
++      // La calibration (M117 Calibration...) n'extrude pas : pas besoin de filament
++      const bool neva_needs_filament = strncmp_P(FTOP(fstr), PSTR("M117 Calibration"), 16) != 0;
++      if (neva_needs_filament && FilamentMonitorBase::enabled && (FilamentSensorBase::poll_runout_states() & _BV(0))) {
 +        ui.set_status(F("Charger le filament !"), 0);
 +        ui.completion_feedback(false);
 +        ui.return_to_status();
@@ -74,7 +76,7 @@
      queue.inject(fstr);
      TERN_(CUSTOM_MENU_MAIN_SCRIPT_AUDIBLE_FEEDBACK, ui.completion_feedback());
      TERN_(CUSTOM_MENU_MAIN_SCRIPT_RETURN, ui.return_to_status());
-@@ -217,6 +274,19 @@
+@@ -217,6 +276,19 @@
      #if HAS_CUSTOM_ITEM_MAIN(25)
        CUSTOM_ITEM_MAIN(25);
      #endif
@@ -94,7 +96,7 @@
      END_MENU();
    }
  
-@@ -240,11 +310,7 @@
+@@ -240,11 +312,7 @@
    #endif
  
    START_MENU();
@@ -107,7 +109,7 @@
  
    if (busy) {
      #if MACHINE_CAN_PAUSE
-@@ -270,89 +336,57 @@
+@@ -270,89 +338,57 @@
      #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
        SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
      #endif
@@ -233,7 +235,7 @@
    #if ENABLED(CUSTOM_MENU_MAIN)
      if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
        #ifdef CUSTOM_MENU_MAIN_TITLE
-@@ -363,73 +397,6 @@
+@@ -363,73 +399,6 @@
      }
    #endif
  
@@ -307,7 +309,7 @@
    #if HAS_SERVICE_INTERVALS
      static auto _service_reset = [](const int index) {
        print_job_timer.resetServiceInterval(index);
-@@ -498,10 +465,6 @@
+@@ -498,10 +467,6 @@
      });
    #endif
  
