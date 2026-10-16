@@ -132,7 +132,7 @@ L'ordre du menu est écrit dans le code de Marlin, pas dans la config. Le dossie
 
 **Chargement automatique au repos** : machine au repos, quand le filament arrive devant le capteur, la buse chauffe à `NEVA_AUTOLOAD_TEMP` (210 °C) puis `M701` charge le filament. Patch dans `marlinui.cpp` ; commente `NEVA_AUTOLOAD_TEMP` dans `Configuration_adv.h` pour désactiver.
 
-**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.40 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
+**Version de ton firmware** : `NEVA_FW_VERSION` (dans `Configuration.h`, incrémenté à chaque mise à jour poussée sur la branche) s'affiche sur la ligne du bas de l'écran de contrôle au démarrage (« Fake Prusa fw v1.41 », via `STARTUP_COMMANDS` / `M117`). Il est aussi dans l'étiquette `(NEVA-vX.Y)` visible dans `M115` et au démarrage.
 
 Le logo de démarrage (`SHOW_CUSTOM_BOOTSCREEN`) se refait avec `python3 marlin-patches/make_bootscreen.py` (logo par défaut « PRUSA PRO HT-ish », `--texte` pour le texte seul, `--neva` pour « DAGOMA NEVA », aperçu dans `docs/bootscreen_apercu.png`) ou `python3 marlin-patches/make_bootscreen.py mon_logo.png` pour ta propre image (convertie en noir et blanc, 128×64).
 
@@ -143,6 +143,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Dossier seul dans la liste SD (v1.39)** : avec le tri en RAM, si un dossier était le seul élément de la liste (par ex. un dossier `tests` seul sur la carte), Marlin le prenait pour un fichier et proposait de l'imprimer. Correctif dans `Marlin/src/sd/cardreader.cpp` (diff : `marlin-patches/cardreader-dossier-seul.diff`).
 
 **Plus besoin d'« Actualiser média » (v1.40)** : sans détection de carte, la SD n'était lue qu'après « Actualiser média ». Maintenant « Impr. depuis la SD » remonte la carte (M21) à chaque ouverture, puis réinitialise l'écran. « Actualiser média » reste disponible.
+
+**« Imprimer » sélectionné d'office (v1.41)** : à l'écran de confirmation après le choix d'un fichier, « Imprimer » est déjà sélectionné (avant : « Annuler »). Il suffit de recliquer pour lancer ; tourner la molette change de choix. Patch : `Marlin/src/lcd/menu/menu_media.cpp`.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)

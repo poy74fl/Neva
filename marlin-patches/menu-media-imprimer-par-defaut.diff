@@ -1,0 +1,10 @@
+--- a/Marlin/src/lcd/menu/menu_media.cpp
++++ b/Marlin/src/lcd/menu/menu_media.cpp
+@@ -72,6 +72,7 @@
+         sd_items = screen_items;
+       #endif
+       #if ENABLED(SD_MENU_CONFIRM_START)
++        ui.set_selection(true);   // Neva : "Imprimer" est selectionne d'office (un seul clic de plus pour lancer)
+         MenuItem_submenu::action(fstr, []{
+           char * const filename = card.longest_filename();
+           MenuItem_confirm::select_screen(
