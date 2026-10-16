@@ -5,10 +5,10 @@
 M107                  ; ventilateur d'impression coupe (pas encore monte)
 G90
 M83                   ; extrusion relative
+M104 S210            ; la buse chauffe pendant le homing et le palpage
 G28
 G33 P1                ; la sonde recale Z0
 G29                   ; palpage du plateau en plusieurs points (maillage), actif pour toute la suite
-M104 S210
 M109 S210
 G1 Z5 F3000
 G1 X-40.0 Y-30.0 F6000   ; point de purge, a cote du carre

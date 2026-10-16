@@ -81,10 +81,10 @@ a("; Lecture : lignes regulieres et de meme largeur partout = plateau plat et ha
 a("M107")
 a("G90")
 a("M83")
+a("M104 S210            ; la buse chauffe pendant le homing et le palpage")
 a("G28")
 a("G33 P1")
 a("G29                   ; palpage du plateau en plusieurs points (maillage)")
-a("M104 S210")
 a("M109 S210")
 a("G1 Z5 F3000")
 sx, sy = arcs_all[0][0]

@@ -19,10 +19,10 @@
 M107
 G90
 M83
+M104 S{first_layer_temperature[0]}
 G28
 G33 P1
 G29
-M104 S{first_layer_temperature[0]}
 M109 S{first_layer_temperature[0]}
 G1 Z5 F3000
 G1 X-85 Y0 F6000
@@ -31,7 +31,7 @@ G1 E10 F200
 G1 E-1 F1800
 G1 Z5 F3000
 ```
-Il fait : homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, chauffe, puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
+Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, attente de la température (`M109`), puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
 
 ### Fin du G-code (End G-code)
 ```

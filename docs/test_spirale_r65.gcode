@@ -6,10 +6,10 @@
 M107
 G90
 M83
+M104 S210            ; la buse chauffe pendant le homing et le palpage
 G28
 G33 P1
 G29                   ; palpage du plateau en plusieurs points (maillage)
-M104 S210
 M109 S210
 G1 Z5 F3000
 G1 X69.00 Y0.00 F6000     ; point de purge, juste a l'exterieur de la spirale
