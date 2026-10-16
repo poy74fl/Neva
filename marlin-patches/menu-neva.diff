@@ -107,7 +107,7 @@
  
    if (busy) {
      #if MACHINE_CAN_PAUSE
-@@ -270,89 +336,60 @@
+@@ -270,89 +336,57 @@
      #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
        SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
      #endif
@@ -174,16 +174,13 @@
 -      SUBMENU(MSG_PREHEAT_CUSTOM, menu_preheat_only);
 +    // 3. Imprimer SD  /  4. Actualiser media
 +    #if HAS_MEDIA
-+      if (card_detected) {
-+        if (!card_open)
-+          ACTION_ITEM(MSG_MEDIA_MENU, []{                    // Neva : lit la liste AVANT d'ouvrir le menu,
-+            card.get_num_items();                           // puis reinitialise l'ecran (bus SPI partage avec la SD)
-+            ui.reinit_lcd();
-+            ui.goto_screen(MEDIA_MENU_GATEWAY);
-+          });
-+      }
-+      else
-+        ACTION_ITEM(MSG_NO_MEDIA, nullptr);                 // "Pas de media"
++      if (!card_open)
++        ACTION_ITEM(MSG_MEDIA_MENU, []{                    // Neva : remonte la carte a chaque ouverture (plus besoin d'"Actualiser"),
++          card.mount();                                     // lit la liste AVANT d'ouvrir le menu, puis reinitialise
++          card.get_num_items();                             // l'ecran (bus SPI partage avec la SD)
++          ui.reinit_lcd();
++          ui.goto_screen(MEDIA_MENU_GATEWAY);
++        });
 +      GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21"));              // M21 : actualiser / remonter la SD
      #endif
  
@@ -236,7 +233,7 @@
    #if ENABLED(CUSTOM_MENU_MAIN)
      if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
        #ifdef CUSTOM_MENU_MAIN_TITLE
-@@ -363,73 +400,6 @@
+@@ -363,73 +397,6 @@
      }
    #endif
  
@@ -310,7 +307,7 @@
    #if HAS_SERVICE_INTERVALS
      static auto _service_reset = [](const int index) {
        print_job_timer.resetServiceInterval(index);
-@@ -498,10 +468,6 @@
+@@ -498,10 +465,6 @@
      });
    #endif
  

@@ -354,16 +354,13 @@ void menu_main() {
 
     // 3. Imprimer SD  /  4. Actualiser media
     #if HAS_MEDIA
-      if (card_detected) {
-        if (!card_open)
-          ACTION_ITEM(MSG_MEDIA_MENU, []{                    // Neva : lit la liste AVANT d'ouvrir le menu,
-            card.get_num_items();                           // puis reinitialise l'ecran (bus SPI partage avec la SD)
-            ui.reinit_lcd();
-            ui.goto_screen(MEDIA_MENU_GATEWAY);
-          });
-      }
-      else
-        ACTION_ITEM(MSG_NO_MEDIA, nullptr);                 // "Pas de media"
+      if (!card_open)
+        ACTION_ITEM(MSG_MEDIA_MENU, []{                    // Neva : remonte la carte a chaque ouverture (plus besoin d'"Actualiser"),
+          card.mount();                                     // lit la liste AVANT d'ouvrir le menu, puis reinitialise
+          card.get_num_items();                             // l'ecran (bus SPI partage avec la SD)
+          ui.reinit_lcd();
+          ui.goto_screen(MEDIA_MENU_GATEWAY);
+        });
       GCODES_ITEM(MSG_CHANGE_MEDIA, F("M21"));              // M21 : actualiser / remonter la SD
     #endif
 
