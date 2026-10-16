@@ -5,6 +5,7 @@ rond plein (pas de 0,45 mm) au centre. Spirale faite avec des demi-cercles G2/G3
 
   python3 docs/make_test_spirale.py            -> rayon exterieur 90 mm, rond plein de 20 mm
   python3 docs/make_test_spirale.py 85 18      -> rayon exterieur 85 mm, rond plein de 18 mm
+  python3 docs/make_test_spirale.py 85 0 test_spirale_r85_sans_centre.gcode corr   -> sans rond plein au centre (R_DISC = 0)
   python3 docs/make_test_spirale.py 85 20 test_spirale_r85_corrigee.gcode corr
         -> comme ci-dessus, ecrit dans le fichier donne, avec les corrections M421 du maillage (arriere, cote droit)
 """
@@ -59,7 +60,7 @@ def rotate180(arcs):
 
 
 outer = reverse(spiral_out(PITCH_OUT, R_OUT))    # de l'exterieur vers le centre, pas de 8 mm
-disc = reverse(spiral_out(PITCH_DISC, R_DISC))   # rond plein, de R_DISC vers le centre
+disc = reverse(spiral_out(PITCH_DISC, R_DISC)) if R_DISC > 0 else []   # rond plein, de R_DISC vers le centre (R_DISC = 0 : pas de rond plein)
 
 # --- raccord : la spirale exterieure s'arrete a "end1", le rond plein doit commencer au meme point ---
 # (la spirale exterieure s'arrete vers r ~ pas/2 ; on la coupe quand elle atteint R_DISC)
@@ -71,7 +72,7 @@ for a in outer:
         break
 outer = cut
 join = outer[-1][1]
-if abs(disc[0][0][0] - join[0]) > 1e-6 or abs(disc[0][0][1] - join[1]) > 1e-6:
+if disc and (abs(disc[0][0][0] - join[0]) > 1e-6 or abs(disc[0][0][1] - join[1]) > 1e-6):
     # le rond plein est tourne de 180 degres si besoin pour que son debut tombe sur le raccord
     r2 = rotate180(disc)
     if abs(r2[0][0][0] - join[0]) < abs(disc[0][0][0] - join[0]):
@@ -82,10 +83,10 @@ arcs_all = outer + disc
 # ------------------------------------------------------------------ G-code
 L = []
 a = L.append
-a("; === Test de premiere couche : UNE SEULE ligne en spirale sur tout le plateau, puis un rond plein ===")
+a("; === Test de premiere couche : UNE SEULE ligne en spirale sur tout le plateau" + (", puis un rond plein ===" if R_DISC > 0 else " (sans rond plein) ==="))
 a(f"; Spirale de rayon {R_OUT:.0f} mm, pas {PITCH_OUT:.1f} mm (lignes separees : on voit l'ecrasement partout),")
-a(f"; puis rond plein de {R_DISC:.0f} mm au centre (pas {PITCH_DISC} mm). PLA 210 C, ventilateur coupe.")
-a("; Duree : environ 4 minutes + palpage. Pendant la 1re couche : DOUBLE-CLIC sur la molette = reglage Z (Decalage Z).")
+a(f"; puis rond plein de {R_DISC:.0f} mm au centre (pas {PITCH_DISC} mm). PLA 210 C, ventilateur coupe." if R_DISC > 0 else "; Spirale seule, sans rond plein au centre. PLA 210 C, ventilateur coupe.")
+a("; Duree : environ " + ("4 minutes" if R_DISC > 0 else "2 minutes") + " + palpage. Pendant la 1re couche : DOUBLE-CLIC sur la molette = reglage Z (Decalage Z).")
 a("; Lecture : lignes regulieres et de meme largeur partout = plateau plat et hauteur bonne.")
 a("M107")
 a("G90")
