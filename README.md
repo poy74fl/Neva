@@ -163,6 +163,8 @@ Ordre obtenu (hors impression) : 1 Surveiller, 2 Préchauffage (ex-Température)
 **Maillage plus large (v1.50)** : le maillage `G29` couvrait un disque de 77 mm (100 - 23, décalage de la sonde). Il couvre maintenant 85 mm (`NEVA_MESH_MARGIN 15` dans `Configuration.h`, patch `Marlin/src/module/probe.h`). Sur les côtés et à l'arrière la sonde atteint ce rayon ; à l'avant la buse devrait aller trop loin (la sonde est 23 mm derrière la buse) : ces points sont ignorés automatiquement et le maillage y est extrapolé. Grille 7×7 : environ 28 mm entre points.
 
 **Bip plus fort, écran réparé en fin d'opération (v1.51)** : le bip de fin des tests passe à 2700 Hz / 300 ms (le buzzer de l'écran est plus fort vers 2-3 kHz). Quand la machine redevient inactive (plus de commandes ni de mouvements depuis 1,5 s) et que l'écran d'accueil est affiché, l'écran est réinitialisé une fois, ce qui répare l'affichage perturbé par les moteurs ou le bip (patch : `Marlin/src/lcd/marlinui.cpp`).
+
+**Balayage par côtés** : `docs/scan_cotes.gcode` mesure la hauteur du plateau le long de 4 axes (droite = côté BMG, gauche, arrière, avant) jusqu'à 85 mm, pour comparer les côtés à rayon égal.
 Pendant une impression, le menu garde ses entrées (Pause, Arrêter, Régler…). `PSU_CONTROL` est désactivé, donc « Allumer/Éteindre alim. » a disparu. Le menu « Infos imprimante » (version, carte, thermistances, statistiques) est en dernier. Le diff est dans `marlin-patches/menu-neva.diff`.
 
 ## 5. Premier démarrage (sécurité d'abord)
