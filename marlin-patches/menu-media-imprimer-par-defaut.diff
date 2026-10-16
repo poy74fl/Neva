@@ -1,6 +1,43 @@
 --- a/Marlin/src/lcd/menu/menu_media.cpp
 +++ b/Marlin/src/lcd/menu/menu_media.cpp
-@@ -72,6 +72,7 @@
+@@ -38,22 +38,33 @@
+   ui.refresh();
+ }
+ 
++// Neva : nom (8.3) du dernier fichier lance depuis l'ecran, pour proposer de le reimprimer a la fin
++static char neva_last_file[16];
++
+ #if ENABLED(SD_REPRINT_LAST_SELECTED_FILE)
+ 
+   uint16_t sd_encoder_position = 0xFFFF;
+   int8_t sd_top_line, sd_items;
+ 
++  // Neva : a la fin d'une impression, ecran "Reimprimer <fichier> ?" avec "Imprimer" deja selectionne : un clic relance
+   void MarlinUI::reselect_last_file() {
+-    if (sd_encoder_position == 0xFFFF) return;
+-    goto_screen(menu_media, sd_encoder_position, sd_top_line, sd_items);
+-    sd_encoder_position = 0xFFFF;
++    if (!neva_last_file[0]) return;
++    ui.set_selection(true);
+     defer_status_screen();
++    goto_screen([]{
++      MenuItem_confirm::select_screen(
++        GET_TEXT_F(MSG_BUTTON_PRINT), GET_TEXT_F(MSG_BUTTON_CANCEL),
++        []{ card.openAndPrintFile(neva_last_file); ui.return_to_status(); ui.reset_status(); }, nullptr,
++        F("Reimprimer"), neva_last_file, F("?")
++      );
++    });
+     TERN_(HAS_TOUCH_SLEEP, ui.wakeup_screen());
+   }
+ 
+ #endif
+ 
+ inline void sdcard_start_selected_file() {
++  strncpy(neva_last_file, card.filename, sizeof(neva_last_file) - 1);
+   card.openAndPrintFile(card.filename);
+   ui.return_to_status();
+   ui.reset_status();
+@@ -72,6 +83,7 @@
          sd_items = screen_items;
        #endif
        #if ENABLED(SD_MENU_CONFIRM_START)
