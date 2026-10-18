@@ -2,7 +2,7 @@
 ; Spirale de rayon 85 mm, pas 8.0 mm (lignes separees : on voit l'ecrasement partout),
 ; Spirale seule, sans rond plein au centre. PLA 210 C, ventilateur coupe.
 ; Duree : environ 2 minutes + palpage. Pendant la 1re couche : DOUBLE-CLIC sur la molette = reglage Z (Decalage Z).
-; PREREQUIS : M851 Z-1.22. Spirale complete, corrections M421 de l'essai 9 (valeurs nettes par noeud).
+; PREREQUIS : M851 Z-1.195 (valeur reelle de la machine). Spirale complete, corrections M421 de l'essai 9 (valeurs nettes par noeud).
 ; Lecture : lignes regulieres et de meme largeur partout = plateau plat et hauteur bonne.
 M107
 G90
@@ -11,7 +11,7 @@ M104 S210            ; la buse chauffe pendant le homing et le palpage
 G28
 G33 P1
 G29                   ; palpage du plateau en plusieurs points (maillage)
-; corrections du maillage (essai 9, M851 Z-1.22) valeurs nettes par noeud
+; corrections du maillage (essai 9, M851 Z-1.195) valeurs nettes par noeud
 M421 I1 J0 Q-0.20
 M421 I2 J0 Q-0.31
 M421 I3 J0 Q-0.31
