@@ -1610,7 +1610,7 @@
 #define Z_CLEARANCE_MULTI_PROBE     3 // (mm) Z Clearance between multiple probes (Neva : 3 au lieu de 5, descente lente plus courte)
 #define Z_AFTER_PROBING           30 // (mm) Neva v1.63 : la tete remonte a 30 mm a la fin de G29 (avant : restait a 5 mm)
 
-#define Z_PROBE_LOW_POINT          -4 // TEST T6 : -4 (v1.67 : -2, mais la limite n'etait pas appliquee, voir probe.cpp) // (mm) Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -4 // (mm) TEST T6 : -4 (v1.67 : -2 ; voir module/probe.cpp : la limite n'est appliquee que si l'axe Z est de confiance) Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
