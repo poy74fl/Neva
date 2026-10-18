@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.67-T2" // T2 = TEST : palpage avec la buse (SENSORLESS_PROBING), sans SuperPINDA. Ne pas utiliser pour imprimer.
+#define NEVA_FW_VERSION "1.67-T3" // T3 = TEST : palpage avec la buse (SENSORLESS_PROBING), sans SuperPINDA. Ne pas utiliser pour imprimer.
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe

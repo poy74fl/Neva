@@ -60,6 +60,7 @@
     #define NEVA_PROBE_STALL_SENSITIVITY { X_STALL_SENSITIVITY, Y_STALL_SENSITIVITY, Z_STALL_SENSITIVITY }
   #endif
   int16_t neva_probe_sgt[3] = NEVA_PROBE_STALL_SENSITIVITY;
+  volatile bool neva_probing_down = false; // T3 : vrai pendant la descente de palpage (voir endstops.cpp)
 #endif
 
 #if ANY(HAS_QUIET_PROBING, USE_SENSORLESS)
@@ -625,7 +626,9 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   TERN_(HAS_QUIET_PROBING, set_probing_paused(true));
 
   // Move down until the probe is triggered
+  TERN_(HAS_DELTA_SENSORLESS_PROBING, neva_probing_down = true);
   do_blocking_move_to_z(z, fr_mm_s);
+  TERN_(HAS_DELTA_SENSORLESS_PROBING, neva_probing_down = false);
 
   // Check to see if the probe was triggered
   const bool probe_triggered = (

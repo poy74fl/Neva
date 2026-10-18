@@ -1,0 +1,60 @@
+--- a/module/endstops.cpp	2026-10-18 20:24:17.888197969 +0000
++++ b/src/module/endstops.cpp	2026-10-18 20:52:32.095144468 +0000
+@@ -701,6 +701,15 @@
+  * Read endstops to get their current states, register hits for all
+  * axes moving in the direction of their endstops, and abort moves.
+  */
++// Neva T3 : pendant un palpage sensorless de delta, la buse DESCEND (sens "-") mais le DIAG des TMC2209 est branche sur le port MAX
++// (homing en haut). Marlin 2.1.2.5 ne teste que les ports MIN dans ce sens : le calage n'etait jamais vu. On teste donc aussi
++// les ports MAX (X, Y, Z) pendant la descente de palpage, et on ignore les ports MIN (X-MIN = E0-DET = capteur de filament).
++#if HAS_DELTA_SENSORLESS_PROBING
++  extern volatile bool neva_probing_down; // module/probe.cpp
++#else
++  static constexpr bool neva_probing_down = false;
++#endif
++
+ void Endstops::update() {
+ 
+   #if !ENDSTOP_NOISE_THRESHOLD      // If not debouncing...
+@@ -1120,8 +1129,11 @@
+ 
+   if (stepper.axis_is_moving(X_AXIS)) {
+     if (stepper.motor_direction(X_AXIS_HEAD)) { // -direction
++      #if HAS_DELTA_SENSORLESS_PROBING
++        if (neva_probing_down) PROCESS_ENDSTOP_X(MAX);
++      #endif
+       #if USE_X_MIN || (X_SPI_SENSORLESS && X_HOME_TO_MIN)
+-        PROCESS_ENDSTOP_X(MIN);
++        if (!neva_probing_down) PROCESS_ENDSTOP_X(MIN);
+         #if   CORE_DIAG(XY, Y, MIN)
+           PROCESS_CORE_ENDSTOP(Y,MIN,X,MIN);
+         #elif CORE_DIAG(XY, Y, MAX)
+@@ -1152,8 +1164,11 @@
+   #if HAS_Y_AXIS
+     if (stepper.axis_is_moving(Y_AXIS)) {
+       if (stepper.motor_direction(Y_AXIS_HEAD)) { // -direction
++        #if HAS_DELTA_SENSORLESS_PROBING
++          if (neva_probing_down) PROCESS_ENDSTOP_Y(MAX);
++        #endif
+         #if USE_Y_MIN || (Y_SPI_SENSORLESS && Y_HOME_TO_MIN)
+-          PROCESS_ENDSTOP_Y(MIN);
++          if (!neva_probing_down) PROCESS_ENDSTOP_Y(MIN);
+           #if   CORE_DIAG(XY, X, MIN)
+             PROCESS_CORE_ENDSTOP(X,MIN,Y,MIN);
+           #elif CORE_DIAG(XY, X, MAX)
+@@ -1186,10 +1201,14 @@
+     if (stepper.axis_is_moving(Z_AXIS)) {
+       if (stepper.motor_direction(Z_AXIS_HEAD)) { // Z -direction. Gantry down, bed up.
+ 
++        #if HAS_DELTA_SENSORLESS_PROBING
++          if (neva_probing_down) PROCESS_ENDSTOP(Z, MAX);
++        #endif
++
+         #if USE_Z_MIN || (Z_SPI_SENSORLESS && Z_HOME_TO_MIN)
+           if ( TERN1(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN, z_probe_enabled)
+             && TERN1(USES_Z_MIN_PROBE_PIN, !z_probe_enabled)
+-          ) PROCESS_ENDSTOP_Z(MIN);
++          && !neva_probing_down) PROCESS_ENDSTOP_Z(MIN);
+           #if   CORE_DIAG(XZ, X, MIN)
+             PROCESS_CORE_ENDSTOP(X,MIN,Z,MIN);
+           #elif CORE_DIAG(XZ, X, MAX)
