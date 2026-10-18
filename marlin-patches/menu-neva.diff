@@ -111,7 +111,7 @@
  
    if (busy) {
      #if MACHINE_CAN_PAUSE
-@@ -270,89 +340,58 @@
+@@ -270,89 +340,55 @@
      #if ENABLED(CANCEL_OBJECTS) && DISABLED(SLIM_LCD_MENUS)
        SUBMENU(MSG_CANCEL_OBJECT, []{ editable.int8 = -1; ui.goto_screen(menu_cancelobject); });
      #endif
@@ -219,10 +219,7 @@
 -  #if ENABLED(MIXING_EXTRUDER)
 -    SUBMENU(MSG_MIXER, menu_mixer);
 -  #endif
-+    // 8. Lumiere
-+    #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
-+      SUBMENU(MSG_LEDS, menu_led);
-+    #endif
++    // 8. (Lumiere : dans Configuration)
 +  }
  
 -  #if ENABLED(MMU2_MENUS)
@@ -238,7 +235,7 @@
    #if ENABLED(CUSTOM_MENU_MAIN)
      if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {
        #ifdef CUSTOM_MENU_MAIN_TITLE
-@@ -363,73 +402,6 @@
+@@ -363,73 +399,6 @@
      }
    #endif
  
@@ -312,7 +309,7 @@
    #if HAS_SERVICE_INTERVALS
      static auto _service_reset = [](const int index) {
        print_job_timer.resetServiceInterval(index);
-@@ -498,10 +470,6 @@
+@@ -498,10 +467,6 @@
      });
    #endif
  

@@ -380,10 +380,7 @@ void menu_main() {
     // 7. Mouvement
     SUBMENU(MSG_MOTION, menu_motion);
 
-    // 8. Lumiere
-    #if ANY(LED_CONTROL_MENU, CASE_LIGHT_MENU)
-      SUBMENU(MSG_LEDS, menu_led);
-    #endif
+    // 8. (Lumiere : dans Configuration)
   }
 
   // 9. Infos imprimante (version, carte, thermistances, statistiques)
