@@ -65,6 +65,11 @@
     #define NEVA_PROBE_MIN_SPEED 15
   #endif
   float neva_probe_min_speed = NEVA_PROBE_MIN_SPEED;
+  // T5 : courant moteur (mA) pendant le palpage : borne l'effort de la buse sur le plateau (0 = courant normal). Reglable par "M914 P1 C..".
+  #ifndef NEVA_PROBE_CURRENT
+    #define NEVA_PROBE_CURRENT 0
+  #endif
+  int16_t neva_probe_current = NEVA_PROBE_CURRENT;
   volatile bool neva_probing_down = false; // T3 : vrai pendant la descente de palpage (voir endstops.cpp)
 #endif
 
@@ -632,6 +637,13 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
       stepperZ.TCOOLTHRS(neva_tcoolthrs);
     }
     endstops.set_homing_current(true);                                            // The "homing" current also applies to probing
+    // Neva T5 : courant propre au palpage (restaure plus bas)
+    const uint16_t neva_cur_save[3] = { stepperX.getMilliamps(), stepperY.getMilliamps(), stepperZ.getMilliamps() };
+    if (neva_probe_current > 0) {
+      stepperX.rms_current(neva_probe_current);
+      stepperY.rms_current(neva_probe_current);
+      stepperZ.rms_current(neva_probe_current);
+    }
     endstops.enable(true);
   #endif // SENSORLESS_PROBING
 
@@ -677,6 +689,9 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
     stepperY.homing_threshold(neva_sgt_home[1]);
     stepperZ.homing_threshold(neva_sgt_home[2]);
     endstops.set_homing_current(false);
+    stepperX.rms_current(neva_cur_save[0]);
+    stepperY.rms_current(neva_cur_save[1]);
+    stepperZ.rms_current(neva_cur_save[2]);
   #endif
 
   #if ENABLED(BLTOUCH)

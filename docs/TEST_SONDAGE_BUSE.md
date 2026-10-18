@@ -1,6 +1,6 @@
 # Firmware de test T1 : palpage avec la buse (`SENSORLESS_PROBING`)
 
-Branche : `claude/neva-test-sondage-buse` (la v1.67 stable reste sur `claude/zen-mayer-tgigb3`, intacte). Version affichée : `1.67-T4c`. **Firmware d'expérience : ne pas imprimer avec.**
+Branche : `claude/neva-test-sondage-buse` (la v1.67 stable reste sur `claude/zen-mayer-tgigb3`, intacte). Version affichée : `1.67-T5`. **Firmware d'expérience : ne pas imprimer avec.**
 
 ## Ce qui change par rapport à la v1.67
 - `FIX_MOUNTED_PROBE` désactivé, `SENSORLESS_PROBING` activé : la SuperPINDA n'est plus lue. Marlin n'accepte qu'un seul type de sonde.
@@ -35,3 +35,5 @@ Reflasher le `firmware.bin` v1.67 (nouveau nom de fichier), puis « Calibration 
 - **T4b** : correction de compilation (`MULTIPLE_PROBING 1` est refusé par Marlin : « must be 2 or more »), `Z_PROBE_FEEDRATE_FAST` = `SLOW` pour supprimer la pré-descente rapide jusqu'à Z20.
 - **T4b, résultat** : la tête s'arrête encore en l'air.
 - **T4c** : ajoute une ligne de diagnostic après chaque mesure (`Palpage: depart Z.. arret Z.. declenche X.. Y.. Z.. | DIAG au depart .. a la fin ..`) pour savoir quelle tour déclenche, à quelle hauteur, et si un DIAG est déjà actif avant de partir.
+- **T4b, résultat** : à la sensibilité 80 le palpage déclenche à Z −1,84 (±0,01 mm sur 5 mesures, au centre comme à X70). Le balayage `docs/scan_buse_coin_bmg.gcode` ne retrouve pas la carte au papier : X57 +0,33, X70 −0,04, X70 Y25 +0,08, Y70 +0,48, X80 échoue. La buse enfonce le plateau d'environ 1,8 mm avant que le moteur cale (souplesse des courroies et des bras), et cet enfoncement varie avec la position.
+- **T5** : courant moteur propre au palpage (`NEVA_PROBE_CURRENT`, 500 mA par défaut au lieu de 800 ; `M914 P1 C..` pour le régler, 0 = courant normal). Moins de courant = moins d'effort de la buse sur le plateau, donc moins d'enfoncement. Le courant normal est restauré après chaque mesure. Critère : X57 vers −0,1, X70 vers +0,36, X70 Y25 vers +0,56 (carte au papier). Sinon on arrête.

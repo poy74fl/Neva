@@ -501,15 +501,17 @@
   #if ENABLED(SENSORLESS_PROBING)
     extern int16_t neva_probe_sgt[3]; // module/probe.cpp
     extern float neva_probe_min_speed;
+    extern int16_t neva_probe_current;
   #endif
 
   void GcodeSuite::M914() {
-    // Neva T2/T4 : "M914 P1 X.. Y.. Z.. S.." regle la sensibilite (X Y Z) et la vitesse minimale S (mm/s) du PALPAGE (pas enregistrees par M500) ; "M914 P1" seul les affiche.
+    // Neva T2/T4 : "M914 P1 X.. Y.. Z.. S.." regle la sensibilite (X Y Z), la vitesse minimale S (mm/s) et le courant C (mA) du PALPAGE (pas enregistrees par M500) ; "M914 P1" seul les affiche.
     #if ENABLED(SENSORLESS_PROBING)
       if (parser.seen('P')) {
         LOOP_NUM_AXES(i) if (i <= Z_AXIS && parser.seen(AXIS_CHAR(i))) neva_probe_sgt[i] = constrain(parser.value_int(), 0, 255);
         if (parser.seen('S')) neva_probe_min_speed = parser.value_float();
-        SERIAL_ECHOLNPGM("Palpage sensibilite: X", neva_probe_sgt[0], " Y", neva_probe_sgt[1], " Z", neva_probe_sgt[2], " vitesse min (mm/s): ", neva_probe_min_speed);
+        if (parser.seen('C')) neva_probe_current = constrain(parser.value_int(), 0, 1200);
+        SERIAL_ECHOLNPGM("Palpage sensibilite: X", neva_probe_sgt[0], " Y", neva_probe_sgt[1], " Z", neva_probe_sgt[2], " vitesse min (mm/s): ", neva_probe_min_speed, " courant (mA, 0=normal): ", neva_probe_current);
         return;
       }
     #endif
