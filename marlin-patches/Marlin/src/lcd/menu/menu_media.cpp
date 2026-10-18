@@ -40,7 +40,7 @@ void lcd_sd_updir() {
 
 // Neva : nom (8.3) du dernier fichier lance depuis l'ecran, pour proposer de le reimprimer a la fin
 static char neva_last_file[16];     // nom court 8.3 (sert a relancer l'impression)
-static char neva_last_name[32];     // nom long (sert a l'affichage)
+static char neva_last_name[48];     // nom long (sert a l'affichage)
 
 // Neva : goto_screen() remet la selection de l'ecran de confirmation sur "Annuler" ; on la force sur "Imprimer" au premier
 // affichage de l'ecran (ce drapeau est leve juste avant goto_screen puis consomme par l'ecran)
