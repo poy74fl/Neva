@@ -638,9 +638,16 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   TERN_(HAS_QUIET_PROBING, set_probing_paused(true));
 
   // Move down until the probe is triggered
-  TERN_(HAS_DELTA_SENSORLESS_PROBING, neva_probing_down = true);
+  #if HAS_DELTA_SENSORLESS_PROBING
+    const float neva_z_start = current_position.z;
+    const Endstops::endstop_mask_t neva_live_start = endstops.state(); // diagnostic T4c
+    neva_probing_down = true;
+  #endif
   do_blocking_move_to_z(z, fr_mm_s);
   TERN_(HAS_DELTA_SENSORLESS_PROBING, neva_probing_down = false);
+  #if HAS_DELTA_SENSORLESS_PROBING
+    const Endstops::endstop_mask_t neva_trig = endstops.trigger_state(), neva_live_end = endstops.state(); // diagnostic T4c
+  #endif
 
   // Check to see if the probe was triggered
   const bool probe_triggered = (
@@ -685,6 +692,14 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
 
   // Tell the planner where we actually are
   sync_plan_position();
+
+  // Neva T4c : diagnostic du palpage sensorless (tour qui a declenche, hauteur d'arret)
+  #if HAS_DELTA_SENSORLESS_PROBING
+    SERIAL_ECHOLNPGM("Palpage: depart Z", neva_z_start, " arret Z", current_position.z,
+      " declenche X", TEST(neva_trig, X_MAX), " Y", TEST(neva_trig, Y_MAX), " Z", TEST(neva_trig, Z_MAX),
+      " | DIAG au depart X", TEST(neva_live_start, X_MAX), " Y", TEST(neva_live_start, Y_MAX), " Z", TEST(neva_live_start, Z_MAX),
+      " a la fin X", TEST(neva_live_end, X_MAX), " Y", TEST(neva_live_end, Y_MAX), " Z", TEST(neva_live_end, Z_MAX));
+  #endif
 
   return !probe_triggered;
 }

@@ -1,6 +1,6 @@
 # Firmware de test T1 : palpage avec la buse (`SENSORLESS_PROBING`)
 
-Branche : `claude/neva-test-sondage-buse` (la v1.67 stable reste sur `claude/zen-mayer-tgigb3`, intacte). Version affichée : `1.67-T4b`. **Firmware d'expérience : ne pas imprimer avec.**
+Branche : `claude/neva-test-sondage-buse` (la v1.67 stable reste sur `claude/zen-mayer-tgigb3`, intacte). Version affichée : `1.67-T4c`. **Firmware d'expérience : ne pas imprimer avec.**
 
 ## Ce qui change par rapport à la v1.67
 - `FIX_MOUNTED_PROBE` désactivé, `SENSORLESS_PROBING` activé : la SuperPINDA n'est plus lue. Marlin n'accepte qu'un seul type de sonde.
@@ -33,3 +33,5 @@ Reflasher le `firmware.bin` v1.67 (nouveau nom de fichier), puis « Calibration 
 - **T3, résultat** : à 140 le palpage déclenche (Z −1,70, la buse a enfoncé le plateau de 1,5 mm) mais pas à chaque fois ; à 160, 180 et 200 la tête s'arrête **en l'air** (faux déclenchement du StallGuard à l'accélération du départ). Pas de plage de sensibilité fiable.
 - **T4** : le StallGuard est ignoré sous une vitesse minimale (`TCOOLTHRS`, 15 mm/s par défaut, réglable `M914 P1 S..`), ce qui masque l'accélération du départ. En contrepartie le palpage se fait en une seule mesure à 20 mm/s (`MULTIPLE_PROBING` désactivé, car Marlin refuse la valeur 1 ; `Z_PROBE_FEEDRATE_SLOW` et `_FAST` à 20 mm/s), car sous ~15 mm/s le signal n'est de toute façon pas exploitable. Sensibilité de palpage par défaut 120.
 - **T4b** : correction de compilation (`MULTIPLE_PROBING 1` est refusé par Marlin : « must be 2 or more »), `Z_PROBE_FEEDRATE_FAST` = `SLOW` pour supprimer la pré-descente rapide jusqu'à Z20.
+- **T4b, résultat** : la tête s'arrête encore en l'air.
+- **T4c** : ajoute une ligne de diagnostic après chaque mesure (`Palpage: depart Z.. arret Z.. declenche X.. Y.. Z.. | DIAG au depart .. a la fin ..`) pour savoir quelle tour déclenche, à quelle hauteur, et si un DIAG est déjà actif avant de partir.
