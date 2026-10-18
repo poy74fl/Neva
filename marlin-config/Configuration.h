@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.67-T4" // T4 = TEST : palpage avec la buse (SENSORLESS_PROBING), sans SuperPINDA. Ne pas utiliser pour imprimer.
+#define NEVA_FW_VERSION "1.67-T4b" // T4 = TEST : palpage avec la buse (SENSORLESS_PROBING), sans SuperPINDA. Ne pas utiliser pour imprimer.
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1538,7 +1538,7 @@
 #define XY_PROBE_FEEDRATE (66*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (30*60)   // Neva : etait 200 mm/s ; une approche trop rapide fait bouger la tete et fausse le palpage
+#define Z_PROBE_FEEDRATE_FAST (20*60)   // TEST T4 : = SLOW (Marlin saute alors la pre-descente rapide jusqu'a Z20, qui armait le StallGuard au depart). v1.67 : 30 mm/s. Neva : Neva : etait 200 mm/s ; une approche trop rapide fait bouger la tete et fausse le palpage
 
 // Feedrate (mm/min) for the "accurate" probe of each point
 #define Z_PROBE_FEEDRATE_SLOW (20*60)    // TEST T4 : 20 mm/s (v1.67 : 8 mm/s ; 5 mm/s en v1.43-v1.57, 100 mm/s avant)
@@ -1588,7 +1588,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#define MULTIPLE_PROBING 1 // TEST T4 : 1 seule mesure a Z_PROBE_FEEDRATE_SLOW (20 mm/s : le StallGuard est inutilisable sous ~15 mm/s). v1.67 : 2 (1 approche rapide + 1 mesure lente)
+//#define MULTIPLE_PROBING 2 // TEST T4 : desactive = 1 seule mesure a Z_PROBE_FEEDRATE_SLOW (20 mm/s : le StallGuard est inutilisable sous ~15 mm/s). Marlin refuse MULTIPLE_PROBING 1. v1.67 : 2 (1 approche rapide + 1 mesure lente)
 //#define EXTRA_PROBING    1
 
 /**
