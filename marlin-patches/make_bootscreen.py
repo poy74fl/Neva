@@ -9,6 +9,7 @@
 Un pixel allume (blanc dans l'image) = un pixel allume sur l'ecran.
 Ecrit aussi docs/bootscreen_apercu.png (apercu agrandi).
 """
+import re
 import sys
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageOps
@@ -16,7 +17,14 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 W, H = 128, 64
 ROOT = Path(__file__).resolve().parent
 OUT_H = ROOT / "Marlin" / "_Bootscreen.h"
-FW_VERSION = "2.1.2.5"   # version Marlin affichee sur l'ecran de demarrage
+def _fw_version():
+    # version du firmware Neva, lue dans Configuration.h (NEVA_FW_VERSION)
+    cfg = Path(__file__).resolve().parent.parent / "marlin-config" / "Configuration.h"
+    m = re.search(r'#define\s+NEVA_FW_VERSION\s+"([^"]+)"', cfg.read_text())
+    return m.group(1) if m else "2.1.2.5"
+
+
+FW_VERSION = _fw_version()   # version affichee sous le logo au demarrage
 OUT_PNG = ROOT.parent / "docs" / "bootscreen_apercu.png"
 FONTS = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
