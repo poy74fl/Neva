@@ -36,7 +36,7 @@ namespace Language_fr {
   constexpr uint8_t CHARSIZE              = 2;
   LSTR LANGUAGE                           = _UxGT("Français");
 
-  LSTR WELCOME_MSG                        = MACHINE_NAME _UxGT(" prête.");
+  LSTR WELCOME_MSG                        = _UxGT("Fake Prusa fw v") NEVA_FW_VERSION; // version toujours visible sur l'ecran de controle
   LSTR MSG_YES                            = _UxGT("Oui");
   LSTR MSG_NO                             = _UxGT("Non");
   LSTR MSG_BACK                           = _UxGT("Retour");
