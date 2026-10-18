@@ -45,4 +45,5 @@ Reflasher le `firmware.bin` v1.67 (nouveau nom de fichier), puis « Calibration 
 - Le palpage par la buse **marche** (sensibilité 80, courant normal) et se répète à ±0,01 mm en un même point.
 - Il mesure le point où le moteur cale, avec un enfoncement d'environ 1,8 mm qui **dépend de la position** (de −1,36 à −1,88 sur le balayage). Cette erreur est du même ordre que le défaut cherché (0,3 à 0,6 mm) et la carte obtenue ne recoupe pas celle au papier (sauf X70 Y−25).
 - Baisser le courant (T5) augmente l'enfoncement au lieu de le réduire ; monter la sensibilité au-delà de ~140 déclenche en l'air.
+- À 1000 mA (`M914 P1 C1000`) : sensibilité 80 → la tête s'arrête en l'air ; 65, 50 et 25 → limite −4,00 atteinte sans qu'aucune tour déclenche (`Probing Failed`), la buse appuie 4 mm dans le plateau. Pas de fenêtre de réglage utilisable à cette force.
 - Pour le coin BMG, la mesure au papier reste la référence. Retour à la v1.67 : reflasher son `firmware.bin`, vérifier `M851 Z -1.233` et `M851 Y23`, puis « Calibration auto ».
