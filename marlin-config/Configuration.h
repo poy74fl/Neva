@@ -1526,7 +1526,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -1.195 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = reglage de la 1re couche (double-clic molette) : -1.195
+#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -1.233 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = reglage de la 1re couche (double-clic molette) : -1.233 (valeur choisie par l'utilisateur apres la validation des M421 a -1.195)
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.

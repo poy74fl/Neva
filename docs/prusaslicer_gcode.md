@@ -6,7 +6,7 @@
 - **Forme du plateau** : *Personnalisée*, importer `docs/forme_plateau.svg` (cercle de 170 mm sans le coin côté BMG, là où la buse est 0,3 à 0,6 mm trop basse), origine **0, 0**. Vérifie à l'écran que le coin enlevé est bien en haut à droite (côté BMG, arrière). Sinon colle à la main la ligne de `docs/forme_plateau_bed_shape.txt` dans le fichier de profil.
 - **Hauteur max d'impression** : selon ta machine (le Z du firmware monte à ~312 mm, vise 200–250).
 - **Variante G-code** : *Marlin 2*.
-- **Z offset** : 0 (le décalage est réglé dans le firmware : `M851 Z-1.195` / écran « Décalage Z »).
+- **Z offset** : 0 (le décalage est réglé dans le firmware : `M851 Z-1.233` / écran « Décalage Z »).
 
 ## Extrudeur
 - **Distances d'extrusion relatives** (Use relative E distances) : **coché**.
