@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.66"
+#define NEVA_FW_VERSION "1.67"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1526,7 +1526,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -1.12 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = reglage de la 1re couche (double-clic molette) : -1.12
+#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -1.195 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = reglage de la 1re couche (double-clic molette) : -1.195
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.

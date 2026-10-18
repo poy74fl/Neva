@@ -3,10 +3,10 @@
 À faire **une seule fois**, dans *Réglages de l'imprimante* (Printer Settings), puis enregistrer le profil.
 
 ## Général
-- **Forme du plateau** : circulaire, **diamètre 190 mm** (monte à 200 quand ta zone est validée), origine **0, 0**.
+- **Forme du plateau** : *Personnalisée*, importer `docs/forme_plateau.svg` (cercle de 170 mm sans le coin côté BMG, là où la buse est 0,3 à 0,6 mm trop basse), origine **0, 0**. Vérifie à l'écran que le coin enlevé est bien en haut à droite (côté BMG, arrière). Sinon colle à la main la ligne de `docs/forme_plateau_bed_shape.txt` dans le fichier de profil.
 - **Hauteur max d'impression** : selon ta machine (le Z du firmware monte à ~312 mm, vise 200–250).
 - **Variante G-code** : *Marlin 2*.
-- **Z offset** : 0 (le décalage est réglé dans le firmware : M851 / écran « Décalage Z »).
+- **Z offset** : 0 (le décalage est réglé dans le firmware : `M851 Z-1.195` / écran « Décalage Z »).
 
 ## Extrudeur
 - **Distances d'extrusion relatives** (Use relative E distances) : **coché**.
@@ -23,20 +23,25 @@ M104 S{first_layer_temperature[0]}
 G28
 G33 P1
 G29
-M421 I2 J6 Q0.20
-M421 I3 J6 Q0.20
-M421 I4 J6 Q0.20
-M421 I2 J5 Q0.10
-M421 I3 J5 Q0.10
-M421 I4 J5 Q0.10
-M421 I5 J3 Q-0.12
-M421 I6 J3 Q0.06
-M421 I5 J4 Q-0.12
-M421 I6 J4 Q0.14
-M421 I5 J5 Q-0.08
-M421 I6 J5 Q-0.10
-M421 I5 J6 Q-0.08
-M421 I6 J6 Q-0.10
+M421 I3 J1 Q-0.03
+M421 I2 J2 Q-0.03
+M421 I3 J2 Q-0.06
+M421 I4 J2 Q-0.03
+M421 I5 J2 Q0.05
+M421 I6 J2 Q0.15
+M421 I1 J3 Q-0.03
+M421 I2 J3 Q-0.06
+M421 I3 J3 Q-0.08
+M421 I4 J3 Q-0.06
+M421 I5 J3 Q0.05
+M421 I6 J3 Q0.15
+M421 I2 J4 Q-0.03
+M421 I3 J4 Q-0.06
+M421 I4 J4 Q-0.03
+M421 I5 J4 Q0.05
+M421 I6 J4 Q0.10
+M421 I4 J5 Q-0.06
+M421 I4 J6 Q-0.06
 M109 S{first_layer_temperature[0]}
 G1 Z5 F3000
 G1 X-85 Y0 F6000
@@ -45,7 +50,7 @@ G1 E10 F200
 G1 E-1 F1800
 G1 Z5 F3000
 ```
-Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, **quatorze corrections du maillage (`M421`)** qui compensent un petit defaut de la machine (arriere : buse relevee de 0,20 mm ; cote droit/BMG : buse abaissee de 0,12 mm, puis RELEVEE de 0,06 mm (rangee J3) et de 0,14 mm (rangee J4) tout au bord ; coin arriere-droit : abaissee de 0,08 a 0,10 mm, determines avec `docs/test_5_carres_correction.gcode`), attente de la température (`M109`), puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
+Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, **dix-neuf corrections du maillage (`M421`)** déterminées avec `docs/test_spirale_r85_complete_corr_v11.gcode` (centre et anneau milieu un peu plus écrasés, arrière gauche/droite ajustés, coin BMG remonté), attente de la température (`M109`), puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
 
 ### Fin du G-code (End G-code)
 ```
