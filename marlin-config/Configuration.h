@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.67"
+#define NEVA_FW_VERSION "1.67-T1" // T1 = TEST : palpage avec la buse (SENSORLESS_PROBING), sans SuperPINDA. Ne pas utiliser pour imprimer.
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1355,7 +1355,7 @@
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-#define FIX_MOUNTED_PROBE   // Sonde PINDA fixee sur la tete
+//#define FIX_MOUNTED_PROBE   // TEST T1 : desactive (une seule sonde possible), la SuperPINDA n'est plus lue
 
 /**
  * Use the nozzle as the probe, as with a conductive
@@ -1452,7 +1452,7 @@
  * CAUTION: This can damage machines with Z lead screws.
  *          Take extreme care when setting up this feature.
  */
-//#define SENSORLESS_PROBING
+#define SENSORLESS_PROBING // TEST T1 : la buse sonde le plateau par StallGuard (DIAG des 3 tours, comme le homing)
 
 /**
  * Allen key retractable z-probe as seen on many Kossel delta printers - https://reprap.org/wiki/Kossel#Autolevel_probe
@@ -1526,12 +1526,12 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, 23, -1.233 } // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = reglage de la 1re couche (double-clic molette) : -1.233 (valeur choisie par l'utilisateur apres la validation des M421 a -1.195)
+#define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0 } // TEST T1 : la buse est la sonde, pas de decalage. (v1.67 : { 0, 23, -1.233 }) // X, Y mesures : PINDA derriere la buse (+Y = vers la tour Z). Z = reglage de la 1re couche (double-clic molette) : -1.233 (valeur choisie par l'utilisateur apres la validation des M421 a -1.195)
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
 #define PROBING_MARGIN 10 // G33 calibre sur un cercle de 100 - 10 - 23 = 67 mm (avant 57). Le maillage G29 reste a 77 mm (23 > 10).
-#define NEVA_MESH_SHIFT   // Neva : applique le maillage avec le decalage de la sonde (23 mm) ; commenter la ligne pour revenir a l'ancien comportement
+//#define NEVA_MESH_SHIFT   // TEST T1 : desactive (plus de decalage de sonde). Neva : applique le maillage avec le decalage de la sonde (23 mm) ; commenter la ligne pour revenir a l'ancien comportement
 #define NEVA_MESH_MARGIN 15 // Neva : le maillage G29 couvre un disque de 100 - 15 = 85 mm (avant 77). Sondes ecartees automatiquement si la buse ne peut pas les atteindre (avant).
 
 // X and Y axis travel speed (mm/min) between probes
