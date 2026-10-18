@@ -3192,6 +3192,7 @@
     #define Y_STALL_SENSITIVITY  75  // regle sur la machine avec la tete (50 mm/s)
     #define Y2_STALL_SENSITIVITY Y_STALL_SENSITIVITY
     #define Z_STALL_SENSITIVITY  75  // regle sur la machine avec la tete (50 mm/s)
+    #define NEVA_PROBE_STALL_SENSITIVITY { 100, 100, 100 } // TEST T2 : sensibilite X, Y, Z pendant le PALPAGE seulement (le homing garde les valeurs ci-dessus). Reglable sans recompiler : M914 P1 X.. Y.. Z.. (patch palpage-sensibilite.diff)
     //#define Z2_STALL_SENSITIVITY Z_STALL_SENSITIVITY
     //#define Z3_STALL_SENSITIVITY Z_STALL_SENSITIVITY
     //#define Z4_STALL_SENSITIVITY Z_STALL_SENSITIVITY

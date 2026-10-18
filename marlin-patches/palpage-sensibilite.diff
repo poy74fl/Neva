@@ -1,0 +1,58 @@
+--- a/module/probe.cpp	2026-10-18 20:24:17.889331669 +0000
++++ b/src/module/probe.cpp	2026-10-18 20:43:45.645544987 +0000
+@@ -55,6 +55,11 @@
+ #if ENABLED(SENSORLESS_PROBING)
+   abc_float_t offset_sensorless_adj{0};
+   float largest_sensorless_adj = 0;
++  // Neva T2 : sensibilite StallGuard propre au palpage (X, Y, Z), distincte de celle du homing. Reglable par "M914 P1 X.. Y.. Z..".
++  #ifndef NEVA_PROBE_STALL_SENSITIVITY
++    #define NEVA_PROBE_STALL_SENSITIVITY { X_STALL_SENSITIVITY, Y_STALL_SENSITIVITY, Z_STALL_SENSITIVITY }
++  #endif
++  int16_t neva_probe_sgt[3] = NEVA_PROBE_STALL_SENSITIVITY;
+ #endif
+ 
+ #if ANY(HAS_QUIET_PROBING, USE_SENSORLESS)
+@@ -603,6 +608,11 @@
+   // Disable stealthChop if used. Enable diag1 pin on driver.
+   #if ENABLED(SENSORLESS_PROBING)
+     sensorless_t stealth_states { false };
++    // Neva T2 : sensibilite de palpage (restauree apres la mesure)
++    const int16_t neva_sgt_home[3] = { stepperX.homing_threshold(), stepperY.homing_threshold(), stepperZ.homing_threshold() };
++    stepperX.homing_threshold(neva_probe_sgt[0]);
++    stepperY.homing_threshold(neva_probe_sgt[1]);
++    stepperZ.homing_threshold(neva_probe_sgt[2]);
+     #if HAS_DELTA_SENSORLESS_PROBING
+       if (test_sensitivity.x) stealth_states.x = tmc_enable_stallguard(stepperX); // Delta watches all DIAG pins for a stall
+       if (test_sensitivity.y) stealth_states.y = tmc_enable_stallguard(stepperY);
+@@ -641,6 +651,9 @@
+       if (test_sensitivity.y) tmc_disable_stallguard(stepperY, stealth_states.y);
+     #endif
+     if (test_sensitivity.z) tmc_disable_stallguard(stepperZ, stealth_states.z);
++    stepperX.homing_threshold(neva_sgt_home[0]);
++    stepperY.homing_threshold(neva_sgt_home[1]);
++    stepperZ.homing_threshold(neva_sgt_home[2]);
+     endstops.set_homing_current(false);
+   #endif
+ 
+--- a/gcode/feature/trinamic/M911-M914.cpp	2026-10-18 20:24:17.775757669 +0000
++++ b/src/gcode/feature/trinamic/M911-M914.cpp	2026-10-18 20:43:45.645673307 +0000
+@@ -498,7 +498,19 @@
+   /**
+    * M914: Set StallGuard sensitivity.
+    */
++  #if ENABLED(SENSORLESS_PROBING)
++    extern int16_t neva_probe_sgt[3]; // module/probe.cpp
++  #endif
++
+   void GcodeSuite::M914() {
++    // Neva T2 : "M914 P1 X.. Y.. Z.." regle la sensibilite du PALPAGE (pas enregistree par M500) ; "M914 P1" seul l'affiche.
++    #if ENABLED(SENSORLESS_PROBING)
++      if (parser.seen('P')) {
++        LOOP_NUM_AXES(i) if (i <= Z_AXIS && parser.seen(AXIS_CHAR(i))) neva_probe_sgt[i] = constrain(parser.value_int(), 0, 255);
++        SERIAL_ECHOLNPGM("Palpage sensibilite: X", neva_probe_sgt[0], " Y", neva_probe_sgt[1], " Z", neva_probe_sgt[2]);
++        return;
++      }
++    #endif
+     bool report = true;
+     const uint8_t index = parser.byteval('I');
+     LOOP_NUM_AXES(i) if (parser.seen(AXIS_CHAR(i))) {
