@@ -123,8 +123,7 @@ for s, e, c, sens in arcs_all:
     a(f"{g} X{e[0]:.3f} Y{e[1]:.3f} I{i:.3f} J{j:.3f} E{length * K:.3f} F{F}")
 a("G1 E-2 F1800")
 a("G1 Z10 F3000")
-a("M104 S0")
-a("M117 Spirale terminee")
+a("M117 Spirale terminee - buse chaude")   # la buse reste chaude (210 C) : elle sert a enchainer les essais
 a("G28")
 
 out = Path(__file__).resolve().parent / OUT_NAME
