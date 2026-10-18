@@ -1,6 +1,6 @@
 --- a/module/probe.cpp	2026-10-18 20:24:17.889331669 +0000
-+++ b/src/module/probe.cpp	2026-10-18 20:52:32.095927318 +0000
-@@ -55,6 +55,12 @@
++++ b/src/module/probe.cpp	2026-10-18 21:05:59.717985408 +0000
+@@ -55,6 +55,17 @@
  #if ENABLED(SENSORLESS_PROBING)
    abc_float_t offset_sensorless_adj{0};
    float largest_sensorless_adj = 0;
@@ -9,11 +9,16 @@
 +    #define NEVA_PROBE_STALL_SENSITIVITY { X_STALL_SENSITIVITY, Y_STALL_SENSITIVITY, Z_STALL_SENSITIVITY }
 +  #endif
 +  int16_t neva_probe_sgt[3] = NEVA_PROBE_STALL_SENSITIVITY;
++  // T4 : vitesse minimale (mm/s) sous laquelle le TMC2209 ignore le decrochage (TCOOLTHRS) : masque les faux declenchements a l'acceleration. Reglable par "M914 P1 S..".
++  #ifndef NEVA_PROBE_MIN_SPEED
++    #define NEVA_PROBE_MIN_SPEED 15
++  #endif
++  float neva_probe_min_speed = NEVA_PROBE_MIN_SPEED;
 +  volatile bool neva_probing_down = false; // T3 : vrai pendant la descente de palpage (voir endstops.cpp)
  #endif
  
  #if ANY(HAS_QUIET_PROBING, USE_SENSORLESS)
-@@ -603,6 +609,11 @@
+@@ -603,11 +614,23 @@
    // Disable stealthChop if used. Enable diag1 pin on driver.
    #if ENABLED(SENSORLESS_PROBING)
      sensorless_t stealth_states { false };
@@ -25,7 +30,19 @@
      #if HAS_DELTA_SENSORLESS_PROBING
        if (test_sensitivity.x) stealth_states.x = tmc_enable_stallguard(stepperX); // Delta watches all DIAG pins for a stall
        if (test_sensitivity.y) stealth_states.y = tmc_enable_stallguard(stepperY);
-@@ -615,7 +626,9 @@
+     #endif
+     if (test_sensitivity.z) stealth_states.z = tmc_enable_stallguard(stepperZ);   // All machines will check Z-DIAG for stall
++    // Neva T4 : le DIAG n'est actif qu'au-dessus de neva_probe_min_speed (TSTEP <= TCOOLTHRS), comme Marlin le fait pour le pas des micropas
++    if (neva_probe_min_speed > 0.1f) {
++      const uint32_t neva_tcoolthrs = uint32_t(12650000.0f * stepperX.microsteps() / (256.0f * neva_probe_min_speed * planner.settings.axis_steps_per_mm[X_AXIS]));
++      stepperX.TCOOLTHRS(neva_tcoolthrs);
++      stepperY.TCOOLTHRS(neva_tcoolthrs);
++      stepperZ.TCOOLTHRS(neva_tcoolthrs);
++    }
+     endstops.set_homing_current(true);                                            // The "homing" current also applies to probing
+     endstops.enable(true);
+   #endif // SENSORLESS_PROBING
+@@ -615,7 +638,9 @@
    TERN_(HAS_QUIET_PROBING, set_probing_paused(true));
  
    // Move down until the probe is triggered
@@ -35,7 +52,7 @@
  
    // Check to see if the probe was triggered
    const bool probe_triggered = (
-@@ -641,6 +654,9 @@
+@@ -641,6 +666,9 @@
        if (test_sensitivity.y) tmc_disable_stallguard(stepperY, stealth_states.y);
      #endif
      if (test_sensitivity.z) tmc_disable_stallguard(stepperZ, stealth_states.z);
@@ -46,21 +63,23 @@
    #endif
  
 --- a/gcode/feature/trinamic/M911-M914.cpp	2026-10-18 20:24:17.775757669 +0000
-+++ b/src/gcode/feature/trinamic/M911-M914.cpp	2026-10-18 20:43:45.645673307 +0000
-@@ -498,7 +498,19 @@
++++ b/src/gcode/feature/trinamic/M911-M914.cpp	2026-10-18 21:05:59.719172106 +0000
+@@ -498,7 +498,21 @@
    /**
     * M914: Set StallGuard sensitivity.
     */
 +  #if ENABLED(SENSORLESS_PROBING)
 +    extern int16_t neva_probe_sgt[3]; // module/probe.cpp
++    extern float neva_probe_min_speed;
 +  #endif
 +
    void GcodeSuite::M914() {
-+    // Neva T2 : "M914 P1 X.. Y.. Z.." regle la sensibilite du PALPAGE (pas enregistree par M500) ; "M914 P1" seul l'affiche.
++    // Neva T2/T4 : "M914 P1 X.. Y.. Z.. S.." regle la sensibilite (X Y Z) et la vitesse minimale S (mm/s) du PALPAGE (pas enregistrees par M500) ; "M914 P1" seul les affiche.
 +    #if ENABLED(SENSORLESS_PROBING)
 +      if (parser.seen('P')) {
 +        LOOP_NUM_AXES(i) if (i <= Z_AXIS && parser.seen(AXIS_CHAR(i))) neva_probe_sgt[i] = constrain(parser.value_int(), 0, 255);
-+        SERIAL_ECHOLNPGM("Palpage sensibilite: X", neva_probe_sgt[0], " Y", neva_probe_sgt[1], " Z", neva_probe_sgt[2]);
++        if (parser.seen('S')) neva_probe_min_speed = parser.value_float();
++        SERIAL_ECHOLNPGM("Palpage sensibilite: X", neva_probe_sgt[0], " Y", neva_probe_sgt[1], " Z", neva_probe_sgt[2], " vitesse min (mm/s): ", neva_probe_min_speed);
 +        return;
 +      }
 +    #endif

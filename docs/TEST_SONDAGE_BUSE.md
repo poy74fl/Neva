@@ -1,6 +1,6 @@
 # Firmware de test T1 : palpage avec la buse (`SENSORLESS_PROBING`)
 
-Branche : `claude/neva-test-sondage-buse` (la v1.67 stable reste sur `claude/zen-mayer-tgigb3`, intacte). Version affichée : `1.67-T3`. **Firmware d'expérience : ne pas imprimer avec.**
+Branche : `claude/neva-test-sondage-buse` (la v1.67 stable reste sur `claude/zen-mayer-tgigb3`, intacte). Version affichée : `1.67-T4`. **Firmware d'expérience : ne pas imprimer avec.**
 
 ## Ce qui change par rapport à la v1.67
 - `FIX_MOUNTED_PROBE` désactivé, `SENSORLESS_PROBING` activé : la SuperPINDA n'est plus lue. Marlin n'accepte qu'un seul type de sonde.
@@ -30,3 +30,5 @@ Reflasher le `firmware.bin` v1.67 (nouveau nom de fichier), puis « Calibration 
 - **T2** : sensibilités séparées (`M914 P1`, patch `marlin-patches/palpage-sensibilite.diff`, fichiers `module/probe.cpp` et `gcode/feature/trinamic/M911-M914.cpp`).
 - **T2, résultat** : `Probing Failed` même à la sensibilité 220 (la buse touche le plateau). La sensibilité n'est donc pas la cause.
 - **T3** : cause trouvée dans Marlin 2.1.2.5 (`module/endstops.cpp`). Pendant le palpage la buse **descend** (sens « − »), or Marlin ne teste dans ce sens que les ports MIN. Le DIAG des TMC2209 est sur les ports MAX (homing en haut), et le port X-MIN est en fait E0-DET (le capteur de filament). Le calage n'était donc jamais lu. Correctif (`marlin-patches/palpage-descente-max.diff`, `module/endstops.cpp`) : pendant la descente de palpage seulement, on teste aussi X/Y/Z-MAX et on ignore les ports MIN.
+- **T3, résultat** : à 140 le palpage déclenche (Z −1,70, la buse a enfoncé le plateau de 1,5 mm) mais pas à chaque fois ; à 160, 180 et 200 la tête s'arrête **en l'air** (faux déclenchement du StallGuard à l'accélération du départ). Pas de plage de sensibilité fiable.
+- **T4** : le StallGuard est ignoré sous une vitesse minimale (`TCOOLTHRS`, 15 mm/s par défaut, réglable `M914 P1 S..`), ce qui masque l'accélération du départ. En contrepartie le palpage se fait en une seule mesure à 20 mm/s (`MULTIPLE_PROBING 1`, `Z_PROBE_FEEDRATE_SLOW` 20 mm/s), car sous ~15 mm/s le signal n'est de toute façon pas exploitable. Sensibilité de palpage par défaut 120.

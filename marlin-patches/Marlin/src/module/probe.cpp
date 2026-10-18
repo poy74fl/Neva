@@ -60,6 +60,11 @@
     #define NEVA_PROBE_STALL_SENSITIVITY { X_STALL_SENSITIVITY, Y_STALL_SENSITIVITY, Z_STALL_SENSITIVITY }
   #endif
   int16_t neva_probe_sgt[3] = NEVA_PROBE_STALL_SENSITIVITY;
+  // T4 : vitesse minimale (mm/s) sous laquelle le TMC2209 ignore le decrochage (TCOOLTHRS) : masque les faux declenchements a l'acceleration. Reglable par "M914 P1 S..".
+  #ifndef NEVA_PROBE_MIN_SPEED
+    #define NEVA_PROBE_MIN_SPEED 15
+  #endif
+  float neva_probe_min_speed = NEVA_PROBE_MIN_SPEED;
   volatile bool neva_probing_down = false; // T3 : vrai pendant la descente de palpage (voir endstops.cpp)
 #endif
 
@@ -619,6 +624,13 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
       if (test_sensitivity.y) stealth_states.y = tmc_enable_stallguard(stepperY);
     #endif
     if (test_sensitivity.z) stealth_states.z = tmc_enable_stallguard(stepperZ);   // All machines will check Z-DIAG for stall
+    // Neva T4 : le DIAG n'est actif qu'au-dessus de neva_probe_min_speed (TSTEP <= TCOOLTHRS), comme Marlin le fait pour le pas des micropas
+    if (neva_probe_min_speed > 0.1f) {
+      const uint32_t neva_tcoolthrs = uint32_t(12650000.0f * stepperX.microsteps() / (256.0f * neva_probe_min_speed * planner.settings.axis_steps_per_mm[X_AXIS]));
+      stepperX.TCOOLTHRS(neva_tcoolthrs);
+      stepperY.TCOOLTHRS(neva_tcoolthrs);
+      stepperZ.TCOOLTHRS(neva_tcoolthrs);
+    }
     endstops.set_homing_current(true);                                            // The "homing" current also applies to probing
     endstops.enable(true);
   #endif // SENSORLESS_PROBING
