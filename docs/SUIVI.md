@@ -26,7 +26,7 @@ Dans le coin côté BMG (X > 62, Y > −10), la buse est **0,3 à 0,6 mm trop ba
 Idée : `SENSORLESS_PROBING` (delta + TMC2209) pour mesurer la hauteur de la buse elle-même, sans décalage de sonde. Limites : précision probablement 0,1 à 0,2 mm, couple faible en 12 V, buse propre et froide, remplace **tout** le palpage (`G33` et `G29`). À faire comme **firmware de test séparé** (zip distinct, ne pas modifier la v1.67), pour cartographier le coin BMG sans papier. Garder une copie de `firmware.bin` v1.67 pour revenir en arrière. Si la calibration est perdue : « Calibration auto » (menu Tests : `G28`, `G33`, `M500`).
 
 ## Firmware de test T1 (en cours)
-Branche séparée `claude/neva-test-sondage-buse` (v1.67 intacte ici). Protocole : `docs/TEST_SONDAGE_BUSE.md`. Non compilé par Claude (le réseau de la session bloque PlatformIO) : à compiler sur le Mac.
+Branche séparée `claude/neva-test-sondage-buse` (v1.67 intacte ici). Protocole : `docs/TEST_SONDAGE_BUSE.md`. Compilé et testé sur la machine jusqu'à T6 : le palpage par la buse fonctionne (±0,01 mm en un point, mais avec un enfoncement de ~1,8 mm qui dépend de la position) et ne recoupe pas la carte au papier du coin BMG. Conclusion et détails dans `docs/TEST_SONDAGE_BUSE.md`.
 
 ## Fichiers de test utiles
 `docs/test_spirale_r85_complete_corr_v11.gcode` (contrôle avec les corrections actuelles), `docs/test_spirale_r85_complete_sans_corr.gcode`, `docs/zones_plateau.png` (carte des zones 1 à 8, anneaux A/B, centre C), `docs/overlay_zones.py` (colle les zones sur une photo).

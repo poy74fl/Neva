@@ -39,3 +39,10 @@ Reflasher le `firmware.bin` v1.67 (nouveau nom de fichier), puis « Calibration 
 - **T5** : courant moteur propre au palpage (`NEVA_PROBE_CURRENT`, 500 mA par défaut au lieu de 800 ; `M914 P1 C..` pour le régler, 0 = courant normal). Moins de courant = moins d'effort de la buse sur le plateau, donc moins d'enfoncement. Le courant normal est restauré après chaque mesure. Critère : X57 vers −0,1, X70 vers +0,36, X70 Y25 vers +0,56 (carte au papier). Sinon on arrête.
 - **T5, résultat** : avec 500 mA le palpage s'arrête en l'air à 120, puis donne Z −2,25 (sensibilité 80), −2,85 (60) et −3,23 (40) : plus profond qu'à 800 mA (−1,84). Le diagnostic montre que seule la tour Y déclenche, à Z −3,23, soit plus bas que la limite de descente (−2) : Marlin ne l'applique que si l'axe Z est « de confiance » (`axis_is_trusted`), sinon il prend −10 mm.
 - **T6** : la limite de descente du palpage sensorless est toujours `-offset.z + Z_PROBE_LOW_POINT` (`module/probe.cpp`), `Z_PROBE_LOW_POINT` passe à −4 ; la ligne `Palpage:` affiche la limite utilisée (`limite Z..`) ; réglages de départ : courant normal (`NEVA_PROBE_CURRENT 0`), sensibilité 80.
+- **T6, résultat** : `Palpage: depart Z247.08 limite Z-4.00 arret Z-1.85 declenche X1 Y1 Z0 | DIAG au depart X0 Y0 Z0 a la fin X1 Y1 Z0`, `Bed Z -1.85` : la limite de descente est appliquée, le palpage est identique à T4b (800 mA, sensibilité 80, 20 mm/s, minimum 15 mm/s).
+
+## Conclusion provisoire
+- Le palpage par la buse **marche** (sensibilité 80, courant normal) et se répète à ±0,01 mm en un même point.
+- Il mesure le point où le moteur cale, avec un enfoncement d'environ 1,8 mm qui **dépend de la position** (de −1,36 à −1,88 sur le balayage). Cette erreur est du même ordre que le défaut cherché (0,3 à 0,6 mm) et la carte obtenue ne recoupe pas celle au papier (sauf X70 Y−25).
+- Baisser le courant (T5) augmente l'enfoncement au lieu de le réduire ; monter la sensibilité au-delà de ~140 déclenche en l'air.
+- Pour le coin BMG, la mesure au papier reste la référence. Retour à la v1.67 : reflasher son `firmware.bin`, vérifier `M851 Z -1.233` et `M851 Y23`, puis « Calibration auto ».
