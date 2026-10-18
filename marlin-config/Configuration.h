@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.67-T5" // T5 = TEST : palpage avec la buse (SENSORLESS_PROBING), sans SuperPINDA. Ne pas utiliser pour imprimer.
+#define NEVA_FW_VERSION "1.67-T6" // T6 = TEST : palpage avec la buse (SENSORLESS_PROBING), sans SuperPINDA. Ne pas utiliser pour imprimer.
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1610,7 +1610,7 @@
 #define Z_CLEARANCE_MULTI_PROBE     3 // (mm) Z Clearance between multiple probes (Neva : 3 au lieu de 5, descente lente plus courte)
 #define Z_AFTER_PROBING           30 // (mm) Neva v1.63 : la tete remonte a 30 mm a la fin de G29 (avant : restait a 5 mm)
 
-#define Z_PROBE_LOW_POINT          -2 // (mm) Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -4 // TEST T6 : -4 (v1.67 : -2, mais la limite n'etait pas appliquee, voir probe.cpp) // (mm) Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20

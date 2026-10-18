@@ -3192,9 +3192,9 @@
     #define Y_STALL_SENSITIVITY  75  // regle sur la machine avec la tete (50 mm/s)
     #define Y2_STALL_SENSITIVITY Y_STALL_SENSITIVITY
     #define Z_STALL_SENSITIVITY  75  // regle sur la machine avec la tete (50 mm/s)
-    #define NEVA_PROBE_CURRENT 500 // TEST T5 : mA pendant le palpage seulement (courant normal 800) : limite l'effort de la buse sur le plateau. 0 = courant normal. M914 P1 C..
+    #define NEVA_PROBE_CURRENT 0 // TEST T5/T6 : mA pendant le palpage seulement (courant normal 800). 0 = courant normal. M914 P1 C.. (T5 : 500 mA a donne un enfoncement PLUS grand : -2,25 a sensibilite 80, -3,23 a 40)
     #define NEVA_PROBE_MIN_SPEED 15 // TEST T4 : mm/s, le decrochage est ignore en dessous (masque les faux declenchements au depart). M914 P1 S..
-    #define NEVA_PROBE_STALL_SENSITIVITY { 120, 120, 120 } // TEST T2 : sensibilite X, Y, Z pendant le PALPAGE seulement (le homing garde les valeurs ci-dessus). Reglable sans recompiler : M914 P1 X.. Y.. Z.. (patch palpage-sensibilite.diff)
+    #define NEVA_PROBE_STALL_SENSITIVITY { 80, 80, 80 } // TEST T2 : sensibilite X, Y, Z pendant le PALPAGE seulement (le homing garde les valeurs ci-dessus). Reglable sans recompiler : M914 P1 X.. Y.. Z.. (patch palpage-sensibilite.diff)
     //#define Z2_STALL_SENSITIVITY Z_STALL_SENSITIVITY
     //#define Z3_STALL_SENSITIVITY Z_STALL_SENSITIVITY
     //#define Z4_STALL_SENSITIVITY Z_STALL_SENSITIVITY
