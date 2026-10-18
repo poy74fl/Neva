@@ -101,7 +101,7 @@ public:
         // Note: This won't work on SCARA since the probe offset rotates with the arm.
         static bool can_reach(const_float_t rx, const_float_t ry, const bool probe_relative=true) {
           if (probe_relative) {
-            return position_is_reachable(rx - offset_xy.x, ry - offset_xy.y, NEVA_NOZZLE_INSET) // The nozzle can go where it needs to go? (Neva : pas au bord, la tete touche les tours)
+            return position_is_reachable(rx - offset_xy.x, ry - offset_xy.y) // The nozzle can go where it needs to go?
                 && position_is_reachable(rx, ry, PROBING_MARGIN);            // Can the probe also go near there?
           }
           else {
