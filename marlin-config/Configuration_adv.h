@@ -1448,7 +1448,7 @@
   #endif
 
   // Scroll a longer status message into view
-  #define STATUS_MESSAGE_SCROLLING // Neva v1.65 : les messages trop longs defilent sur la ligne du bas
+  //#define STATUS_MESSAGE_SCROLLING // Neva v1.65 : defilement des messages longs ; desactive en v1.76 (redessins continus de l'ecran pendant le palpage)
 
   // Apply a timeout to low-priority status messages
   //#define STATUS_MESSAGE_TIMEOUT_SEC 30 // (seconds)
@@ -3115,7 +3115,7 @@
    * M912 - Clear stepper driver overtemperature pre-warn condition flag.
    * M122 - Report driver parameters (Requires TMC_DEBUG)
    */
-  #define MONITOR_DRIVER_STATUS
+  //#define MONITOR_DRIVER_STATUS // Neva v1.76 : desactive (surveillance des drivers par liaison serie logicielle : ralentit la boucle principale, palpage a 8 s par point). M122 reste disponible (TMC_DEBUG).
 
   #if ENABLED(MONITOR_DRIVER_STATUS)
     #define CURRENT_STEP_DOWN     50  // [mA]
