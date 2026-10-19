@@ -23,25 +23,6 @@ M104 S{first_layer_temperature[0]}
 G28
 G33 P1
 G29
-M421 I3 J1 Q-0.03
-M421 I2 J2 Q-0.03
-M421 I3 J2 Q-0.06
-M421 I4 J2 Q-0.03
-M421 I5 J2 Q0.05
-M421 I6 J2 Q0.15
-M421 I1 J3 Q-0.03
-M421 I2 J3 Q-0.06
-M421 I3 J3 Q-0.08
-M421 I4 J3 Q-0.06
-M421 I5 J3 Q0.05
-M421 I6 J3 Q0.15
-M421 I2 J4 Q-0.03
-M421 I3 J4 Q-0.06
-M421 I4 J4 Q-0.03
-M421 I5 J4 Q0.05
-M421 I6 J4 Q0.10
-M421 I4 J5 Q-0.06
-M421 I4 J6 Q-0.06
 M109 S{first_layer_temperature[0]}
 G1 Z5 F3000
 G1 X-85 Y0 F6000
@@ -71,3 +52,5 @@ Il coupe la buse, rétracte, remonte, remet la tête en haut (`G28`) et fait un 
 ## Remarque
 - PrusaSlicer 2.6 et plus : l'option *Arc fitting* (Réglages d'impression > Avancé) génère des arcs `G2/G3`, que le firmware accepte (`ARC_SUPPORT`).
 - Si l'écran propose « Imprimer » dès le premier clic, il suffit de recliquer pour confirmer.
+
+> Depuis la v1.76 : les 19 `M421` de l'ancien maillage sont retirés du début de G-code (le maillage a changé : 31 nœuds sondés). Les corrections par zone seront à refaire avec `docs/test_spirale_r85_complete_v13.gcode` si besoin.
