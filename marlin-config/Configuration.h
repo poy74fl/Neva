@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.69"
+#define NEVA_FW_VERSION "1.70"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1533,7 +1533,8 @@
 #define PROBING_MARGIN 10 // G33 calibre sur un cercle de 100 - 10 - 23 = 67 mm (avant 57). Le maillage G29 reste a 77 mm (23 > 10).
 #define NEVA_MESH_SHIFT   // Neva : applique le maillage avec le decalage de la sonde (23 mm) ; commenter la ligne pour revenir a l'ancien comportement
 #define NEVA_MESH_MARGIN 15 // Neva : le maillage G29 couvre un disque de 100 - 15 = 85 mm (avant 77). Sondes ecartees automatiquement si la buse ne peut pas les atteindre (avant).
-#define NEVA_PROBE_SKIP_D 66 // Neva v1.69 : feuille triangulaire (cotes a ~75 mm du centre) : G29 ne sonde pas les points a plus de 66 mm du centre le long des normales des trois cotes (30, 150, 270 degres) ; ces noeuds sont extrapoles.
+#define NEVA_PROBE_SKIP_X 80 // Neva v1.70 : en G29, les noeuds a |X| > 80 ET Y > 10 (X +/-85, Y +27 : la sonde y echoue, Probing Failed) ne sont pas sondes ; ils sont extrapoles. Les indices des M421 ne changent pas.
+#define NEVA_PROBE_SKIP_Y 10
 
 // X and Y axis travel speed (mm/min) between probes
 #define XY_PROBE_FEEDRATE (66*60)

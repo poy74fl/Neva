@@ -3,7 +3,7 @@
 À faire **une seule fois**, dans *Réglages de l'imprimante* (Printer Settings), puis enregistrer le profil.
 
 ## Général
-- **Forme du plateau** : *Personnalisée*, importer `docs/forme_plateau.svg` : disque de 170 mm coupé par les trois côtés de la feuille triangulaire à 58 mm du centre (côtés à 75 mm, bord relevé exclu). Origine **0, 0**. Sinon colle à la main la ligne de `docs/forme_plateau_bed_shape.txt` dans le fichier de profil.
+- **Forme du plateau** : *Personnalisée*, importer `docs/forme_plateau.svg` (disque de 190 mm, origine **0, 0**), ou *Circulaire* de 190 mm de diamètre. Sinon colle à la main la ligne de `docs/forme_plateau_bed_shape.txt` dans le fichier de profil.
 - **Hauteur max d'impression** : selon ta machine (le Z du firmware monte à ~312 mm, vise 200–250).
 - **Variante G-code** : *Marlin 2*.
 - **Z offset** : 0 (le décalage est réglé dans le firmware : `M851 Z-1.233` / écran « Décalage Z »).
@@ -27,13 +27,19 @@ M421 I3 J1 Q-0.03
 M421 I2 J2 Q-0.03
 M421 I3 J2 Q-0.06
 M421 I4 J2 Q-0.03
+M421 I5 J2 Q0.05
+M421 I6 J2 Q0.15
 M421 I1 J3 Q-0.03
 M421 I2 J3 Q-0.06
 M421 I3 J3 Q-0.08
 M421 I4 J3 Q-0.06
+M421 I5 J3 Q0.05
+M421 I6 J3 Q0.15
 M421 I2 J4 Q-0.03
 M421 I3 J4 Q-0.06
 M421 I4 J4 Q-0.03
+M421 I5 J4 Q0.05
+M421 I6 J4 Q0.10
 M421 I4 J5 Q-0.06
 M421 I4 J6 Q-0.06
 M109 S{first_layer_temperature[0]}
@@ -44,7 +50,7 @@ G1 E10 F200
 G1 E-1 F1800
 G1 Z5 F3000
 ```
-Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, **treize corrections du maillage (`M421`)** déterminées avec `docs/test_spirale_r85_complete_corr_v11.gcode` (centre et anneau milieu un peu plus écrasés, arrière gauche/droite ajustés, la zone du bord BMG, qui n'est plus imprimée, n'est plus corrigée), attente de la température (`M109`), puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
+Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, **dix-neuf corrections du maillage (`M421`)** déterminées avec `docs/test_spirale_r85_complete_corr_v11.gcode` (centre et anneau milieu un peu plus écrasés, arrière gauche/droite ajustés, la zone du bord BMG, qui n'est plus imprimée, n'est plus corrigée), attente de la température (`M109`), puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
 
 ### Fin du G-code (End G-code)
 ```
