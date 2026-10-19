@@ -6,7 +6,7 @@ Fiche pour reprendre le projet dans une nouvelle conversation. Branche : `claude
 Dagoma Neva (delta), carte BTT SKR 1.4 (LPC1768), 4 × TMC2209, écran BTT Mini 12864 V2, sonde SuperPINDA derrière la buse (X0 Y23), extrudeur BMG Bowden côté droit (+X), sans plateau chauffant, sans ventilateur pour l'instant. Marlin 2.1.2.5, PlatformIO sur Mac, Simplify3D pour le terminal, PrusaSlicer pour le slicing. Alimentation 12 V. Le firmware se flashe uniquement par la carte SD de la carte mère (`firmware.bin`, 12 V seulement). Toujours décompresser le zip en entier (remplacer un seul dossier sous Finder efface le reste).
 
 ## Firmware stable : v1.76
-Zip : `Marlin-Neva-v1.76-complet.zip`. « Calibration auto » (`G28`, `G33`, `M500`) et `G29` fonctionnent avec la v1.76 (confirmé par l'utilisateur, écart-type G33 0,045).
+Zip : `Marlin-Neva-v1.76-complet.zip`. « Calibration auto » (`G28`, `G33`, `M500`) et `G29` fonctionnent avec la v1.76 (confirmé par l'utilisateur : `G29` sur 31 nœuds OK ; écart-type G33 0,045 mesuré en v1.75).
 - Palpage : sonde limitée à 88,5 mm du centre (`NEVA_PROBE_MAX_RADIUS 88.5`, `PROBING_MARGIN` 11,5 ; Calibration auto = `G33 R13.5`), buse écartée des tours (r > 98 mm à ±30° de 210° et 330°) ; pour affiner sans nouvelle version : `G33 R<mm>`, `G29 L R F B`.
 - Version affichée sous le logo et au démarrage (`NEVA_FW_VERSION`) ; relancer `make_bootscreen.py` à chaque changement. Config : `marlin-config/`, correctifs : `marlin-patches/` (voir `README.md`). Points clés :
 - `M851 Z` = **−1,233** (réglé au babystep par l'utilisateur, enregistré dans l'EEPROM ; −1,195 lors de la validation des `M421`).
