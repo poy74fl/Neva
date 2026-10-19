@@ -175,7 +175,10 @@ public:
   static bool good_bounds(const xy_pos_t &lf, const xy_pos_t &rb) {
     return (
       #if IS_KINEMATIC
-        can_reach(lf.x, 0) && can_reach(rb.x, 0) && can_reach(0, lf.y) && can_reach(0, rb.y)
+        // Neva v1.75 : seules les bornes de la BUSE sont verifiees ici ; les noeuds hors de PROBING_MARGIN
+        // (sonde a plus de NEVA_PROBE_MAX_RADIUS) sont ecartes un par un par can_reach() pendant G29
+        position_is_reachable(lf.x - offset_xy.x, 0) && position_is_reachable(rb.x - offset_xy.x, 0)
+          && position_is_reachable(0, lf.y - offset_xy.y) && position_is_reachable(0, rb.y - offset_xy.y)
       #else
         can_reach(lf) && can_reach(rb)
       #endif
