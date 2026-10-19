@@ -10,10 +10,52 @@ M104 S210            ; la buse chauffe pendant le homing et le palpage
 G28
 G33 P1
 G29                   ; palpage du plateau en plusieurs points (maillage)
-M421 I1 J5 Q0.10      ; 4A (arriere gauche) : buse plus haute
-M421 I1 J6 Q0.15
-M421 I2 J5 Q0.05
+; corrections v13 (maillage v1.76) : 4A-3A +0,05 a +0,10 ; 2A +0,10 a +0,15 ; 1A +0,10 a +0,20 ; 5A inchange ; autres noeuds -0,03
+M421 I0 J0 Q-0.03
+M421 I1 J0 Q-0.03
+M421 I2 J0 Q-0.03
+M421 I3 J0 Q-0.03
+M421 I4 J0 Q-0.03
+M421 I5 J0 Q-0.03
+M421 I6 J0 Q-0.03
+M421 I0 J1 Q-0.03
+M421 I1 J1 Q-0.03
+M421 I2 J1 Q-0.03
+M421 I3 J1 Q-0.03
+M421 I4 J1 Q-0.03
+M421 I5 J1 Q-0.03
+M421 I6 J1 Q-0.03
+M421 I0 J2 Q-0.03
+M421 I1 J2 Q-0.03
+M421 I2 J2 Q-0.03
+M421 I3 J2 Q-0.03
+M421 I4 J2 Q-0.03
+M421 I5 J2 Q0.10
+M421 I6 J2 Q0.12
+M421 I2 J3 Q-0.03
+M421 I3 J3 Q-0.03
+M421 I4 J3 Q-0.03
+M421 I5 J3 Q0.15
+M421 I6 J3 Q0.20
+M421 I2 J4 Q-0.03
+M421 I3 J4 Q-0.03
+M421 I4 J4 Q-0.03
+M421 I5 J4 Q0.15
+M421 I6 J4 Q0.20
+M421 I0 J5 Q-0.03
+M421 I1 J5 Q0.05
+M421 I2 J5 Q0.06
+M421 I3 J5 Q-0.03
+M421 I4 J5 Q0.10
+M421 I5 J5 Q0.12
+M421 I6 J5 Q-0.03
+M421 I0 J6 Q-0.03
+M421 I1 J6 Q0.08
 M421 I2 J6 Q0.10
+M421 I3 J6 Q0.06
+M421 I4 J6 Q0.12
+M421 I5 J6 Q0.15
+M421 I6 J6 Q-0.03
 M109 S210
 G1 Z5 F3000
 G1 X-89.00 Y0.00 F6000     ; point de purge, juste a l'exterieur de la spirale
