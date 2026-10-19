@@ -99,13 +99,25 @@ public:
       #if HAS_PROBE_XY_OFFSET
         // Return true if the both nozzle and the probe can reach the given point.
         // Note: This won't work on SCARA since the probe offset rotates with the arm.
+        // Neva v1.76 : la tete touche la tour X (210 deg) ou la tour Y (330 deg) quand la buse est a plus de 94 mm du centre
+        // dans un secteur de +-30 deg autour d'une tour (mesure : buse X-86,07 Y-49,31 touche la tour X). Ces points sont refuses.
+        static bool neva_tower_clear(const_float_t nx, const_float_t ny) {
+          const float r2 = sq(nx) + sq(ny);
+          if (r2 <= sq(94.0f)) return true;
+          const float r = SQRT(r2);
+          const float cX = (nx * -0.866025f + ny * -0.5f) / r,   // cosinus de l'angle avec la tour X (210 deg)
+                      cY = (nx *  0.866025f + ny * -0.5f) / r;   // cosinus de l'angle avec la tour Y (330 deg)
+          return cX < 0.866025f && cY < 0.866025f;                // cos(30 deg) = 0,866025
+        }
         static bool can_reach(const_float_t rx, const_float_t ry, const bool probe_relative=true) {
           if (probe_relative) {
             return position_is_reachable(rx - offset_xy.x, ry - offset_xy.y) // The nozzle can go where it needs to go?
+                && neva_tower_clear(rx - offset_xy.x, ry - offset_xy.y)      // Neva v1.76 : sans toucher les tours
                 && position_is_reachable(rx, ry, PROBING_MARGIN);            // Can the probe also go near there? (Neva v1.71 : PROBING_MARGIN 14.5)
           }
           else {
             return position_is_reachable(rx, ry)
+                && neva_tower_clear(rx, ry)
                 && position_is_reachable(rx + offset_xy.x, ry + offset_xy.y, PROBING_MARGIN);
           }
         }
