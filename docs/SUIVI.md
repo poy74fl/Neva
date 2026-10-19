@@ -7,7 +7,7 @@ Dagoma Neva (delta), carte BTT SKR 1.4 (LPC1768), 4 × TMC2209, écran BTT Mini 
 
 ## Firmware stable : v1.76
 Zip : `Marlin-Neva-v1.76-complet.zip`. « Calibration auto » (`G28`, `G33`, `M500`) et `G29` fonctionnent avec la v1.76 (confirmé par l'utilisateur, écart-type G33 0,045).
-- Palpage : sonde limitée à 88 mm du centre (`NEVA_PROBE_MAX_RADIUS 88`, `PROBING_MARGIN` 12 ; Calibration auto = `G33 R13`), buse écartée des tours (r > 94 mm à ±30° de 210° et 330°) ; pour affiner sans nouvelle version : `G33 R<mm>`, `G29 L R F B`.
+- Palpage : sonde limitée à 88,5 mm du centre (`NEVA_PROBE_MAX_RADIUS 88.5`, `PROBING_MARGIN` 11,5 ; Calibration auto = `G33 R13.5`), buse écartée des tours (r > 98 mm à ±30° de 210° et 330°) ; pour affiner sans nouvelle version : `G33 R<mm>`, `G29 L R F B`.
 - Version affichée sous le logo et au démarrage (`NEVA_FW_VERSION`) ; relancer `make_bootscreen.py` à chaque changement. Config : `marlin-config/`, correctifs : `marlin-patches/` (voir `README.md`). Points clés :
 - `M851 Z` = **−1,233** (réglé au babystep par l'utilisateur, enregistré dans l'EEPROM ; −1,195 lors de la validation des `M421`).
 - Calibration `G33` : écart-type environ 0,03. Hauteur 312,06, rayon 91,34 (valeurs en EEPROM, ne pas faire `M502`).

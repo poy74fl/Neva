@@ -18,9 +18,9 @@ P = lambda X, Y: (Y, X)
 ax.add_patch(Polygon([P(*p) for p in POLY], closed=True, fc="#1d2a52", ec="#f5a623", lw=3))
 ax.add_patch(Circle((0, 0), 100, fill=False, ec="#00bcd4", lw=2, ls="--"))
 ax.add_patch(Circle((0, 0), 100 - 0, fill=False, ec="none"))
-def tower_clear(nx, ny):   # v1.76 : buse a plus de 94 mm du centre a +-30 deg d'une tour (210 / 330 deg) = la tete touche
+def tower_clear(nx, ny):   # v1.76 : buse a plus de 98 mm du centre a +-30 deg d'une tour (210 / 330 deg) = la tete touche
     r = math.hypot(nx, ny)
-    if r <= 94: return True
+    if r <= 98: return True
     return (nx * -0.866025 + ny * -0.5) / r < 0.866025 and (nx * 0.866025 + ny * -0.5) / r < 0.866025
 nb = 0
 for J in range(7):

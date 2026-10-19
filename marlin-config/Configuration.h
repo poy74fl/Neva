@@ -1533,10 +1533,10 @@
 // ---- Plaque Neva (mesures sur la photo avec la regle, v1.73) -------------------------------------------------
 #define NEVA_PLATE_RADIUS    100.0 // Rond imprime : 200 mm de diametre, centre = X0 Y0 (centre valide par l'utilisateur)
 #define NEVA_PLATE_FLAT_MIN  103.0 // Distance du centre au bord plat le plus proche de la plaque (103 a 108 mm selon le cote)
-#define NEVA_PROBE_MAX_RADIUS 88.0 // Rayon MAX de la SONDE (mm), choisi par l'utilisateur (90 mm moins 2 mm). Le noeud X-85 Y31 (90,5 mm) avait echoue.
+#define NEVA_PROBE_MAX_RADIUS 88.5 // Rayon MAX de la SONDE (mm), choisi par l'utilisateur (cercle de 88 mm + noeud X+-85 Y-23 a 88,06 mm). Les noeuds a 89,6 mm (X+-28 Y85) et 90,5 mm (X-85 Y31) restent exclus.
                                    // Pour elargir le palpage : monter cette valeur par petits pas.
-#define PROBING_MARGIN (DELTA_PRINTABLE_RADIUS - NEVA_PROBE_MAX_RADIUS) // = 12 mm : la sonde ne sort pas de NEVA_PROBE_MAX_RADIUS
-// G33 : sans R la buse palpe sur un cercle de (100 - 12 - 23) = 65 mm (sonde a 88 mm) ; « Calibration auto » = G33 R13 : cercle de 52 mm, sonde a 75 mm au plus, comme la v1.74 qui calibrait bien.
+#define PROBING_MARGIN (DELTA_PRINTABLE_RADIUS - NEVA_PROBE_MAX_RADIUS) // = 11,5 mm : la sonde ne sort pas de NEVA_PROBE_MAX_RADIUS
+// G33 : sans R la buse palpe sur un cercle de (100 - 11,5 - 23) = 65,5 mm (sonde a 88,5 mm) ; « Calibration auto » = G33 R13.5 : cercle de 52 mm, sonde a 75 mm au plus, comme la v1.74 qui calibrait bien.
 #define NEVA_MESH_SHIFT   // Neva : applique le maillage avec le decalage de la sonde (23 mm) ; commenter la ligne pour revenir a l'ancien comportement
 #define NEVA_MESH_MARGIN 15 // Neva : le maillage G29 couvre un disque de 100 - 15 = 85 mm (avant 77). Sondes ecartees automatiquement si la buse ne peut pas les atteindre (avant).
 

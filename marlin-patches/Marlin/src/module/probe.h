@@ -99,11 +99,11 @@ public:
       #if HAS_PROBE_XY_OFFSET
         // Return true if the both nozzle and the probe can reach the given point.
         // Note: This won't work on SCARA since the probe offset rotates with the arm.
-        // Neva v1.76 : la tete touche la tour X (210 deg) ou la tour Y (330 deg) quand la buse est a plus de 94 mm du centre
-        // dans un secteur de +-30 deg autour d'une tour (mesure : buse X-86,07 Y-49,31 touche la tour X). Ces points sont refuses.
+        // Neva v1.76 : la tete touche la tour X (210 deg) ou la tour Y (330 deg) quand la buse est a plus de 98 mm du centre
+        // dans un secteur de +-30 deg autour d'une tour (mesure : buse X-86,07 Y-49,31 = 99,2 mm touche la tour X ; X-87 Y-44 = 97,5 mm passe). Ces points sont refuses.
         static bool neva_tower_clear(const_float_t nx, const_float_t ny) {
           const float r2 = sq(nx) + sq(ny);
-          if (r2 <= sq(94.0f)) return true;
+          if (r2 <= sq(98.0f)) return true;
           const float r = SQRT(r2);
           const float cX = (nx * -0.866025f + ny * -0.5f) / r,   // cosinus de l'angle avec la tour X (210 deg)
                       cY = (nx *  0.866025f + ny * -0.5f) / r;   // cosinus de l'angle avec la tour Y (330 deg)
