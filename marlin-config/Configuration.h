@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.72"
+#define NEVA_FW_VERSION "1.73"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1530,7 +1530,13 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 14.5 // Neva v1.71 : la sonde ne va pas a plus de 85,5 mm du centre (elle echoue vers 89-90 mm : Probing Failed a 89,2 et 89,6 mm, tout ce qui est a 85 mm ou moins reussit). G33 calibre sur un cercle de 100 - 14,5 - 23 = 62,5 mm.
+// ---- Plaque Neva (mesures sur la photo avec la regle, v1.73) -------------------------------------------------
+#define NEVA_PLATE_RADIUS    100.0 // Rond imprime : 200 mm de diametre, centre = X0 Y0 (centre valide par l'utilisateur)
+#define NEVA_PLATE_FLAT_MIN  103.0 // Distance du centre au bord plat le plus proche de la plaque (103 a 108 mm selon le cote)
+#define NEVA_PROBE_MAX_RADIUS 85.5 // Rayon MAX de la SONDE (mm). Observe : tout est bon a 85 mm et moins ; "Probing Failed" a 89,2 et 89,6 mm.
+                                   // Pour elargir le palpage : monter cette valeur (les photos permettraient jusqu'a ~92, a affiner).
+#define PROBING_MARGIN (DELTA_PRINTABLE_RADIUS - NEVA_PROBE_MAX_RADIUS) // = 14,5 mm : la sonde ne sort pas de NEVA_PROBE_MAX_RADIUS
+// G33 : la buse palpe sur un cercle de (100 - 14,5 - 23 - R) mm ; la sonde, 23 mm derriere la buse, est au plus a 62,5 + 23 - R mm du centre : « Calibration auto » fait G33 R20 (sonde a 65,5 mm au plus).
 #define NEVA_MESH_SHIFT   // Neva : applique le maillage avec le decalage de la sonde (23 mm) ; commenter la ligne pour revenir a l'ancien comportement
 #define NEVA_MESH_MARGIN 15 // Neva : le maillage G29 couvre un disque de 100 - 15 = 85 mm (avant 77). Sondes ecartees automatiquement si la buse ne peut pas les atteindre (avant).
 
