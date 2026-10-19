@@ -4254,7 +4254,7 @@
     "M117 Calibration...\n" \
     "G90\n" \
     "G28\n" \
-    "G33\n" \
+    "G33 R7\n" \
     "M500\n" \
     "M117 Calibration finie"
 
