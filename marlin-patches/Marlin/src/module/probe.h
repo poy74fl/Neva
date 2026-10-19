@@ -102,8 +102,7 @@ public:
         static bool can_reach(const_float_t rx, const_float_t ry, const bool probe_relative=true) {
           if (probe_relative) {
             return position_is_reachable(rx - offset_xy.x, ry - offset_xy.y) // The nozzle can go where it needs to go?
-                && position_is_reachable(rx, ry, PROBING_MARGIN)             // Can the probe also go near there?
-                && !(ABS(rx) > NEVA_PROBE_SKIP_X && ry > NEVA_PROBE_SKIP_Y); // Neva : G29 saute les deux noeuds a X +/-85 et Y > 10 (la sonde y echoue : Probing Failed) ; ils sont extrapoles
+                && position_is_reachable(rx, ry, PROBING_MARGIN);            // Can the probe also go near there? (Neva v1.71 : PROBING_MARGIN 14.5)
           }
           else {
             return position_is_reachable(rx, ry)
