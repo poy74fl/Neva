@@ -22,7 +22,10 @@ Zip : `Marlin-Neva-v1.67-complet.zip`. Config : `marlin-config/`, correctifs : `
 ## Défaut connu (non résolu)
 Dans le coin côté BMG (X > 62, Y > −10), la buse est **0,3 à 0,6 mm trop basse**, de façon stable et reproductible, alors que la sonde mesure un plateau lisse. Mesures au papier (écart par rapport au centre) : X57 Y0 −0,10 ; X70 Y0 +0,36 ; X80 Y0 +0,63 ; X70 Y25 +0,56 ; X70 Y−25 +0,01. Éliminé : tuyau et faisceau (les soulever ne change rien), contact mécanique, feuille d'impression (tournée, la bosse reste), plaque magnétique (la plaque sous la tête est en PETG), bras et poulie X (rien d'anormal). Hypothèse restante : la tête s'incline (rotules des bras X à plus de 50° de la verticale, côté opposé à la tour X). Contournement : la forme de plateau exclut ce coin.
 
-## Nouvelle piste (à vérifier) : le bord de la feuille triangulaire
+## Feuille triangulaire (v1.69) : zone réduite
+Le plateau est un triangle équilatéral dont les coins pointent vers les tours (rayon 150 mm, côtés à ~75 mm du centre). Le bord relevé côté BMG explique l'écart de 0,3 à 0,6 mm. v1.69 : `G29` saute les points à plus de 66 mm des côtés (`NEVA_PROBE_SKIP_D`), `G33 R10` dans « Calibration auto », plateau PrusaSlicer = disque de 170 mm coupé à 58 mm du centre le long des trois côtés. Les anciennes notes ci-dessous restent valables comme historique.
+
+## Piste initiale : le bord de la feuille triangulaire
 Pendant « Calibration auto », l'utilisateur voit la **sonde sortir de la feuille du côté du BMG** : les points de `G33` sont à 30°, 90°, 150°, 210°, 270°, 330° sur un cercle de 67 mm (sonde), et le côté du triangle est le plus proche du centre dans les directions 30°, 150°, 270°. Le coin BMG où la buse est trop basse (X > 62, Y > −10) est donc peut-être le **bord de la feuille** (relevé, et mal vu par la sonde à induction). La rotation de 120° n'a rien changé parce qu'un triangle tourné de 120° se pose au même endroit. Test proposé : enlever la feuille, `G28`, `G29`, puis mesure au papier (centre, `X80 Y0`, `X70 Y25`) sur la base nue. Si l'écart disparaît, limiter `G33` (`PROBING_MARGIN` plus grand, par exemple 20 → cercle de 57 mm) et la zone de `G29` à ce que la feuille couvre ; il faut aussi la distance centre-bord de la feuille aux directions 30°, 150° et 270°.
 
 ## Prochaine expérience : sonder avec la buse

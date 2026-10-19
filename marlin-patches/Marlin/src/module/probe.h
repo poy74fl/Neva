@@ -103,7 +103,11 @@ public:
           if (probe_relative) {
             return position_is_reachable(rx - offset_xy.x, ry - offset_xy.y) // The nozzle can go where it needs to go?
                 && position_is_reachable(rx, ry, PROBING_MARGIN)             // Can the probe also go near there?
-                && !(ABS(rx) > NEVA_PROBE_SKIP_X && ry > NEVA_PROBE_SKIP_Y); // Neva : coins du maillage hors de la feuille triangulaire (X +/-85, Y > 10)
+                // Neva : la feuille est un triangle (cotes a ~75 mm du centre, normales a 30, 150 et 270 degres) :
+                // pas de palpage a plus de NEVA_PROBE_SKIP_D mm du centre le long de ces normales
+                && ((rx *  0.8660254f + ry * 0.5f) <= NEVA_PROBE_SKIP_D)
+                && ((rx * -0.8660254f + ry * 0.5f) <= NEVA_PROBE_SKIP_D)
+                && (-ry <= NEVA_PROBE_SKIP_D);
           }
           else {
             return position_is_reachable(rx, ry)
