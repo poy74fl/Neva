@@ -54,3 +54,5 @@ Il coupe la buse, rétracte, remonte, remet la tête en haut (`G28`) et fait un 
 - Si l'écran propose « Imprimer » dès le premier clic, il suffit de recliquer pour confirmer.
 
 > Depuis la v1.76 : les 19 `M421` de l'ancien maillage sont retirés du début de G-code (le maillage a changé : 31 nœuds sondés). Les corrections par zone seront à refaire avec `docs/test_spirale_r85_complete_v13.gcode` si besoin.
+
+> Ventilateurs (depuis le montage) : profil « PLA Neva » avec refroidissement actif (`cooling = 1`, ventilateur à 100 % dès la couche 2, pleine vitesse à la couche 3, 100 % sur les ponts, ralentissement si la couche dure moins de 20 s). La sortie `M106` va sur FAN0 ; le ventilateur du hotend est sur FAN1 et démarre seul au-dessus de 50 °C.
