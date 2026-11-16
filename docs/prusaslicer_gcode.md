@@ -23,16 +23,16 @@ M104 S{first_layer_temperature[0]}
 G28
 G33 P1
 G29
-M109 S{first_layer_temperature[0]}
-G1 Z5 F3000
 G1 X-45 Y-77.94 F6000
+G1 Z5 F3000
+M109 S{first_layer_temperature[0]}
 G1 Z0.3 F600
 G1 E8 F200
 G3 X45 Y-77.94 I45 J77.94 E7 F1200
 G1 E-2 F1800
 G1 Z5 F3000
 ```
-Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, attente de la température (`M109`), puis **une vraie ligne de purge en arc de cercle à l'avant du plateau** (rayon 90 mm, de X −45 Y −77,94 à X +45 Y −77,94, 94 mm de long, 0,3 mm de haut, précédée d'un petit tas de 8 mm de filament et suivie d'une rétraction de 2 mm) avant de commencer. Les anciens `M421` ont été retirés avec le nouveau maillage (31 nœuds).
+Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, déplacement à 5 mm au-dessus du début de la ligne de purge, attente de la température (`M109`, la goutte tombe donc sur la purge), puis **une vraie ligne de purge en arc de cercle à l'avant du plateau** (rayon 90 mm, de X −45 Y −77,94 à X +45 Y −77,94, 94 mm de long, 0,3 mm de haut, précédée d'un petit tas de 8 mm de filament et suivie d'une rétraction de 2 mm) avant de commencer. Les anciens `M421` ont été retirés avec le nouveau maillage (31 nœuds).
 
 ### Fin du G-code (End G-code)
 ```
