@@ -58,3 +58,5 @@ Il coupe la buse, rétracte, remonte, remet la tête en haut (`G28`) et fait un 
 > Ventilateurs (depuis le montage) : profil « PLA Neva » avec refroidissement actif (`cooling = 1`, ventilateur à 100 % dès la couche 2, pleine vitesse à la couche 3, 100 % sur les ponts, ralentissement si la couche dure moins de 20 s). La sortie `M106` va sur FAN0 ; le ventilateur du hotend est sur FAN1 et démarre seul au-dessus de 50 °C.
 
 > Réglages d'impression : le bundle contient maintenant aussi le profil « Neva 0.2mm PLA » (couche 0,2 mm, 2 périmètres, remplissage 15 % gyroïde, vitesses prudentes : 40 mm/s périmètres, 50 mm/s remplissage, 20 mm/s première couche, jupe de 1 tour, étiquetage des objets pour `M486`). Hauteur max de l'imprimante : 300 mm.
+
+> Couche par couche : `layer_gcode = G92 E0` (obligatoire avec l'extrusion relative `M83` : sans lui PrusaSlicer refuse de découper avec l'erreur « Ajoutez G92 E0 à layer_gcode »).
