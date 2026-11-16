@@ -18,6 +18,9 @@ Zip : `Marlin-Neva-v1.76-complet.zip`. « Calibration auto » (`G28`, `G33`, `M5
 - Piège connu : le logo de démarrage (`_Bootscreen.h`) est généré par `marlin-patches/make_bootscreen.py` ; le relancer à chaque changement de version.
 - Piège connu : ajouter une option qui change la taille de l'EEPROM (ex. `SOUND_MENU_ITEM`) efface les réglages enregistrés (refaire « Calibration auto »).
 
+## Ventilateurs (montés, testés)
+2 ventilateurs d'impression en parallèle sur FAN0, ventilateur du hotend sur HE1 (auto au-dessus de 50 °C) : les 3 tournent (`docs/test_ventilateurs.gcode`). Profil PLA avec refroidissement actif. Reste : premier cube avec ventilateur, puis Linear Advance (`M900 K`, Bowden 870 mm), test du capteur de filament. Palpage lent (8 s par point) : `MONITOR_DRIVER_STATUS` et `STATUS_MESSAGE_SCROLLING` désactivés dans la config (zip v1.76 corrigé non flashé), cause non confirmée.
+
 ## Profil PrusaSlicer
 `docs/Neva_PrusaSlicer.ini` (bundle : imprimante « Dagoma Neva Marlin » + filament « PLA Neva »), forme du plateau `docs/forme_plateau.svg`, réglages dans `docs/prusaslicer_gcode.md`. Début de G-code : `G28`, `G33 P1`, `G29`, 19 `M421`, purge à X −85. Hauteur max choisie : 300 mm (la hauteur sûre est environ 312 mm au centre et 290 mm au bord).
 
