@@ -64,7 +64,7 @@
 
 // Numero de version de TON firmware (config + patchs Neva). Incremente a chaque mise a jour poussee sur la branche.
 // Affiche sur l'ecran de controle au demarrage (Configuration_adv.h, STARTUP_COMMANDS) et dans l'etiquette ci-dessous.
-#define NEVA_FW_VERSION "1.77"
+#define NEVA_FW_VERSION "1.78"
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(NEVA-v" NEVA_FW_VERSION ")" // Etiquette visible au demarrage et dans M115 : sert a verifier le firmware flashe
@@ -1541,7 +1541,7 @@
 #define NEVA_MESH_MARGIN 15 // Neva : le maillage G29 couvre un disque de 100 - 15 = 85 mm (avant 77). Sondes ecartees automatiquement si la buse ne peut pas les atteindre (avant).
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_FEEDRATE (66*60)
+#define XY_PROBE_FEEDRATE (133*60) // Neva v1.78 : 133 mm/s entre les points (66 mm/s avant)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
 #define Z_PROBE_FEEDRATE_FAST (30*60)   // Neva : etait 200 mm/s ; une approche trop rapide fait bouger la tete et fausse le palpage
@@ -1612,8 +1612,8 @@
  *     But: 'M851 Z+1' with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
 #define Z_CLEARANCE_DEPLOY_PROBE   15 // (mm) Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  5 // (mm) Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     3 // (mm) Z Clearance between multiple probes (Neva : 3 au lieu de 5, descente lente plus courte)
+#define Z_CLEARANCE_BETWEEN_PROBES  3 // (mm) Neva v1.78 : montee de 3 mm entre les points (5 avant)
+#define Z_CLEARANCE_MULTI_PROBE     2 // (mm) Neva v1.78 : remontee de 2 mm avant la mesure lente (3 avant)
 #define Z_AFTER_PROBING           30 // (mm) Neva v1.63 : la tete remonte a 30 mm a la fin de G29 (avant : restait a 5 mm)
 
 #define Z_PROBE_LOW_POINT          -2 // (mm) Farthest distance below the trigger-point to go before stopping
