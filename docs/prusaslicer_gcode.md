@@ -25,13 +25,14 @@ G33 P1
 G29
 M109 S{first_layer_temperature[0]}
 G1 Z5 F3000
-G1 X-85 Y0 F6000
+G1 X-35 Y-88 F6000
 G1 Z0.3 F600
-G1 E10 F200
-G1 E-1 F1800
+G1 E8 F200
+G1 X35 Y-88 E5 F1200
+G1 E-2 F1800
 G1 Z5 F3000
 ```
-Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, **dix-neuf corrections du maillage (`M421`)** déterminées avec `docs/test_spirale_r85_complete_corr_v11.gcode` (centre et anneau milieu un peu plus écrasés, arrière gauche/droite ajustés, la zone du bord BMG, qui n'est plus imprimée, n'est plus corrigée), attente de la température (`M109`), puis une goutte de purge sur le bord gauche (X -85) avant de commencer.
+Il fait : lancement de la chauffe (`M104`, la buse chauffe pendant le reste), homing, correction de la hauteur au centre (`G33 P1`), **palpage du plateau en plusieurs points (`G29`)**, attente de la température (`M109`), puis **une vraie ligne de purge à l'avant du plateau** (de X −35 à X +35 à Y −88, 70 mm, 0,3 mm de haut, précédée d'un petit tas de 8 mm de filament et suivie d'une rétraction de 2 mm) avant de commencer. Les anciens `M421` ont été retirés avec le nouveau maillage (31 nœuds).
 
 ### Fin du G-code (End G-code)
 ```
