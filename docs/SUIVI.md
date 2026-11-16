@@ -1,12 +1,12 @@
-# Suivi Neva : état à la v1.76
+# Suivi Neva : état à la v1.77
 
 Fiche pour reprendre le projet dans une nouvelle conversation. Branche : `claude/dagoma-neva-marlin-b6ktj3` (dépôt poy74fl/Neva).
 
 ## Machine
 Dagoma Neva (delta), carte BTT SKR 1.4 (LPC1768), 4 × TMC2209, écran BTT Mini 12864 V2, sonde SuperPINDA derrière la buse (X0 Y23), extrudeur BMG Bowden côté droit (+X), sans plateau chauffant, sans ventilateur pour l'instant. Marlin 2.1.2.5, PlatformIO sur Mac, Simplify3D pour le terminal, PrusaSlicer pour le slicing. Alimentation 12 V. Le firmware se flashe uniquement par la carte SD de la carte mère (`firmware.bin`, 12 V seulement). Toujours décompresser le zip en entier (remplacer un seul dossier sous Finder efface le reste).
 
-## Firmware stable : v1.76
-Zip : `Marlin-Neva-v1.76-complet.zip`. « Calibration auto » (`G28`, `G33`, `M500`) et `G29` fonctionnent avec la v1.76 (confirmé par l'utilisateur : `G29` sur 31 nœuds OK ; écart-type G33 0,045 mesuré en v1.75).
+## Firmware stable : v1.77
+Zip : `Marlin-Neva-v1.77-complet.zip`. « Calibration auto » (`G28`, `G33`, `M500`) et `G29` fonctionnent avec la v1.77 (confirmé par l'utilisateur : `G29` sur 31 nœuds OK ; écart-type G33 0,045 mesuré en v1.75).
 - Palpage : sonde limitée à 88,5 mm du centre (`NEVA_PROBE_MAX_RADIUS 88.5`, `PROBING_MARGIN` 11,5 ; Calibration auto = `G33 R13.5`), buse écartée des tours (r > 98 mm à ±30° de 210° et 330°) ; pour affiner sans nouvelle version : `G33 R<mm>`, `G29 L R F B`.
 - Version affichée sous le logo et au démarrage (`NEVA_FW_VERSION`) ; relancer `make_bootscreen.py` à chaque changement. Config : `marlin-config/`, correctifs : `marlin-patches/` (voir `README.md`). Points clés :
 - `M851 Z` = **−1,233** (réglé au babystep par l'utilisateur, enregistré dans l'EEPROM ; −1,195 lors de la validation des `M421`).
@@ -19,7 +19,7 @@ Zip : `Marlin-Neva-v1.76-complet.zip`. « Calibration auto » (`G28`, `G33`, `M5
 - Piège connu : ajouter une option qui change la taille de l'EEPROM (ex. `SOUND_MENU_ITEM`) efface les réglages enregistrés (refaire « Calibration auto »).
 
 ## Ventilateurs (montés, testés)
-2 ventilateurs d'impression en parallèle sur FAN0, ventilateur du hotend sur HE1 (auto au-dessus de 50 °C) : les 3 tournent (`docs/test_ventilateurs.gcode`). Profil PLA avec refroidissement actif. Reste : premier cube avec ventilateur, puis Linear Advance (`M900 K`, Bowden 870 mm), test du capteur de filament. Palpage lent (8 s par point) : `MONITOR_DRIVER_STATUS` et `STATUS_MESSAGE_SCROLLING` désactivés dans la config (zip v1.76 corrigé non flashé), cause non confirmée.
+2 ventilateurs d'impression en parallèle sur FAN0, ventilateur du hotend sur HE1 (auto au-dessus de 50 °C) : les 3 tournent (`docs/test_ventilateurs.gcode`). Profil PLA avec refroidissement actif. Reste : premier cube avec ventilateur, puis Linear Advance (`M900 K`, Bowden 870 mm), test du capteur de filament. Palpage lent (8 s par point) : `MONITOR_DRIVER_STATUS` et `STATUS_MESSAGE_SCROLLING` désactivés dans la config (v1.77 : à flasher), cause non confirmée.
 
 ## Profil PrusaSlicer
 `docs/Neva_PrusaSlicer.ini` (bundle : imprimante « Dagoma Neva Marlin » + filament « PLA Neva »), forme du plateau `docs/forme_plateau.svg`, réglages dans `docs/prusaslicer_gcode.md`. Début de G-code : `G28`, `G33 P1`, `G29`, 19 `M421`, purge à X −85. Hauteur max choisie : 300 mm (la hauteur sûre est environ 312 mm au centre et 290 mm au bord).
