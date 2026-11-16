@@ -61,3 +61,5 @@ Il coupe la buse, rétracte, remonte, remet la tête en haut (`G28`) et fait un 
 > Réglages d'impression : le bundle contient maintenant aussi le profil « Neva 0.2mm PLA » (couche 0,2 mm, 2 périmètres, remplissage 15 % gyroïde, vitesses prudentes : 40 mm/s périmètres, 50 mm/s remplissage, 20 mm/s première couche, jupe de 1 tour, étiquetage des objets pour `M486`). Hauteur max de l'imprimante : 300 mm.
 
 > Couche par couche : `layer_gcode = G92 E0` (obligatoire avec l'extrusion relative `M83` : sans lui PrusaSlicer refuse de découper avec l'erreur « Ajoutez G92 E0 à layer_gcode »).
+
+> Vitesses d'impression (profil « Neva 0.2mm PLA ») : première couche 20 mm/s, périmètres extérieurs 40, périmètres 60, remplissage 80, plein 60, dessus 40, ponts 40, déplacements 150 mm/s. `slowdown_below_layer_time = 8` : PrusaSlicer ne ralentit une couche que si elle dure moins de 8 s (20 s la ralentissait inutilement sur les petites pièces comme un cube de 20 mm).
