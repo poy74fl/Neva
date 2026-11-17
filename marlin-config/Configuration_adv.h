@@ -2460,7 +2460,7 @@
  * Currently handles M108, M112, M410, M876
  * NOTE: Not yet implemented for all platforms.
  */
-#define EMERGENCY_PARSER // Neva v1.65 : M112, M108 et M410 traites tout de suite meme si la file de commandes est pleine
+//#define EMERGENCY_PARSER // Neva v1.79 : desactive (fermer le logiciel USB envoyait M112 et arretait l'impression). M112, M108 et M410 sont alors traites dans l'ordre normal de la file.
 
 /**
  * Realtime Reporting (requires EMERGENCY_PARSER)
